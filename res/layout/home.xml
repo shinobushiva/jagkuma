@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+-->
+<aharisu.widget.RatioLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    
+    <ImageView
+    	layout_ratioX="0.1"
+    	layout_ratioY="0.025"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.3"
+    	android:src="@drawable/home_icon"
+    	android:scaleType="fitCenter"
+    	android:background="#ff0000"
+    	/>
+    	
+    <Button
+    	layout_ratioX="0.2"
+    	layout_ratioY="0.4"
+    	layout_ratioWidth="0.6"
+    	layout_ratioHeight="0.15"
+    	android:id="@+id_home/help"
+    	android:text="Help"
+    	/>
+    	
+    <Button
+    	layout_ratioX="0.2"
+    	layout_ratioY="0.6"
+    	layout_ratioWidth="0.6"
+    	layout_ratioHeight="0.2"
+    	android:id="@+id_home/map"
+    	android:text="Map"
+    	/>
+    	
+    <Button
+    	layout_ratioX="0.05"
+    	layout_ratioY="0.85"
+    	layout_ratioWidth="0.4"
+    	layout_ratioHeight="0.1"
+    	android:id="@+id_home/collections"
+    	android:text="Collections"
+    	/>
+    	
+    <Button
+    	layout_ratioX="0.55"
+    	layout_ratioY="0.85"
+    	layout_ratioWidth="0.4"
+    	layout_ratioHeight="0.1"
+    	android:id="@+id_home/settings"
+    	android:text="Settings"
+    	/>
+    
+</aharisu.widget.RatioLayout>
+    
+<!--  
+</FrameLayout>
+-->

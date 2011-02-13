@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<aharisu.widget.RatioLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+	
+	<ScrollView
+    	layout_ratioX="0.0"
+    	layout_ratioY="0.0"
+    	layout_ratioWidth="1.0"
+    	layout_ratioHeight="0.5"
+		android:fillViewport="true"
+		>
+		<LinearLayout 
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:orientation="vertical"
+		    android:background="#fefefe"
+			android:paddingLeft="7dip"
+			android:paddingRight="3dip"
+			android:paddingTop="8dip"
+		    >
+		    
+		    <TextView
+		    	android:id="@+id_quiz/name"
+		    	android:layout_width="fill_parent"
+		    	android:layout_height="wrap_content"
+		    	android:text="title"
+		    	android:gravity="center"
+		    	android:textSize="18sp"
+		    	android:textColor="#000000"
+		    	/>
+		    	
+			<WebView
+				android:id="@+id_quiz/webview"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@id_location_info/go_quiz"
+				android:layout_above="@id_location_info/go_location"
+				/>
+		</LinearLayout>
+	</ScrollView>
+	
+	<ScrollView
+    	layout_ratioX="0.0"
+    	layout_ratioY="0.5"
+    	layout_ratioWidth="1.0"
+    	layout_ratioHeight="0.4"
+		android:fillViewport="true"
+		>
+		<LinearLayout 
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:orientation="vertical"
+		    android:background="#fefefe"
+			android:paddingLeft="7dip"
+			android:paddingRight="3dip"
+		    >
+			
+		    <TextView
+		    	android:id="@+id_quiz/label_answer"
+		    	android:layout_width="fill_parent"
+		    	android:layout_height="wrap_content"
+		    	android:layout_marginTop="10dip"
+		    	android:textSize="18sp"
+		    	android:text="選択してください"
+		    	android:gravity="center"
+		    	android:textColor="#666666"
+		    	/>
+		    	
+			<RadioGroup
+				android:id="@+id_quiz/frame_anwers"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				>
+				<RadioButton
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:text="答え1"
+					android:textColor="#000000"
+					android:textSize="18sp"
+					/>
+				<RadioButton
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:text="答え2"
+					android:textColor="#000000"
+					android:textSize="18sp"
+					/>
+				<RadioButton
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:text="答え3"
+					android:textColor="#000000"
+					android:textSize="18sp"
+					/>
+				<RadioButton
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:text="答え4"
+					android:textColor="#000000"
+					android:textSize="18sp"
+					/>
+				<RadioButton
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:text="答え5"
+					android:textColor="#000000"
+					android:textSize="18sp"
+					/>
+			</RadioGroup>
+		</LinearLayout>
+	</ScrollView>
+	
+	<Button
+		android:id="@+id_quiz/ok"
+    	layout_ratioX="0.2"
+    	layout_ratioY="0.9"
+    	layout_ratioWidth="0.6"
+    	layout_ratioHeight="0.1"
+		android:textSize="22sp"
+		android:text="これでOK!!"
+		/>
+	
+</aharisu.widget.RatioLayout>

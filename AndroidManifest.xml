@@ -5,10 +5,12 @@
       android:versionName="1.0">
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
 		<activity android:name="EntranceActivity">
+			<!--
 		    <intent-filter>
 			    <action android:name="android.intent.action.MAIN" />
 			    <category android:name="android.intent.category.LAUNCHER" />
 		    </intent-filter>
+		    -->
 	        <meta-data android:name="GotochiApp" android:value="true" />
 		</activity>
 	
@@ -29,6 +31,22 @@
 <receiver android:name="RootBroadcastReceiver"><intent-filter><action android:name="jag.kumamoto.apps.gotochi.LOCATION_CHANGE"></action>
 </intent-filter>
 </receiver>
+
+
+
+		<activity android:name="jag.kumamoto.apps.StampRally.HomeActivity">
+		    <intent-filter>
+			    <action android:name="android.intent.action.MAIN" />
+			    <category android:name="android.intent.category.LAUNCHER" />
+		    </intent-filter>
+		</activity>
+		<activity android:name="jag.kumamoto.apps.StampRally.HelpActivity"></activity>
+		<activity android:name="jag.kumamoto.apps.StampRally.SettingsActivity"></activity>
+		<activity android:name="jag.kumamoto.apps.StampRally.CollectionsActivity"></activity>
+		<activity android:name="jag.kumamoto.apps.StampRally.MapActivity"></activity><activity android:name="jag.kumamoto.apps.StampRally.LocationInfoActivity"></activity><activity android:name="jag.kumamoto.apps.StampRally.QuizActivity"></activity><uses-library android:name="com.google.android.maps"/>
+		
+		
+		
 </application>
 
     <uses-sdk android:minSdkVersion="4" />
@@ -37,4 +55,5 @@
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+<uses-permission android:name="android.permission.INTERNET"/>
 </manifest> 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    
+    <com.google.android.maps.MapView
+    	android:id="@+id_map/mapview"
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:clickable="true"
+    	android:apiKey="input your android map key"
+    	/>
+    	
+    <Button
+    	android:id="@+id_map/button"
+    	android:layout_width="150dip"
+    	android:layout_height="50dip"
+    	android:text="location info"
+    	/>
+
+
+</FrameLayout>

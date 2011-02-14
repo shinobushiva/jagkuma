@@ -5,6 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+
+/**
+ * 
+ * スタンプラリーのチェックポイントを含むマップを表示するアクティビティ
+ * 
+ * @author aharisu
+ *
+ */
 public class MapActivity extends com.google.android.maps.MapActivity{
 	
 	@Override protected void onCreate(Bundle savedInstanceState) {

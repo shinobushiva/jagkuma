@@ -7,6 +7,14 @@ import java.io.InputStreamReader;
 
 import android.content.Context;
 
+
+/**
+ * 
+ * 同期的に各種データを取得するユーティリティクラス
+ * 
+ * @author aharisu
+ *
+ */
 public final class DataGetter {
 	
 	public static String readHTML(Context context, int resRawId) throws IOException{

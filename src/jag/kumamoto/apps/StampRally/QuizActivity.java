@@ -9,6 +9,14 @@ import android.os.Bundle;
 import android.view.Window;
 import android.webkit.WebView;
 
+
+/**
+ * 
+ * クイズを表示するアクティビティ
+ * 
+ * @author aharisu
+ *
+ */
 public class QuizActivity extends Activity{
 	
 	@Override protected void onCreate(Bundle savedInstanceState) {

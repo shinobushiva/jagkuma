@@ -9,6 +9,13 @@ import android.os.Bundle;
 import android.view.Window;
 import android.webkit.WebView;
 
+/**
+ * 
+ * スタンプラリーの操作方法などヘルプ画面のアクティビティ
+ * 
+ * @author aharisu
+ *
+ */
 public class HelpActivity extends Activity {
 	
 	@Override protected void onCreate(Bundle savedInstanceState) {

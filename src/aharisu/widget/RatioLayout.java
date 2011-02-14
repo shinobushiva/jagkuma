@@ -5,6 +5,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AbsoluteLayout;
 
+/**
+ * 
+ * ビューを割合指定では位置するレイアウト
+ * 
+ * @author aharisu
+ *
+ */
 @SuppressWarnings("deprecation")
 public class RatioLayout extends AbsoluteLayout {
 	

@@ -10,6 +10,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
 
+
+/**
+ * 
+ * スタンプラリーのチェックポイントの情報を表示するアクティビティ
+ * 
+ * @author aharisu
+ *
+ */
 public class LocationInfoActivity extends Activity{
 	
 	@Override protected void onCreate(Bundle savedInstanceState) {

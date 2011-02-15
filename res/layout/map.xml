@@ -9,7 +9,7 @@
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
     	android:clickable="true"
-    	android:apiKey="input your android map key"
+    	android:apiKey="0iAclgF80THfkXEo1IgV4RDoLv3npTOdJxFdpaA"
     	/>
     	
     <Button
@@ -18,6 +18,12 @@
     	android:layout_height="50dip"
     	android:text="location info"
     	/>
+    	
+    <aharisu.widget.MascotView
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	/>
+    
 
 
 </FrameLayout>

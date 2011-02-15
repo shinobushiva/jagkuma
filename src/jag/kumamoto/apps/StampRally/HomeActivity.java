@@ -19,6 +19,13 @@ public class HomeActivity extends Activity{
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		//最初にDBのシングルトンインスタンスを作成する
+		StampRallyDB.createInstance(getApplicationContext());
+		
+		//プリファレンスクラスにコンテキストを設定する
+		StampRallyPreferences.setContext(getApplicationContext());
+		
+		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		setContentView(R.layout.home);

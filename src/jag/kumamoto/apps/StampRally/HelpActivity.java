@@ -26,7 +26,7 @@ public class HelpActivity extends Activity {
 		
 		try {
 			((WebView)findViewById(R.id_help.webview)).loadData(
-					DataGetter.readHTML(this, R.raw.help),
+					DataGetter.getHTML(this, R.raw.help),
 					"text/html",
 					"utf-8");
 		} catch (IOException e) {

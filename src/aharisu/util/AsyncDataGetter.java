@@ -1,6 +1,5 @@
 package aharisu.util;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
@@ -106,19 +105,7 @@ public final class AsyncDataGetter {
 				throw new RuntimeException();
 			}
 			
-			byte[] raw = HttpClient.getByteArrayFromURL(params[0]);
-			String data = new String(raw);
-			raw = null;
-			
-			JSONObject obj = null;
-			try {
-				obj = new JSONObject(data);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			return obj;
+			return DataGetter.getJSONObject(params[0]);
 		}
 		
 		@Override protected void onPostExecute(JSONObject result) {

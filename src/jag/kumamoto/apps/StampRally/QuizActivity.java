@@ -27,7 +27,7 @@ public class QuizActivity extends Activity{
 		
 		try {
 			((WebView)findViewById(R.id_quiz.webview)).loadData(
-					DataGetter.readHTML(this, R.raw.test_quiz),
+					DataGetter.getHTML(this, R.raw.test_quiz),
 					"text/html",
 					"utf-8");
 		} catch (IOException e) {

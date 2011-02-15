@@ -29,7 +29,7 @@ public class LocationInfoActivity extends Activity{
 		
 		try {
 			((WebView)findViewById(R.id_location_info.webview)) .loadData(
-					DataGetter.readHTML(this, R.raw.test_location_info),
+					DataGetter.getHTML(this, R.raw.test_location_info),
 					"text/html",
 					"utf-8");
 		} catch (IOException e) {

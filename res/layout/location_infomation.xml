@@ -6,13 +6,44 @@
 	android:orientation="vertical"
 	>
 	
-	<Button
-		android:id="@+id_location_info/go_quiz"
+	<FrameLayout
+		android:id="@+id_location_info/go_quiz_frame"
 		android:layout_width="fill_parent"
 		android:layout_height="60dip"
 		android:layout_alignParentTop="true"
-		android:text="クイズへGo"
-		/>
+		>
+		<Button
+			android:id="@+id_location_info/go_quiz"
+			android:layout_width="fill_parent"
+			android:layout_height="60dip"
+			android:text="クイズへGo"
+			/>
+			
+		<LinearLayout
+			android:id="@+id_location_info/progress_frame"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:paddingLeft="30dip"
+			android:orientation="horizontal"
+			>
+			<ProgressBar
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical"
+				style="?android:attr/progressBarStyle" />
+				
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical"
+				android:textSize="22sp"
+				android:text="読み込み中..."
+				/>
+				
+		</LinearLayout>
+			
+	</FrameLayout>
+		
 		
 	<Button
 		android:id="@+id_location_info/go_location"
@@ -26,7 +57,7 @@
 		android:id="@+id_location_info/webview"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:layout_below="@id_location_info/go_quiz"
+		android:layout_below="@id_location_info/go_quiz_frame"
 		android:layout_above="@id_location_info/go_location"
 		/>
 	

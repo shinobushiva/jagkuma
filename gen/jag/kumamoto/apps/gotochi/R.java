@@ -46,7 +46,7 @@ public final class R {
         public static final int mapview=0x7f0c0000;
     }
     public static final class id_quiz {
-        public static final int frame_anwers=0x7f0d0003;
+        public static final int frame_choices=0x7f0d0003;
         public static final int label_answer=0x7f0d0002;
         public static final int name=0x7f0d0000;
         public static final int ok=0x7f0d0004;
@@ -61,7 +61,9 @@ public final class R {
         public static final int main=0x7f030005;
         public static final int map=0x7f030006;
         public static final int quiz=0x7f030007;
-        public static final int settings=0x7f030008;
+        public static final int quiz_muliple_choice=0x7f030008;
+        public static final int quiz_single_choice=0x7f030009;
+        public static final int settings=0x7f03000a;
     }
     public static final class raw {
         public static final int help=0x7f040000;

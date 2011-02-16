@@ -2,6 +2,8 @@ package aharisu.util;
 
 import org.json.JSONObject;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
 
@@ -124,5 +126,50 @@ public final class AsyncDataGetter {
 	}
 	
 	
+	
+	
+	public static interface BitmapCallback {
+		public void onGetData(Bitmap data);
+		public Size getMaxImageSize();
+	}
+	
+	private static final class AsyncBitmapGetter extends AsyncTask<String, Void, Bitmap> {
+		
+		private final BitmapCallback mCallback;
+		
+		public AsyncBitmapGetter(BitmapCallback callback) {
+			mCallback = callback;
+		}
+		
+		@Override protected Bitmap doInBackground(String... params) {
+			if(params.length != 1) {
+				throw new RuntimeException();
+			}
+			
+			byte[] raw = HttpClient.getByteArrayFromURL(params[0]);
+			Size size = mCallback.getMaxImageSize();
+			Bitmap bitmap;
+			if(size != null) {
+				bitmap = ImageUtill.loadImage(raw, size.width, size.height);
+			} else {
+				bitmap = BitmapFactory.decodeByteArray(raw, 0, raw.length);
+			}
+			
+			return bitmap;
+		}
+		
+		@Override protected void onPostExecute(Bitmap result) {
+			super.onPostExecute(result);
+			
+			mCallback.onGetData(result);
+		}
+		
+	}
+	
+	public static void getBitmap(String url, BitmapCallback callback) {
+		AsyncBitmapGetter getter = new AsyncBitmapGetter(callback);
+		
+		getter.execute(url);
+	}
 	
 }

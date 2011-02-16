@@ -4,6 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * 
  * クイズデータを表すクラス
@@ -11,7 +14,7 @@ import org.json.JSONObject;
  * @author aharisu
  *
  */
-public final class QuizData {
+public final class QuizData implements Parcelable{
 	private static final String QueryURL = "http://kumamotogotochi.appspot.com/quizes?pinId=";
 	
 	private static final String JsonNameQuizes = "quizes";
@@ -73,4 +76,43 @@ public final class QuizData {
 		return new StringBuilder(QueryURL).append(pinId).toString();
 	}
 
+	
+	
+	/*
+	 * 以降 Parcelableクラスの実装
+	 */
+	
+	@Override public int describeContents() {
+		return 0;
+	}
+	
+	@Override public void writeToParcel(Parcel dest, int flags) {
+		dest.writeLong(id);
+		dest.writeLong(pinId);
+		dest.writeString(title);
+		dest.writeString(descriptionHTML);
+		dest.writeInt(point);
+		dest.writeInt(order);
+		dest.writeParcelable(choices, 0);
+	}
+	
+	public static final Parcelable.Creator<QuizData> CREATOR = new Parcelable.Creator<QuizData>() {
+		@Override public QuizData[] newArray(int size) {
+			return new QuizData[size];
+		}
+		
+		@Override public QuizData createFromParcel(Parcel source) {
+			return new QuizData(
+					source.readLong(),
+					source.readLong(),
+					source.readString(),
+					source.readString(),
+					source.readInt(),
+					source.readInt(),
+					(QuizChoices)source.readParcelable(QuizChoices.class.getClassLoader()));
+	
+		}
+		
+	};
+	
 }

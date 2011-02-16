@@ -1,5 +1,6 @@
 package jag.kumamoto.apps.StampRally;
 
+import jag.kumamoto.apps.StampRally.Data.User;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -20,6 +21,8 @@ public final class StampRallyPreferences {
 	}
 	
 	private static final String PreferenceName = "StampRallyPrefs";
+	
+	
 	private static final String PrefLastCheckDateStampPin = "StampPin";
 	
 	public static long getLastCheckDateStampPin() {
@@ -37,5 +40,38 @@ public final class StampRallyPreferences {
 		editor.putLong(PrefLastCheckDateStampPin, date);
 		editor.commit();
 	}
+	
+	
+	private static final String PreferenceToken = "user-token";
+	private static final String PreferenceGender = "user-gender";
+	private static final String PreferenceNickname = "user-nickname";
+	
+	public static User getUser() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		String token = pref.getString(PreferenceToken, null);
+		int gender = pref.getInt(PreferenceGender, -1);
+		String nickname = pref.getString(PreferenceNickname, null);
+		if(token == null || 
+				(gender < 0 || gender > 2) ||
+				nickname == null) {
+			return null;
+		}
+		
+		return new User(token, gender, nickname);
+	}
+	
+	public static void setUser(User user) {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putString(PreferenceToken, user.token);
+		editor.putInt(PreferenceGender, user.gender);
+		editor.putString(PreferenceNickname, user.nickname);
+		editor.commit();
+	}
+	
 	
 }

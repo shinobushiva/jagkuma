@@ -23,6 +23,8 @@ public final class QuizChoices implements Parcelable{
 	
 	
 	public static final class Choice implements Parcelable{
+		public static final int TextTypeRawText = 1;
+		public static final int TextTypeImageURL = 0;
 		
 		public final long id;
 		public final int type;

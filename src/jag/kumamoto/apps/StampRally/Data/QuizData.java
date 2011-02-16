@@ -77,6 +77,24 @@ public final class QuizData implements Parcelable{
 	}
 
 	
+	public String createLoggingQueryURL(String token, boolean correctness, long answeringTime, 
+			boolean[] isCheckedAry) {
+		StringBuilder builder = new StringBuilder()
+			.append("http://kumamotogotochi.appspot.com/answer?")
+			.append("token=").append(token)
+			.append("&pinId=").append(this.pinId)
+			.append("&quizId=").append(this.id)
+			.append("&correctness=").append(correctness ? 1 : 0)
+			.append("&answeringTime=").append(answeringTime);
+		
+		for(int i = 0;i < isCheckedAry.length;++i) {
+			if(isCheckedAry[i]) {
+				builder.append("&optionIdArray=").append(choices.getChoice(i).id);
+			}
+		}
+		
+		return builder.toString();
+	}
 	
 	/*
 	 * 以降 Parcelableクラスの実装

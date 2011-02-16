@@ -10,6 +10,7 @@ package jag.kumamoto.apps.StampRally;
  */
 public final class ConstantValue {
 	public static final String ExtrasStampPin = "stamp-pin";
+	public static final String ExtrasShowGoQuiz = "go-quiz";
 	
 
 }

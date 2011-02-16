@@ -4,8 +4,6 @@ import jag.kumamoto.apps.StampRally.Data.StampPin;
 
 import java.util.List;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -33,6 +31,9 @@ import com.google.android.maps.OverlayItem;
  *
  */
 public class PinInfoOverlay extends ItemizedOverlay<OverlayItem>{
+	public static interface OnClickListener {
+		public void onClick(StampPin pin);
+	}
 	
 	private static class InfoMarker extends OverlayItem {
 		
@@ -147,23 +148,23 @@ public class PinInfoOverlay extends ItemizedOverlay<OverlayItem>{
 		}
 	};
 	
-	private final Context mContext;
-	
 	private  InfoMarker mItem = null;
 	private boolean mTouchDown = false;
 	private boolean mTouchOutside = true;
 	private boolean mLastHitTest = false;
+	
+	private final OnClickListener mListener;
 	
 	
 	private final MapView mMap;
 	private final Drawable mDrawable;
 	private final StampPinOverlay mOverlay;
 	
-	public PinInfoOverlay(Context context, 
+	public PinInfoOverlay(OnClickListener listener,
 			StampPinOverlay overlay, MapView map, Drawable drawble) {
 		super(drawble);
 		
-		mContext = context;
+		mListener = listener;
 		
 		mMap = map;
 		mDrawable = drawble;
@@ -220,7 +221,7 @@ public class PinInfoOverlay extends ItemizedOverlay<OverlayItem>{
 			List<Overlay> overlays = mMap.getOverlays();
 			overlays.remove(this);
 			
-			PinInfoOverlay overlay = new PinInfoOverlay(mContext, mOverlay, mMap,  mDrawable);
+			PinInfoOverlay overlay = new PinInfoOverlay(mListener, mOverlay, mMap,  mDrawable);
 			
 			mOverlay.setInfoOverlay(overlay);
 			overlays.add(overlay);
@@ -235,10 +236,7 @@ public class PinInfoOverlay extends ItemizedOverlay<OverlayItem>{
 	@Override protected boolean onTap(int index) {
 		
 		if(mItem != null) {
-			Intent intent = new Intent(mContext, LocationInfoActivity.class);
-			intent.putExtra(ConstantValue.ExtrasStampPin, mItem.stampPin);
-			
-			mContext.startActivity(intent);
+			mListener.onClick(mItem.stampPin);
 		}
 		
 		

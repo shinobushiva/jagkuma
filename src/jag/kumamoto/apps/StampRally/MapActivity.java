@@ -13,6 +13,7 @@ import jag.kumamoto.apps.StampRally.Data.StampPin;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
 import aharisu.util.Pair;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Window;
@@ -51,8 +52,8 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		
 		
 		//ピンの情報を示すレイヤを追加
-		PinInfoOverlay infoOverlay = new PinInfoOverlay(this, mPinOverlay, map,
-				getResources().getDrawable(R.drawable.marker_none));
+		PinInfoOverlay infoOverlay = new PinInfoOverlay(createPinInfoOnClickListener(),
+				mPinOverlay, map, getResources().getDrawable(R.drawable.marker_none));
 		overlayList.add(infoOverlay);
 		mPinOverlay.setInfoOverlay(infoOverlay);
 		
@@ -137,6 +138,30 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		return last.getYear() != now.getYear() ||
 				last.getMonth() != now.getMonth() ||
 				last.getDate() != now.getDate();
+	}
+	
+	
+	private PinInfoOverlay.OnClickListener createPinInfoOnClickListener() {
+		return new PinInfoOverlay.OnClickListener() {
+			@Override public void onClick(StampPin pin) {
+				
+				Intent intent = new Intent(MapActivity.this, LocationInfoActivity.class);
+				intent.putExtra(ConstantValue.ExtrasStampPin, pin);
+				
+				if(pin.type == StampPin.STAMP_TYPE_QUIZ &&
+						isShowGoQuiz(pin))  {
+					intent.putExtra(ConstantValue.ExtrasShowGoQuiz, true);
+				}
+				
+				startActivity(intent);
+			}
+		};
+	}
+	
+	
+	private boolean isShowGoQuiz(StampPin pin) {
+		//TODO ここで位置情報を使ってクイズを表示する範囲かどうか確かめる
+		return true;
 	}
 	
 	

@@ -42,8 +42,11 @@ public final class DataGetter {
 		JSONObject obj = null;
 		try {
 			obj = new JSONObject(data);
+			if(!obj.getString("status").equals("OK")) {
+			}
 		} catch(JSONException e) {
 			e.printStackTrace();
+			obj = null;
 		}
 		
 		return obj;

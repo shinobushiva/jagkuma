@@ -60,6 +60,9 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		
 		//DBからスタンプがある場所のピンデータを取得する
 		GetAsyncStampPinsFromDB();
+		
+		//スタンプラリーのピンの到着を監視するサービスを起動する
+		startArriveWatcherservice();
 	}
 	
 	private void GetAsyncStampPinsFromDB() {
@@ -169,4 +172,22 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		return false;
 	}
 
+	
+	@Override protected void onDestroy() {
+		
+		//スタンプラリーのピンの到着を監視するサービスを終了する
+		stopArriveWatcherService();
+		
+		super.onDestroy();
+	}
+	
+	private void startArriveWatcherservice() {
+		Intent intent = new Intent(this, ArriveWatcherService.class);
+		startService(intent);
+	}
+	
+	private void stopArriveWatcherService() {
+		Intent intent = new Intent(this, ArriveWatcherService.class);
+		stopService(intent);
+	}
 }

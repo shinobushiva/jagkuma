@@ -13,11 +13,12 @@ public final class R {
     public static final class drawable {
         public static final int home_icon=0x7f020000;
         public static final int icon=0x7f020001;
-        public static final int marker_none=0x7f020002;
-        public static final int marker_none_arrived=0x7f020003;
-        public static final int marker_quiz=0x7f020004;
-        public static final int marker_quiz_arrived=0x7f020005;
-        public static final int transparent_background=0x7f020006;
+        public static final int icon_status_bar=0x7f020002;
+        public static final int marker_none=0x7f020003;
+        public static final int marker_none_arrived=0x7f020004;
+        public static final int marker_quiz=0x7f020005;
+        public static final int marker_quiz_arrived=0x7f020006;
+        public static final int transparent_background=0x7f020007;
     }
     public static final class id_device_cap {
         public static final int btnSettings=0x7f070001;

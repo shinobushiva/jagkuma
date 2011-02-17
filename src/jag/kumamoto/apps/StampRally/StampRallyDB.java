@@ -120,6 +120,37 @@ public class StampRallyDB extends SQLiteOpenHelper{
 		}
 	}
 	
+	public static StampPin[] getStampPinsNonArrive() {
+		SQLiteOpenHelper helper = getInstance();
+		SQLiteDatabase db = helper.getReadableDatabase();
+		
+		Cursor cursor = null;
+		try {
+			cursor = db.query(StampLocationTable, 
+					new String[] {
+						StampLocationID,
+						StampLocationLatitude,
+						StampLocationLongitude,
+						StampLocationName,
+						StampLocationIsArrived,
+						StampLocationPoint,
+						StampLocationPrefecturesCode,
+						StampLocationAreaCode,
+						StampLocationType,
+						StampLocationURL,
+				}, 
+				new StringBuilder(StampLocationIsArrived).append(" = 0").toString(),
+				null, null, null, null);
+			
+			return createStampPinsFromCursor(cursor);
+		} finally {
+			if(cursor != null)
+				cursor.close();
+			
+			db.close();
+		}
+	}
+	
 	private static StampPin[] createStampPinsFromCursor(Cursor cursor) {
 		int count = cursor.getCount();
 		StampPin[] stamps = new StampPin[count];

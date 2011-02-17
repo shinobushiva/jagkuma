@@ -1,7 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
+	android:paddingLeft="8dip"
+	android:paddingRight="5dip"
+	android:paddingTop="10dip"
+	android:paddingBottom="8dip"
+	android:orientation="vertical"
 	>
-</FrameLayout>
+	
+	<Button
+		android:id="@+id_settings/above_ok"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="right"
+		android:layout_marginTop="5dip"
+		android:layout_marginBottom="5dip"
+		android:layout_marginLeft="10dip"
+		android:layout_marginRight="10dip"
+		android:text="OK"
+		android:textSize="18sp"
+		/>
+	
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:layout_marginTop="5dip"
+		android:layout_marginBottom="5dip"
+		android:text="以下の項目を入力してください＊"
+		android:textSize="18sp"
+		/>
+			
+		
+	
+	<ScrollView 
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:fillViewport="true"
+		>
+		
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_marginRight="10dip"
+			android:orientation="vertical"
+			>
+			
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="15dip"
+				android:text="・パスワード"
+				android:textSize="20sp"
+				android:focusable="true"
+				/>
+				
+			<EditText
+				android:id="@+id_settings/password"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:hint="パスワードを入力"
+				android:textSize="20sp"
+				/>
+				
+			<CheckBox
+				android:id="@+id_settings/visible_password"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:text="パスワードを表示する"
+				/>
+				
+				
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="15dip"
+				android:text="・ニックネーム"
+				android:textSize="20sp"
+				/>
+				
+			<EditText
+				android:id="@+id_settings/nickname"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:hint="ニックネームを入力"
+				android:textSize="20sp"
+				/>
+				
+				
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="15dip"
+				android:text="・性別"
+				android:textSize="20sp"
+				/>
+				
+			<RadioGroup
+				android:id="@+id_settings/gender_frame"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:checkedButton="@+id_settings/gender_unknown"
+				>
+				<RadioButton
+					android:id="@+id_settings/gender_female"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:text="女性"
+					android:textSize="20sp"
+					/>
+				<RadioButton
+					android:id="@+id_settings/gender_male"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:text="男性"
+					android:textSize="20sp"
+					/>
+				<RadioButton
+					android:id="@id_settings/gender_unknown"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:checked="true"
+					android:text="不明"
+					android:textSize="20sp"
+					/>
+			</RadioGroup>
+			
+			<Button
+				android:id="@+id_settings/below_ok"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="15dip"
+				android:layout_marginLeft="10dip"
+				android:layout_marginRight="10dip"
+				android:text="OK"
+				android:textSize="18sp"
+				/>
+			
+		</LinearLayout>
+		
+	</ScrollView>	
+</LinearLayout>

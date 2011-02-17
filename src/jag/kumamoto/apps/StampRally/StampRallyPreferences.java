@@ -42,6 +42,24 @@ public final class StampRallyPreferences {
 	}
 	
 	
+	public static final String PreferenceVisiblePassword = "settings-visible-password";
+	
+	public static boolean getVisiblePassword() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		return pref.getBoolean(PreferenceVisiblePassword, false);
+	}
+	
+	public static void setVisiblePassword(boolean visible) {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean(PreferenceVisiblePassword, visible);
+		editor.commit();
+	}
+	
 	private static final String PreferenceToken = "user-token";
 	private static final String PreferenceGender = "user-gender";
 	private static final String PreferenceNickname = "user-nickname";

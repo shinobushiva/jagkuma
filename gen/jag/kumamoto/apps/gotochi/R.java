@@ -52,6 +52,17 @@ public final class R {
         public static final int ok=0x7f0d0004;
         public static final int webview=0x7f0d0001;
     }
+    public static final class id_settings {
+        public static final int above_ok=0x7f0e0000;
+        public static final int below_ok=0x7f0e0008;
+        public static final int gender_female=0x7f0e0006;
+        public static final int gender_frame=0x7f0e0004;
+        public static final int gender_male=0x7f0e0007;
+        public static final int gender_unknown=0x7f0e0005;
+        public static final int nickname=0x7f0e0003;
+        public static final int password=0x7f0e0001;
+        public static final int visible_password=0x7f0e0002;
+    }
     public static final class layout {
         public static final int collections=0x7f030000;
         public static final int device_cap_dialog=0x7f030001;

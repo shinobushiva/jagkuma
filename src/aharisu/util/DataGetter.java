@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.util.Log;
 
 
 /**
@@ -43,6 +44,8 @@ public final class DataGetter {
 		try {
 			obj = new JSONObject(data);
 			if(!obj.getString("status").equals("OK")) {
+				Log.i("status failure", obj.toString());
+				obj = null;
 			}
 		} catch(JSONException e) {
 			e.printStackTrace();

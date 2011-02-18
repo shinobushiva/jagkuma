@@ -136,6 +136,17 @@ public class ArriveWatcherService extends Service{
 				throws RemoteException {
 			ArriveWatcherService.this.removeArriveNotification(pinId);
 		}
+
+		@Override public long[] getArrivedStampPins() throws RemoteException {
+			int count = mCurArriveLocation.size();
+			long[] ids = new long[count];
+			
+			for(int i = 0;i < count;++i) {
+				ids[i] = mCurArriveLocation.get(i);
+			}
+			
+			return ids;
+		}
 	};
 	
 	
@@ -318,7 +329,7 @@ public class ArriveWatcherService extends Service{
 		NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 		
 		Notification notification = new Notification(
-				R.drawable.icon_status_bar,
+				R.drawable.icon_status_bar_arrived,
 				pin.name + "に着いたよ",
 				System.currentTimeMillis());
 		

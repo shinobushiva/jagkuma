@@ -65,6 +65,14 @@ this.removeArriveNotification(_arg0);
 reply.writeNoException();
 return true;
 }
+case TRANSACTION_getArrivedStampPins:
+{
+data.enforceInterface(DESCRIPTOR);
+long[] _result = this.getArrivedStampPins();
+reply.writeNoException();
+reply.writeLongArray(_result);
+return true;
+}
 }
 return super.onTransact(code, data, reply, flags);
 }
@@ -119,10 +127,29 @@ _reply.recycle();
 _data.recycle();
 }
 }
+public long[] getArrivedStampPins() throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+long[] _result;
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+mRemote.transact(Stub.TRANSACTION_getArrivedStampPins, _data, _reply, 0);
+_reply.readException();
+_result = _reply.createLongArray();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+return _result;
+}
 }
 static final int TRANSACTION_showArriveNotification = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
 static final int TRANSACTION_removeArriveNotification = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
+static final int TRANSACTION_getArrivedStampPins = (android.os.IBinder.FIRST_CALL_TRANSACTION + 2);
 }
 public void showArriveNotification(jag.kumamoto.apps.StampRally.Data.StampPin pin) throws android.os.RemoteException;
 public void removeArriveNotification(long pinId) throws android.os.RemoteException;
+public long[] getArrivedStampPins() throws android.os.RemoteException;
 }

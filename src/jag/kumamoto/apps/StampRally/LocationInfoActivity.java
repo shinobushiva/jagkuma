@@ -39,7 +39,8 @@ public class LocationInfoActivity extends Activity{
 				
 		Bundle extras = getIntent().getExtras();
 		if(extras == null) {
-			finishActivity(Activity.RESULT_CANCELED);
+			setResult(Activity.RESULT_CANCELED);
+			finish();
 			return;
 		}
 		
@@ -47,7 +48,8 @@ public class LocationInfoActivity extends Activity{
 		boolean isShowGoQuiz = extras.getBoolean(ConstantValue.ExtrasShowGoQuiz, false);
 		
 		if(pin == null) {
-			finishActivity(Activity.RESULT_CANCELED);
+			setResult(Activity.RESULT_CANCELED);
+			finish();
 			return;
 		}
 		

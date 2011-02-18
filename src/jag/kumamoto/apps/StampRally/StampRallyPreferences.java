@@ -20,6 +20,10 @@ public final class StampRallyPreferences {
 		mContext = context;
 	}
 	
+	//インスタンス化させない
+	private StampRallyPreferences() {
+	}
+	
 	private static final String PreferenceName = "StampRallyPrefs";
 	
 	
@@ -88,6 +92,23 @@ public final class StampRallyPreferences {
 		editor.putString(PreferenceToken, user.token);
 		editor.putInt(PreferenceGender, user.gender);
 		editor.putString(PreferenceNickname, user.nickname);
+		editor.commit();
+	}
+	
+	private static final String PreferenceFirstStartStampRally = "first-start";
+	public static boolean isFirstStampRallyStart() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		return pref.getInt(PreferenceFirstStartStampRally, 0) != 1;
+	}
+	
+	public static void setFlagFirstStampRallyStart() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putInt(PreferenceFirstStartStampRally, 1);
 		editor.commit();
 	}
 	

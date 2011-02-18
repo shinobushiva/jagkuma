@@ -17,6 +17,7 @@ import android.view.Window;
  *
  */
 public class HomeActivity extends Activity{
+	private static final int RequestFirstStartSettings = 1;
 	
 	
 	private User mUser;
@@ -53,11 +54,15 @@ public class HomeActivity extends Activity{
 		//マップ画面へ遷移
 		findViewById(R.id_home.map).setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
-				Intent intent = new Intent(HomeActivity.this, MapActivity.class);
-				if(mUser != null) {
-					intent.putExtra(ConstantValue.ExtrasUser, mUser);
+				if(StampRallyPreferences.isFirstStampRallyStart()) {
+					firstStartAction();
+				} else {
+					Intent intent = new Intent(HomeActivity.this, MapActivity.class);
+					if(mUser != null) {
+						intent.putExtra(ConstantValue.ExtrasUser, mUser);
+					}
+					startActivity(intent);
 				}
-				startActivity(intent);
 			}
 		});
 		
@@ -84,6 +89,33 @@ public class HomeActivity extends Activity{
 				startActivity(intent);
 			}
 		});
+	}
+	
+	private void firstStartAction() {
+		StampRallyPreferences.setFlagFirstStampRallyStart();
+		
+		Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
+		intent.putExtra(ConstantValue.ExtrasFirstSettings, true);
+		startActivityForResult(intent, RequestFirstStartSettings);
+	}
+	
+	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		switch(requestCode) {
+		case RequestFirstStartSettings:
+			if(resultCode == Activity.RESULT_OK) {
+				mUser = data.getExtras().getParcelable(ConstantValue.ExtrasUser);
+			}
+			
+			//Mapアクティビティを起動する
+			Intent intent = new Intent(HomeActivity.this, MapActivity.class);
+			if(mUser != null) {
+				intent.putExtra(ConstantValue.ExtrasUser, mUser);
+			}
+			startActivity(intent);
+			break;
+		}
 	}
 
 }

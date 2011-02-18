@@ -39,13 +39,20 @@ public class SettingsActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		
 		Bundle extras = getIntent().getExtras();
+		boolean isFirstStart = false;
 		
 		if(extras != null) {
 			mUser = extras.getParcelable(ConstantValue.ExtrasUser);
+			isFirstStart = extras.getBoolean(ConstantValue.ExtrasFirstSettings, false);
 		}
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.settings);
+		
+		if(isFirstStart) {
+			showFirstSettingsDialog();
+		}
+		
 		
 		boolean visiblePassword = StampRallyPreferences.getVisiblePassword();
 		
@@ -110,6 +117,12 @@ public class SettingsActivity extends Activity{
 		belowOk.setEnabled(mUser != null);
 	}
 	
+	private void showFirstSettingsDialog() {
+		new AlertDialog.Builder(this)
+			.setTitle("設定")
+			.setMessage("ユーザ登録が必要です\n以下いろいろと説明があればいいな")
+			.setPositiveButton("OK", null)
+			.show();
 	}
 	
 	private TextWatcher createEditTextWatcher() {

@@ -80,7 +80,7 @@ public class LocationInfoActivity extends Activity{
 			goQuiz.setText(null);
 			goQuiz.setOnClickListener(createGoQuizOnClickListener());
 			
-			getAsyncQuizDataFromServer(1);
+			getAsyncQuizDataFromServer(pin.id);
 		} else {
 			goQuizFrame.setVisibility(View.GONE);
 		}

@@ -7,7 +7,9 @@ import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -31,14 +33,20 @@ import android.widget.Toast;
  *
  */
 public class SettingsActivity extends Activity{
+	private User mUser;
 	
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		Bundle extras = getIntent().getExtras();
+		
+		if(extras != null) {
+			mUser = extras.getParcelable(ConstantValue.ExtrasUser);
+		}
+		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.settings);
 		
-		User user = StampRallyPreferences.getUser();
 		boolean visiblePassword = StampRallyPreferences.getVisiblePassword();
 		
 		TextWatcher watcher = createEditTextWatcher();
@@ -59,13 +67,13 @@ public class SettingsActivity extends Activity{
 		
 		
 		//すでに入力済みのユーザデータがあれば初期値として設定
-		if(user != null) {
-			password.setText(user.token);
+		if(mUser != null) {
+			password.setText(mUser.token);
 			
-			nickname.setText(user.nickname);
+			nickname.setText(mUser.nickname);
 			((RadioGroup)findViewById(R.id_settings.gender_frame)).check(
-					user.gender == User.Female ? R.id_settings.gender_female :
-					user.gender == User.Male ? R.id_settings.gender_male :
+					mUser.gender == User.Female ? R.id_settings.gender_female :
+					mUser.gender == User.Male ? R.id_settings.gender_male :
 					R.id_settings.gender_unknown);
 		}
 		
@@ -95,11 +103,13 @@ public class SettingsActivity extends Activity{
 		View.OnClickListener okOnClickListener = createOKOnClickListener();
 		View aboveOk = findViewById(R.id_settings.above_ok);
 		aboveOk.setOnClickListener(okOnClickListener);
-		aboveOk.setEnabled(user != null);
+		aboveOk.setEnabled(mUser != null);
 		
 		View belowOk = findViewById(R.id_settings.below_ok);
 		belowOk.setOnClickListener(okOnClickListener);
-		belowOk.setEnabled(user != null);
+		belowOk.setEnabled(mUser != null);
+	}
+	
 	}
 	
 	private TextWatcher createEditTextWatcher() {
@@ -165,7 +175,11 @@ public class SettingsActivity extends Activity{
 				
 				if(result) {
 					StampRallyPreferences.setUser(user);
-					finishActivity(Activity.RESULT_OK);
+					
+					Intent intent = new Intent();
+					intent.putExtra(ConstantValue.ExtrasUser, user);
+					setResult(Activity.RESULT_OK, intent);
+					finish();
 					
 					Toast.makeText(getApplicationContext(), "認証しました", Toast.LENGTH_SHORT).show();
 				} else {

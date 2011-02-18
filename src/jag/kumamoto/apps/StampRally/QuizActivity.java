@@ -5,14 +5,17 @@ import java.util.Comparator;
 
 import jag.kumamoto.apps.StampRally.Data.QuizChoices;
 import jag.kumamoto.apps.StampRally.Data.QuizData;
+import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import jag.kumamoto.apps.gotochi.R.layout;
+import aharisu.util.DataGetter;
 import aharisu.widget.ImageCheckBox;
 import aharisu.widget.ImageRadioButton;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -35,6 +38,8 @@ import android.widget.TextView;
  */
 public class QuizActivity extends Activity{
 	
+	private User mUser;
+	
 	private QuizData[] mQuizes;
 	private int mIndex = 0;
 	
@@ -55,6 +60,8 @@ public class QuizActivity extends Activity{
 			finishActivity(Activity.RESULT_CANCELED);
 			return;
 		}
+		
+		mUser = extras.getParcelable(ConstantValue.ExtrasUser);
 		
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);

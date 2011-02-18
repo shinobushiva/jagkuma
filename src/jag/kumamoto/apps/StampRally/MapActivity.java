@@ -10,6 +10,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 import jag.kumamoto.apps.StampRally.Data.StampPin;
+import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
 import aharisu.util.Pair;
@@ -30,10 +31,16 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 	
 	private StampPinOverlay mPinOverlay;
 	private StampPin[] mStampPins;
+	private User mUser;
 	
 	
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Bundle extras = getIntent().getExtras();
+		if(extras != null) {
+			mUser = extras.getParcelable(ConstantValue.ExtrasUser);
+		}
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.map);
@@ -154,6 +161,10 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 				if(pin.type == StampPin.STAMP_TYPE_QUIZ &&
 						isShowGoQuiz(pin))  {
 					intent.putExtra(ConstantValue.ExtrasShowGoQuiz, true);
+				}
+				
+				if(mUser != null) {
+					intent.putExtra(ConstantValue.ExtrasUser, mUser);
 				}
 				
 				startActivity(intent);

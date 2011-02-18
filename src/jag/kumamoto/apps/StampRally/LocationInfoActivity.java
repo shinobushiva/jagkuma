@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import jag.kumamoto.apps.StampRally.Data.QuizData;
 import jag.kumamoto.apps.StampRally.Data.StampPin;
+import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
 import android.app.Activity;
@@ -29,6 +30,8 @@ import android.widget.Button;
  */
 public class LocationInfoActivity extends Activity{
 	
+	private User mUser;
+	
 	private QuizData[] mQuizes;
 	
 	@Override protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,9 @@ public class LocationInfoActivity extends Activity{
 			finishActivity(Activity.RESULT_CANCELED);
 			return;
 		}
+		
+		mUser = extras.getParcelable(ConstantValue.ExtrasUser);
+		
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.location_infomation);
@@ -89,6 +95,11 @@ public class LocationInfoActivity extends Activity{
 				
 				Intent intent = new Intent(LocationInfoActivity.this, QuizActivity.class);
 				intent.putExtra(ConstantValue.ExtrasQuizData, mQuizes);
+				
+				if(mUser != null) {
+					intent.putExtra(ConstantValue.ExtrasUser, mUser);
+				}
+				
 				startActivity(intent);
 			}
 		};

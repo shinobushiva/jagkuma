@@ -93,61 +93,68 @@ public class StampRallyDB extends SQLiteOpenHelper{
 	
 	public static StampPin[] getStampPins() {
 		SQLiteOpenHelper helper = getInstance();
-		SQLiteDatabase db = helper.getReadableDatabase();
-		
-		Cursor cursor = null;
-		try {
-			cursor = db.query(StampLocationTable, 
-					new String[] {
-						StampLocationID,
-						StampLocationLatitude,
-						StampLocationLongitude,
-						StampLocationName,
-						StampLocationIsArrived,
-						StampLocationPoint,
-						StampLocationPrefecturesCode,
-						StampLocationAreaCode,
-						StampLocationType,
-						StampLocationURL,
-				}, null, null, null, null, null);
+		synchronized (helper) {
 			
-			return createStampPinsFromCursor(cursor);
-		} finally {
-			if(cursor != null)
-				cursor.close();
+			SQLiteDatabase db = helper.getReadableDatabase();
 			
-			db.close();
+			Cursor cursor = null;
+			try {
+				cursor = db.query(StampLocationTable, 
+						new String[] {
+							StampLocationID,
+							StampLocationLatitude,
+							StampLocationLongitude,
+							StampLocationName,
+							StampLocationIsArrived,
+							StampLocationPoint,
+							StampLocationPrefecturesCode,
+							StampLocationAreaCode,
+							StampLocationType,
+							StampLocationURL,
+					}, null, null, null, null, null);
+				
+				return createStampPinsFromCursor(cursor);
+			} finally {
+				if(cursor != null)
+					cursor.close();
+				
+				db.close();
+			}
+			
 		}
 	}
 	
 	public static StampPin[] getStampPinsNonArrive() {
 		SQLiteOpenHelper helper = getInstance();
-		SQLiteDatabase db = helper.getReadableDatabase();
-		
-		Cursor cursor = null;
-		try {
-			cursor = db.query(StampLocationTable, 
-					new String[] {
-						StampLocationID,
-						StampLocationLatitude,
-						StampLocationLongitude,
-						StampLocationName,
-						StampLocationIsArrived,
-						StampLocationPoint,
-						StampLocationPrefecturesCode,
-						StampLocationAreaCode,
-						StampLocationType,
-						StampLocationURL,
-				}, 
-				new StringBuilder(StampLocationIsArrived).append(" = 0").toString(),
-				null, null, null, null);
+		synchronized (helper) {
 			
-			return createStampPinsFromCursor(cursor);
-		} finally {
-			if(cursor != null)
-				cursor.close();
+			SQLiteDatabase db = helper.getReadableDatabase();
 			
-			db.close();
+			Cursor cursor = null;
+			try {
+				cursor = db.query(StampLocationTable, 
+						new String[] {
+							StampLocationID,
+							StampLocationLatitude,
+							StampLocationLongitude,
+							StampLocationName,
+							StampLocationIsArrived,
+							StampLocationPoint,
+							StampLocationPrefecturesCode,
+							StampLocationAreaCode,
+							StampLocationType,
+							StampLocationURL,
+					}, 
+					new StringBuilder(StampLocationIsArrived).append(" = 0").toString(),
+					null, null, null, null);
+				
+				return createStampPinsFromCursor(cursor);
+			} finally {
+				if(cursor != null)
+					cursor.close();
+				
+				db.close();
+			}
 		}
 	}
 	
@@ -191,32 +198,37 @@ public class StampRallyDB extends SQLiteOpenHelper{
 		if(pins == null || pins.length == 0)
 			return;
 		
-		SQLiteDatabase db = getInstance().getWritableDatabase();
-		db.beginTransaction();
-		
-		try {
-			ContentValues values = new ContentValues();
-			for(StampPin pin : pins) {
-				values.clear();
+		SQLiteOpenHelper helper = getInstance();
+		synchronized (helper) {
+			
+			SQLiteDatabase db = helper.getWritableDatabase();
+			db.beginTransaction();
+			
+			try {
+				ContentValues values = new ContentValues();
+				for(StampPin pin : pins) {
+					values.clear();
+					
+					values.put(StampLocationID, pin.id);
+					values.put(StampLocationLatitude, pin.latitude);
+					values.put(StampLocationLongitude, pin.longitude);
+					values.put(StampLocationName, pin.name);
+					values.put(StampLocationIsArrived, pin.isArrive);
+					values.put(StampLocationPoint, pin.point);
+					values.put(StampLocationPrefecturesCode, pin.prefCode);
+					values.put(StampLocationAreaCode, pin.areaCode);
+					values.put(StampLocationType, pin.type);
+					values.put(StampLocationURL, pin.url);
+					
+					db.insert(StampLocationTable, null, values);
+				}
 				
-				values.put(StampLocationID, pin.id);
-				values.put(StampLocationLatitude, pin.latitude);
-				values.put(StampLocationLongitude, pin.longitude);
-				values.put(StampLocationName, pin.name);
-				values.put(StampLocationIsArrived, pin.isArrive);
-				values.put(StampLocationPoint, pin.point);
-				values.put(StampLocationPrefecturesCode, pin.prefCode);
-				values.put(StampLocationAreaCode, pin.areaCode);
-				values.put(StampLocationType, pin.type);
-				values.put(StampLocationURL, pin.url);
-				
-				db.insert(StampLocationTable, null, values);
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+				db.close();
 			}
 			
-			db.setTransactionSuccessful();
-		} finally {
-			db.endTransaction();
-			db.close();
 		}
 	}
 	
@@ -224,28 +236,32 @@ public class StampRallyDB extends SQLiteOpenHelper{
 		if(pins == null || pins.length == 0)
 			return;
 		
-		SQLiteDatabase db = getInstance().getWritableDatabase();
-		
-		db.beginTransaction();
-		try {
-			StringBuilder builder = new StringBuilder()
-				.append("delete from ")
-				.append(StampLocationTable)
-				.append(" where ")
-				.append(StampLocationID)
-				.append(" in (")
-				.append(pins[0].id);
-			for(int i = 1;i< pins.length;++i) {
-				builder.append(", ").append(pins[i].id);
+		SQLiteOpenHelper helper = getInstance();
+		synchronized (helper) {
+			
+			SQLiteDatabase db = helper.getWritableDatabase();
+			
+			db.beginTransaction();
+			try {
+				StringBuilder builder = new StringBuilder()
+					.append("delete from ")
+					.append(StampLocationTable)
+					.append(" where ")
+					.append(StampLocationID)
+					.append(" in (")
+					.append(pins[0].id);
+				for(int i = 1;i< pins.length;++i) {
+					builder.append(", ").append(pins[i].id);
+				}
+				builder.append(")");
+				
+				db.execSQL(builder.toString());
+				
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+				db.close();
 			}
-			builder.append(")");
-			
-			db.execSQL(builder.toString());
-			
-			db.setTransactionSuccessful();
-		} finally {
-			db.endTransaction();
-			db.close();
 		}
 	}
 	

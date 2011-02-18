@@ -51,13 +51,15 @@ public class QuizActivity extends Activity{
 		
 		Bundle extras = getIntent().getExtras();
 		if(extras == null) {
-			finishActivity(Activity.RESULT_CANCELED);
+			setResult(Activity.RESULT_CANCELED);
+			finish();
 			return;
 		}
 		
 		mQuizes = getQuizData(extras);
 		if(mQuizes == null) {
-			finishActivity(Activity.RESULT_CANCELED);
+			setResult(Activity.RESULT_CANCELED);
+			finish();
 			return;
 		}
 		
@@ -129,11 +131,16 @@ public class QuizActivity extends Activity{
 				//正解か否か
 				boolean correctness = isCorrectness(isCheckedAry);
 				
-				String loggingQuery = mQuizes[mIndex].createLoggingQueryURL(
-						"test", correctness, duration, isCheckedAry);
-				//TODO　非同期で送信
+				//ユーザ設定が行われていればロギングデータを送信する
+				if(mUser != null) {
+					String loggingQuery = mQuizes[mIndex].createLoggingQueryURL(
+							mUser, correctness, duration, isCheckedAry);
+					Log.i("query", loggingQuery);
+					
+					//非同期で送信
+					asyncSendAnswerLong(loggingQuery);
+				}
 				
-				Log.i("query", loggingQuery);
 				
 				showAnswerDialog(correctness);
 			}
@@ -155,7 +162,23 @@ public class QuizActivity extends Activity{
 		return correctness;
 	}
 	
-	private void showAnswerDialog(boolean correctness) {
+	private void asyncSendAnswerLong(final String query) {
+		new AsyncTask<Void, Void, Boolean>() {
+			
+			@Override protected Boolean doInBackground(Void... params) {
+				return DataGetter.getJSONObject(query) != null;
+			}
+			
+			@Override protected void onPostExecute(Boolean result) {
+				if(!result) {
+					//TODO 送信失敗.どうしよう
+				}
+			}
+			
+		}.execute((Void)null);
+	}
+	
+ 	private void showAnswerDialog(boolean correctness) {
 		AlertDialog.Builder builder =  new AlertDialog.Builder(this)
 			.setMessage(correctness ? "正解!!" : "残念。不正解")
 			.setPositiveButton("戻る", new DialogInterface.OnClickListener() {

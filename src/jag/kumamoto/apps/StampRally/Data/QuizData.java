@@ -77,11 +77,11 @@ public final class QuizData implements Parcelable{
 	}
 
 	
-	public String createLoggingQueryURL(String token, boolean correctness, long answeringTime, 
+	public String createLoggingQueryURL(User user, boolean correctness, long answeringTime, 
 			boolean[] isCheckedAry) {
 		StringBuilder builder = new StringBuilder()
 			.append("http://kumamotogotochi.appspot.com/answer?")
-			.append("token=").append(token)
+			.append("token=").append(user.token)
 			.append("&pinId=").append(this.pinId)
 			.append("&quizId=").append(this.id)
 			.append("&correctness=").append(correctness ? 1 : 0)

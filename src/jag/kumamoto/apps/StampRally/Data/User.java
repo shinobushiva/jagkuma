@@ -7,7 +7,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public final class User implements Parcelable {
-	private static final String QueryURL = "http://kumamotogotochi.appspot.com/registration?";
+	private static final String RegistrationQueryURL = "http://kumamotogotochi.appspot.com/registration?";
+	private static final String ArriveQueryURL = "http://kumamotogotochi.appspot.com/arrive?";
 	
 	public static final int Female = 0;
 	public static final int Male = 1;
@@ -23,8 +24,8 @@ public final class User implements Parcelable {
 		this.nickname = nickname;
 	}
 	
-	public String getQueryURL() {
-		return new StringBuilder(QueryURL)
+	public String getRegistrationQueryURL() {
+		return new StringBuilder(RegistrationQueryURL)
 			.append("token=").append(token)
 			.append("&gender=").append(gender)
 			.append("&nickname=").append(nickname).toString();
@@ -32,6 +33,13 @@ public final class User implements Parcelable {
 	
 	public static boolean isSuccess(JSONObject obj) throws JSONException{
 		return obj.getString("success").equals("true");
+	}
+	
+	public String getArriveQueryURL(StampPin pin) {
+		return new StringBuilder(ArriveQueryURL)
+			.append("token=").append(this.token)
+			.append("&pinId=").append(pin.id)
+			.toString();
 	}
 	
 	/*

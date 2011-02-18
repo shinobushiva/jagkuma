@@ -148,7 +148,7 @@ public class SettingsActivity extends Activity{
 		new AsyncTask<Void, Void, Boolean>() {
 			
 			@Override protected Boolean doInBackground(Void... params) {
-				JSONObject obj = DataGetter.getJSONObject(user.getQueryURL());
+				JSONObject obj = DataGetter.getJSONObject(user.getRegistrationQueryURL());
 				
 				if(obj != null) {
 					try {

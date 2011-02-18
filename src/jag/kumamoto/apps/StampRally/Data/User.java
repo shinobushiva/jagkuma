@@ -8,7 +8,7 @@ import android.os.Parcelable;
 
 public final class User implements Parcelable {
 	private static final String RegistrationQueryURL = "http://kumamotogotochi.appspot.com/registration?";
-	private static final String ArriveQueryURL = "http://kumamotogotochi.appspot.com/arrive?";
+	private static final String PrizesQueryURL = "http://kumamotogotochi.appspot.com/prizes?";
 	
 	public static final int Female = 0;
 	public static final int Male = 1;
@@ -35,11 +35,9 @@ public final class User implements Parcelable {
 		return obj.getString("success").equals("true");
 	}
 	
-	public String getArriveQueryURL(StampPin pin) {
-		return new StringBuilder(ArriveQueryURL)
-			.append("token=").append(this.token)
-			.append("&pinId=").append(pin.id)
-			.toString();
+	public String getPrizesQueryURL() {
+		return new StringBuilder(PrizesQueryURL)
+			.append("token=").append(this.token).toString();
 	}
 	
 	/*

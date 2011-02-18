@@ -18,7 +18,8 @@ import android.os.Parcelable;
  *
  */
 public final class StampPin implements Parcelable{
-	private static final String QueryURL = "http://kumamotogotochi.appspot.com/pins";
+	private static final String GetAllPinQueryURL = "http://kumamotogotochi.appspot.com/pins";
+	private static final String ArriveQueryURL = "http://kumamotogotochi.appspot.com/arrive?";
 	
 	private static final String JsonNamePins = "pins";
 	
@@ -93,9 +94,17 @@ public final class StampPin implements Parcelable{
 		return pins;
 	}
 	
-	public static final String getQueryURL() {
-		return QueryURL;
+	public static final String getGetAllPinQueryURL() {
+		return GetAllPinQueryURL;
 	}
+	
+	public String getArriveQueryURL(User user) {
+		return new StringBuilder(ArriveQueryURL)
+			.append("token=").append(user.token)
+			.append("&pinId=").append(this.id)
+			.toString();
+	}
+	
 		/**
 	 * 
 	 * @param curPins

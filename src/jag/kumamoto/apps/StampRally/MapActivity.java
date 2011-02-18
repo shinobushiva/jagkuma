@@ -92,7 +92,7 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		new AsyncTask<Void, Void, Pair<StampPin[], Pair<StampPin[], StampPin[]>>>() {
 			
 			@Override protected Pair<StampPin[], Pair<StampPin[], StampPin[]>>doInBackground(Void... params) {
-				JSONObject obj = DataGetter.getJSONObject(StampPin.getQueryURL());
+				JSONObject obj = DataGetter.getJSONObject(StampPin.getGetAllPinQueryURL());
 				
 				StampPin[] pins;
 				try {

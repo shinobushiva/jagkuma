@@ -7,8 +7,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public final class User implements Parcelable {
-	private static final String RegistrationQueryURL = "http://kumamotogotochi.appspot.com/registration?";
-	private static final String PrizesQueryURL = "http://kumamotogotochi.appspot.com/prizes?";
+	private static final String RegistrationQueryURL = "http://kumamotogotochi.appspot.com/client/registration?";
+	private static final String PrizesQueryURL = "http://kumamotogotochi.appspot.com/client/prizes?";
 	
 	public static final int Female = 0;
 	public static final int Male = 1;

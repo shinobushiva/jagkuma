@@ -18,8 +18,8 @@ import android.os.Parcelable;
  *
  */
 public final class StampPin implements Parcelable{
-	private static final String GetAllPinQueryURL = "http://kumamotogotochi.appspot.com/pins";
-	private static final String ArriveQueryURL = "http://kumamotogotochi.appspot.com/arrive?";
+	private static final String GetAllPinQueryURL = "http://kumamotogotochi.appspot.com/client/pins";
+	private static final String ArriveQueryURL = "http://kumamotogotochi.appspot.com/client/arrive?";
 	
 	private static final String JsonNamePins = "pins";
 	

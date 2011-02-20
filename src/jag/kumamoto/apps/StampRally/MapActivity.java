@@ -1,5 +1,6 @@
 package jag.kumamoto.apps.StampRally;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -14,9 +15,13 @@ import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
 import aharisu.util.Pair;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.view.Window;
 
 
@@ -32,6 +37,17 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 	private StampPinOverlay mPinOverlay;
 	private StampPin[] mStampPins;
 	private User mUser;
+	
+	private IArriveWatcherService mArriveWatcher;
+	private final ServiceConnection mConnection = new ServiceConnection() {
+		
+		@Override public void onServiceDisconnected(ComponentName name) {
+		}
+		
+		@Override public void onServiceConnected(ComponentName name, IBinder service) {
+			mArriveWatcher = IArriveWatcherService.Stub.asInterface(service);
+		}
+	};
 	
 	
 	@Override protected void onCreate(Bundle savedInstanceState) {
@@ -158,8 +174,10 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 				Intent intent = new Intent(MapActivity.this, LocationInfoActivity.class);
 				intent.putExtra(ConstantValue.ExtrasStampPin, pin);
 				
-				if(pin.type == StampPin.STAMP_TYPE_QUIZ &&
-						isShowGoQuiz(pin))  {
+				boolean isArrived = isShowGoQuiz(pin);
+				intent.putExtra(ConstantValue.ExtrasIsArrive, isArrived);
+				
+				if(pin.type == StampPin.STAMP_TYPE_QUIZ && isArrived) {
 					intent.putExtra(ConstantValue.ExtrasShowGoQuiz, true);
 				}
 				
@@ -174,8 +192,17 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 	
 	
 	private boolean isShowGoQuiz(StampPin pin) {
-		//TODO ここで位置情報を使ってクイズを表示する範囲かどうか確かめる
-		return true;
+		if(mArriveWatcher != null) {
+			try {
+				long[] ids = mArriveWatcher.getArrivedStampPins();
+				
+				return Arrays.binarySearch(ids, pin.id) >= 0;
+			} catch(RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return false;
 	}
 	
 	
@@ -195,10 +222,15 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 	private void startArriveWatcherservice() {
 		Intent intent = new Intent(this, ArriveWatcherService.class);
 		startService(intent);
+		
+		bindService(intent, mConnection, 0);
 	}
 	
 	private void stopArriveWatcherService() {
 		Intent intent = new Intent(this, ArriveWatcherService.class);
+		
+		unbindService(mConnection);
+		
 		stopService(intent);
 	}
 }

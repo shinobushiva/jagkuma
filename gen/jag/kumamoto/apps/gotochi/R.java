@@ -34,11 +34,13 @@ public final class R {
         public static final int settings=0x7f090003;
     }
     public static final class id_location_info {
-        public static final int go_location=0x7f0a0003;
+        public static final int arrive_report=0x7f0a0005;
+        public static final int below_frame=0x7f0a0003;
+        public static final int go_location=0x7f0a0004;
         public static final int go_quiz=0x7f0a0001;
         public static final int go_quiz_frame=0x7f0a0000;
         public static final int progress_frame=0x7f0a0002;
-        public static final int webview=0x7f0a0004;
+        public static final int webview=0x7f0a0006;
     }
     public static final class id_main {
         public static final int btnAmbition=0x7f0b0000;

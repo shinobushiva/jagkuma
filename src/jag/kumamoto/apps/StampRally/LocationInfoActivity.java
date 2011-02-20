@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 /**
@@ -31,7 +32,7 @@ import android.widget.Button;
 public class LocationInfoActivity extends Activity{
 	
 	private User mUser;
-	
+	private StampPin mPin;
 	private QuizData[] mQuizes;
 	
 	@Override protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +45,11 @@ public class LocationInfoActivity extends Activity{
 			return;
 		}
 		
-		StampPin pin = (StampPin)extras.getParcelable(ConstantValue.ExtrasStampPin);
+		mPin = (StampPin)extras.getParcelable(ConstantValue.ExtrasStampPin);
 		boolean isShowGoQuiz = extras.getBoolean(ConstantValue.ExtrasShowGoQuiz, false);
+		boolean isArrive = extras.getBoolean(ConstantValue.ExtrasIsArrive, false);
 		
-		if(pin == null) {
+		if(mPin == null) {
 			setResult(Activity.RESULT_CANCELED);
 			finish();
 			return;
@@ -80,9 +82,20 @@ public class LocationInfoActivity extends Activity{
 			goQuiz.setText(null);
 			goQuiz.setOnClickListener(createGoQuizOnClickListener());
 			
-			getAsyncQuizDataFromServer(pin.id);
+			getAsyncQuizDataFromServer(mPin.id);
 		} else {
 			goQuizFrame.setVisibility(View.GONE);
+		}
+		
+		View btnGoLocation = findViewById(R.id_location_info.go_location);
+		View btnArriveReport = findViewById(R.id_location_info.arrive_report);
+		if(mUser !=null && isArrive) {
+			btnGoLocation.setVisibility(View.GONE);
+			btnArriveReport.setVisibility(View.VISIBLE);
+			btnArriveReport.setOnClickListener(createOnArriveReportClickListener());
+		} else {
+			btnGoLocation.setVisibility(View.VISIBLE);
+			btnArriveReport.setVisibility(View.GONE);
 		}
 		
 	}
@@ -152,4 +165,32 @@ public class LocationInfoActivity extends Activity{
 		goQuiz.setText("クイズへGo!!");
 	}
 	
+	private View.OnClickListener createOnArriveReportClickListener() {
+		return new View.OnClickListener() {
+			
+			@Override public void onClick(View v) {
+				final String query = mPin.getArriveQueryURL(mUser);
+				
+				new AsyncTask<Void, Void, Boolean>() {
+					@Override protected Boolean doInBackground(Void... params) {
+						return DataGetter.getJSONObject(query) != null;
+					}
+					
+					@Override protected void onPostExecute(Boolean result) {
+						if(!result) {
+							//TODO 到着データ送信に失敗
+							//さてどうしよう
+							Log.i("arrive data", "failure");
+						}
+						
+						Toast.makeText(LocationInfoActivity.this, result ?
+								"到着完了!" : "あれ？ネットワークの調子がおかしいぞ",
+								Toast.LENGTH_SHORT).show();
+					}
+					
+				}.execute((Void)null);
+				
+			}
+		};
+	}
 }

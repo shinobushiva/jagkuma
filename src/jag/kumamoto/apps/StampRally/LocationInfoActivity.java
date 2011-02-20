@@ -12,13 +12,16 @@ import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 
@@ -87,15 +90,34 @@ public class LocationInfoActivity extends Activity{
 			goQuizFrame.setVisibility(View.GONE);
 		}
 		
-		View btnGoLocation = findViewById(R.id_location_info.go_location);
+		View goLocation = findViewById(R.id_location_info.go_location_frame);
 		View btnArriveReport = findViewById(R.id_location_info.arrive_report);
-		if(mUser !=null && isArrive) {
-			btnGoLocation.setVisibility(View.GONE);
-			btnArriveReport.setVisibility(View.VISIBLE);
-			btnArriveReport.setOnClickListener(createOnArriveReportClickListener());
+		if(isArrive) {
+			if(mUser == null) {
+				goLocation.setVisibility(View.GONE);
+				btnArriveReport.setVisibility(View.GONE);
+			} else {
+				goLocation.setVisibility(View.GONE);
+				btnArriveReport.setVisibility(View.VISIBLE);
+				btnArriveReport.setOnClickListener(createOnArriveReportClickListener());
+			}
 		} else {
-			btnGoLocation.setVisibility(View.VISIBLE);
+			goLocation.setVisibility(View.VISIBLE);
 			btnArriveReport.setVisibility(View.GONE);
+			
+			findViewById(R.id_location_info.go_location).setOnClickListener(createOnRouteSearachClickListener());
+			
+			Spinner routeSearchKind = (Spinner)findViewById(R.id_location_info.route_search_kind);
+			routeSearchKind.setSelection(StampRallyPreferences.getRouteSearchKind());
+			routeSearchKind.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+				@Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+					StampRallyPreferences.setRouteSearchKind(position);
+				}
+				
+				@Override public void onNothingSelected(AdapterView<?> parent) {
+					parent.setSelection(0);
+				}
+			});
 		}
 		
 	}
@@ -156,13 +178,34 @@ public class LocationInfoActivity extends Activity{
 		if(mQuizes == null) {
 			//TODO クイズデータの取得に失敗した
 			//エラー表示
-			Log.e("quizData" , "get falure");
+			Log.e("quizData" , "get failure");
 			return;
 		}
 		
 		Button goQuiz = (Button)findViewById(R.id_location_info.go_quiz);
 		goQuiz.setEnabled(true);
 		goQuiz.setText("クイズへGo!!");
+	}
+	
+	private View.OnClickListener createOnRouteSearachClickListener() {
+		return new View.OnClickListener() {
+			
+			@Override public void onClick(View v) {
+				
+				long id = ((Spinner)findViewById(R.id_location_info.route_search_kind)).getSelectedItemId();
+				String[] routeSearchKind = new String[] {"d", "r", "w"};
+				
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+				String uri = new StringBuilder("http://maps.google.com/maps?myl=saddr")
+					.append("&dirflg=").append(routeSearchKind[(int) (id < 3 ? id : 0)])
+					.append("&daddr=").append(mPin.latitude * 1e-6f).append(",").append(mPin.longitude * 1e-6f)
+					.toString();
+				
+				intent.setData(Uri.parse(uri));
+				startActivity(intent);
+			}
+		};
 	}
 	
 	private View.OnClickListener createOnArriveReportClickListener() {

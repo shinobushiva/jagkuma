@@ -51,13 +51,32 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
 		>
-		<Button
-			android:id="@+id_location_info/go_location"
+		
+		<LinearLayout
+			android:id="@+id_location_info/go_location_frame"
 			android:layout_width="fill_parent"
 			android:layout_height="60dip"
-			android:text="ここへ行く"
-			/>
+			android:weightSum="10.0"
+			android:orientation="horizontal"
+			>
+			<Spinner
+				android:id="@+id_location_info/route_search_kind"
+				android:layout_width="0dip"
+				android:layout_height="60dip"
+				android:layout_weight="6.0"
+				android:prompt="@string/RouteSearchKindPrompt"
+				android:entries="@array/RouteSearchKind"
+				/>
+			<Button
+				android:id="@+id_location_info/go_location"
+				android:layout_width="0dip"
+				android:layout_height="60dip"
+				android:layout_weight="4.0"
+				android:text="ここへ行く"
+				/>
+		</LinearLayout>		
 			
+		
 		<Button 
 			android:id="@+id_location_info/arrive_report"
 			android:layout_width="fill_parent"

@@ -64,9 +64,9 @@ public final class StampPin implements Parcelable{
 		this.point = point;
 		this.prefCode = prefCode;
 		this.areaCode = areaCode;
-		this.type = type;
+		this.type = id == 1 ? STAMP_TYPE_NONE : type;
 		this.url = url;
-		this.isArrive = isArrive;
+		this.isArrive = id == 1 ? true :  isArrive;
 	}
 	
 	

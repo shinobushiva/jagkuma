@@ -10,5 +10,11 @@
 <string name="device_cap_network_disable">・ネットワーク接続がありません</string>
 <string name="device_cap_gps_disable">・GPSが無効になっています</string>
 <string name="device_cap_location_disable">・位置情報を取得できません</string>
+<string-array name="RouteSearchKind">
+    <item>車</item>
+    <item>公共交通機関</item>
+    <item>徒歩</item>
+</string-array>
+<string name="RouteSearchKindPrompt">移動手段</string>
 
 </resources>

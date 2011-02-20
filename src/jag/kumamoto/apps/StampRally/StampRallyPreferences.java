@@ -113,4 +113,22 @@ public final class StampRallyPreferences {
 	}
 	
 	
+	private static final String PreferenceRouteSearchKind = "route-search-kind";
+	public static int getRouteSearchKind() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		return pref.getInt(PreferenceRouteSearchKind, 0);
+	}
+	
+	public static void setRouteSearchKind(int kind) {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putInt(PreferenceRouteSearchKind, kind);
+		editor.commit();
+	}
+	
+	
 }

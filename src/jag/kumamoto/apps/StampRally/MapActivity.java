@@ -11,6 +11,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 import jag.kumamoto.apps.StampRally.Data.StampPin;
+import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
@@ -115,7 +116,7 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		new AsyncTask<Void, Void, Pair<StampPin[], Pair<StampPin[], StampPin[]>>>() {
 			
 			@Override protected Pair<StampPin[], Pair<StampPin[], StampPin[]>>doInBackground(Void... params) {
-				JSONObject obj = DataGetter.getJSONObject(StampPin.getGetAllPinQueryURL());
+				JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getGetAllPinQuery());
 				
 				StampPin[] pins;
 				try {

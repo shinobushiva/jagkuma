@@ -7,9 +7,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public final class User implements Parcelable {
-	private static final String RegistrationQueryURL = "http://kumamotogotochi.appspot.com/client/registration?";
-	private static final String PrizesQueryURL = "http://kumamotogotochi.appspot.com/client/prizes?";
-	
 	public static final int Female = 0;
 	public static final int Male = 1;
 	public static final int Unknown = 2;
@@ -24,21 +21,10 @@ public final class User implements Parcelable {
 		this.nickname = nickname;
 	}
 	
-	public String getRegistrationQueryURL() {
-		return new StringBuilder(RegistrationQueryURL)
-			.append("token=").append(token)
-			.append("&gender=").append(gender)
-			.append("&nickname=").append(nickname).toString();
-	}
-	
 	public static boolean isSuccess(JSONObject obj) throws JSONException{
 		return obj.getString("success").equals("true");
 	}
 	
-	public String getPrizesQueryURL() {
-		return new StringBuilder(PrizesQueryURL)
-			.append("token=").append(this.token).toString();
-	}
 	
 	/*
 	 * 以降 Parcelableクラスの実装

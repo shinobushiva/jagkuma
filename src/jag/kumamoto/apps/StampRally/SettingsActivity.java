@@ -3,6 +3,7 @@ package jag.kumamoto.apps.StampRally;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
@@ -171,7 +172,7 @@ public class SettingsActivity extends Activity{
 		new AsyncTask<Void, Void, Boolean>() {
 			
 			@Override protected Boolean doInBackground(Void... params) {
-				JSONObject obj = DataGetter.getJSONObject(user.getRegistrationQueryURL());
+				JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getRegistrationQuery(user));
 				
 				if(obj != null) {
 					try {

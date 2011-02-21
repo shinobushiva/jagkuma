@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import jag.kumamoto.apps.StampRally.Data.QuizData;
 import jag.kumamoto.apps.StampRally.Data.StampPin;
+import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
@@ -85,7 +86,7 @@ public class LocationInfoActivity extends Activity{
 			goQuiz.setText(null);
 			goQuiz.setOnClickListener(createGoQuizOnClickListener());
 			
-			getAsyncQuizDataFromServer(mPin.id);
+			getAsyncQuizDataFromServer(mPin);
 		} else {
 			goQuizFrame.setVisibility(View.GONE);
 		}
@@ -142,12 +143,12 @@ public class LocationInfoActivity extends Activity{
 		};
 	}
 
-	private void getAsyncQuizDataFromServer(final long id) {
+	private void getAsyncQuizDataFromServer(final StampPin pin) {
 		new AsyncTask<Void, Void, QuizData[]>() {
 			
 			@Override protected QuizData[] doInBackground(Void... params) {
 				
-				JSONObject obj = DataGetter.getJSONObject(QuizData.getQueryURL(id));
+				JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getQuizesQuery(pin));
 				
 				QuizData[] quizes = null;
 				if(obj != null) {
@@ -212,7 +213,7 @@ public class LocationInfoActivity extends Activity{
 		return new View.OnClickListener() {
 			
 			@Override public void onClick(View v) {
-				final String query = mPin.getArriveQueryURL(mUser);
+				final String query = StampRallyURL.getArriveQuery(mUser, mPin);
 				
 				new AsyncTask<Void, Void, Boolean>() {
 					@Override protected Boolean doInBackground(Void... params) {

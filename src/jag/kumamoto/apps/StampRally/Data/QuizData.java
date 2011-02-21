@@ -15,9 +15,6 @@ import android.os.Parcelable;
  *
  */
 public final class QuizData implements Parcelable{
-	private static final String GetQuizesQueryURL = "http://kumamotogotochi.appspot.com/client/quizes?pinId=";
-	private static final String AnswerQueryURL = "http://kumamotogotochi.appspot.com/client/answer?";
-	
 	private static final String JsonNameQuizes = "quizes";
 	private static final String JsonNameKey = "key";
 	private static final String JsonNameID = "id";
@@ -72,30 +69,7 @@ public final class QuizData implements Parcelable{
 		
 		return quizes;
 	}
-	
-	public static String getQueryURL(long pinId) {
-		return new StringBuilder(GetQuizesQueryURL).append(pinId).toString();
-	}
 
-	
-	public String createLoggingQueryURL(User user, boolean correctness, long answeringTime, 
-			boolean[] isCheckedAry) {
-		StringBuilder builder = new StringBuilder()
-			.append(AnswerQueryURL)
-			.append("token=").append(user.token)
-			.append("&pinId=").append(this.pinId)
-			.append("&quizId=").append(this.id)
-			.append("&correctness=").append(correctness ? 1 : 0)
-			.append("&answeringTime=").append(answeringTime);
-		
-		for(int i = 0;i < isCheckedAry.length;++i) {
-			if(isCheckedAry[i]) {
-				builder.append("&optionIdArray=").append(choices.getChoice(i).id);
-			}
-		}
-		
-		return builder.toString();
-	}
 	
 	/*
 	 * 以降 Parcelableクラスの実装

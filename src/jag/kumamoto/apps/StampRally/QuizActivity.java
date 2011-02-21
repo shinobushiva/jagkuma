@@ -5,6 +5,7 @@ import java.util.Comparator;
 
 import jag.kumamoto.apps.StampRally.Data.QuizChoices;
 import jag.kumamoto.apps.StampRally.Data.QuizData;
+import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import jag.kumamoto.apps.gotochi.R.layout;
@@ -133,8 +134,9 @@ public class QuizActivity extends Activity{
 				
 				//ユーザ設定が行われていればロギングデータを送信する
 				if(mUser != null) {
-					String loggingQuery = mQuizes[mIndex].createLoggingQueryURL(
-							mUser, correctness, duration, isCheckedAry);
+					String loggingQuery = StampRallyURL.getLoggingQuery(
+							mUser, mQuizes[mIndex],
+							correctness, duration, isCheckedAry);
 					Log.i("query", loggingQuery);
 					
 					//非同期で送信

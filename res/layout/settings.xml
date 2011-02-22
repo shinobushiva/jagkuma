@@ -47,34 +47,6 @@
 			android:layout_marginRight="10dip"
 			android:orientation="vertical"
 			>
-			<!--
-			<TextView
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="15dip"
-				android:text="・パスワード"
-				android:textSize="20sp"
-				android:focusable="true"
-				/>
-
-			<EditText
-				android:id="@+id_settings/password"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:singleLine="true"
-				android:hint="パスワードを入力"
-				android:textSize="20sp"
-				/>
-
-			<CheckBox
-				android:id="@+id_settings/visible_password"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="right"
-				android:text="パスワードを表示する"
-				/>
-			 -->
-
 			<TextView
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"

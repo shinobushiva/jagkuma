@@ -9,8 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
-import jag.kumamoto.apps.StampRally.Data.User;
-import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -59,18 +57,7 @@ public class SettingsActivity extends Activity{
 		}
 
 
-		//boolean visiblePassword = StampRallyPreferences.getVisiblePassword();
-
 		TextWatcher watcher = createEditTextWatcher();
-
-
-		//パスワード入力を設定
-		//final EditText password = (EditText)findViewById(R.id_settings.password);
-		//password.addTextChangedListener(watcher);
-		//password.setInputType(InputType.TYPE_CLASS_TEXT |
-		//		(visiblePassword ?
-		//				InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD :
-		//				InputType.TYPE_TEXT_VARIATION_PASSWORD));
 
 
 		//ニックネーム入力を設定
@@ -80,35 +67,12 @@ public class SettingsActivity extends Activity{
 
 		//すでに入力済みのユーザデータがあれば初期値として設定
 		if(mUser != null) {
-			//password.setText(mUser.token);
-
 			nickname.setText(mUser.nickname);
 			((RadioGroup)findViewById(R.id_settings.gender_frame)).check(
 					mUser.gender == User.Female ? R.id_settings.gender_female :
 					mUser.gender == User.Male ? R.id_settings.gender_male :
 					R.id_settings.gender_unknown);
 		}
-
-
-		//パスワードの文字列を表示するか否かのチェックボックス設定
-		//CheckBox cbxVisiblePassword = (CheckBox)findViewById(R.id_settings.visible_password);
-		//cbxVisiblePassword.setChecked(visiblePassword);
-		//cbxVisiblePassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//
-//			@Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//
-//				//パスワードの可視・非可視を切り替える
-//				int start = password.getSelectionStart();
-//				int end = password.getSelectionEnd();
-//				password.setInputType(InputType.TYPE_CLASS_TEXT |
-//						(isChecked ?
-//								InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD :
-//								InputType.TYPE_TEXT_VARIATION_PASSWORD));
-//				password.setSelection(start, end);
-//
-//				StampRallyPreferences.setVisiblePassword(isChecked);
-//			}
-//		});
 
 
 		//OKボタンの設定
@@ -133,11 +97,10 @@ public class SettingsActivity extends Activity{
 	private TextWatcher createEditTextWatcher() {
 		return new TextWatcher() {
 			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-				//EditText password = (EditText)findViewById(R.id_settings.password);
 				EditText nickname = (EditText)findViewById(R.id_settings.nickname);
 
-				//入力欄両方とも空白でなければOKボタンを有効にする
-				boolean enabled = nickname.getText().length() != 0;//password.getText().length() != 0 && nickname.getText().length() != 0;
+				//入力欄が空白でなければOKボタンを有効にする
+				boolean enabled = nickname.getText().length() != 0;
 				findViewById(R.id_settings.above_ok).setEnabled(enabled);
 				findViewById(R.id_settings.below_ok).setEnabled(enabled);
 			}
@@ -153,7 +116,6 @@ public class SettingsActivity extends Activity{
 	private View.OnClickListener createOKOnClickListener() {
 		return new View.OnClickListener() {
 			@Override public void onClick(View v) {
-//				String token = ((EditText)findViewById(R.id_settings.password)).getText().toString();
 				String token = "test";
 				String[] ret = getGoogleAccounts();
 				if(ret != null && ret[0] != null) token = ret[0];//ざっくり、初期activationしているアカウントを使用してみる。。

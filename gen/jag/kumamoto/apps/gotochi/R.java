@@ -63,14 +63,12 @@ public final class R {
     }
     public static final class id_settings {
         public static final int above_ok=0x7f0f0000;
-        public static final int below_ok=0x7f0f0008;
-        public static final int gender_female=0x7f0f0006;
-        public static final int gender_frame=0x7f0f0004;
-        public static final int gender_male=0x7f0f0007;
-        public static final int gender_unknown=0x7f0f0005;
-        public static final int nickname=0x7f0f0003;
-        public static final int password=0x7f0f0001;
-        public static final int visible_password=0x7f0f0002;
+        public static final int below_ok=0x7f0f0006;
+        public static final int gender_female=0x7f0f0004;
+        public static final int gender_frame=0x7f0f0002;
+        public static final int gender_male=0x7f0f0005;
+        public static final int gender_unknown=0x7f0f0003;
+        public static final int nickname=0x7f0f0001;
     }
     public static final class layout {
         public static final int collections=0x7f030000;

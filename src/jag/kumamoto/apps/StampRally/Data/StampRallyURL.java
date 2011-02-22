@@ -32,7 +32,7 @@ public final class StampRallyURL {
 	 * @return
 	 */
 	public static String getQuizesQuery(StampPin pin) {
-		return new StringBuilder(StampRallyHostURL).append("quizes?")
+		return new StringBuilder(StampRallyHostURL).append("/quizes?")
 			.append(AppTokenParamName).append("=").append(AppTokenKey)
 			.append("&pinId=").append(pin)
 			.toString();

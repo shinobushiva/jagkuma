@@ -87,9 +87,10 @@ public final class R {
     }
     public static final class raw {
         public static final int help=0x7f040000;
-        public static final int kumamon=0x7f040001;
-        public static final int test_location_info=0x7f040002;
-        public static final int test_quiz=0x7f040003;
+        public static final int koke=0x7f040001;
+        public static final int kumamon=0x7f040002;
+        public static final int test_location_info=0x7f040003;
+        public static final int test_quiz=0x7f040004;
     }
     public static final class string {
         public static final int RouteSearchKindPrompt=0x7f05000a;

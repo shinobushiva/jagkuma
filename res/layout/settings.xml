@@ -9,7 +9,7 @@
 	android:paddingBottom="8dip"
 	android:orientation="vertical"
 	>
-	
+
 	<Button
 		android:id="@+id_settings/above_ok"
 		android:layout_width="fill_parent"
@@ -22,7 +22,7 @@
 		android:text="OK"
 		android:textSize="18sp"
 		/>
-	
+
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -32,49 +32,21 @@
 		android:text="以下の項目を入力してください＊"
 		android:textSize="18sp"
 		/>
-			
-		
-	
-	<ScrollView 
+
+
+
+	<ScrollView
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:fillViewport="true"
 		>
-		
+
 		<LinearLayout
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:layout_marginRight="10dip"
 			android:orientation="vertical"
 			>
-			
-			<TextView
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="15dip"
-				android:text="・パスワード"
-				android:textSize="20sp"
-				android:focusable="true"
-				/>
-				
-			<EditText
-				android:id="@+id_settings/password"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:singleLine="true"
-				android:hint="パスワードを入力"
-				android:textSize="20sp"
-				/>
-				
-			<CheckBox
-				android:id="@+id_settings/visible_password"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="right"
-				android:text="パスワードを表示する"
-				/>
-				
-				
 			<TextView
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
@@ -82,7 +54,7 @@
 				android:text="・ニックネーム"
 				android:textSize="20sp"
 				/>
-				
+
 			<EditText
 				android:id="@+id_settings/nickname"
 				android:layout_width="fill_parent"
@@ -91,8 +63,8 @@
 				android:hint="ニックネームを入力"
 				android:textSize="20sp"
 				/>
-				
-				
+
+
 			<TextView
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
@@ -100,7 +72,7 @@
 				android:text="・性別"
 				android:textSize="20sp"
 				/>
-				
+
 			<RadioGroup
 				android:id="@+id_settings/gender_frame"
 				android:layout_width="fill_parent"
@@ -131,7 +103,7 @@
 					android:textSize="20sp"
 					/>
 			</RadioGroup>
-			
+
 			<Button
 				android:id="@+id_settings/below_ok"
 				android:layout_width="fill_parent"
@@ -142,8 +114,8 @@
 				android:text="OK"
 				android:textSize="18sp"
 				/>
-			
+
 		</LinearLayout>
-		
-	</ScrollView>	
+
+	</ScrollView>
 </LinearLayout>

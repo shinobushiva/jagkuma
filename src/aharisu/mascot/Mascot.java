@@ -282,11 +282,11 @@ public final class Mascot implements IMascot{
 	}
 	
 	@Override public int getViewHeight() {
-		return mView.getWidth();
+		return mView.getHeight();
 	}
 	
 	@Override public int getViewWidth() {
-		return mView.getHeight();
+		return mView.getWidth();
 	}
 	
 	@Override public void redraw(int left, int top, int right, int bottom) {

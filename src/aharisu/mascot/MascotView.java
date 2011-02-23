@@ -57,7 +57,7 @@ public class MascotView extends FrameLayout {
 					ImageUtill.loadImage(res.openRawResource(R.raw.kumamon), 1024, 1024)));
 			
 			//ダブルタップのときのこけるアニメーション
-			StateRepetition falling = new StateRepetition(mMascot, Mascot.ActionType.DoubleTap, 
+			StateRepetition falling = new StateRepetition(mMascot, UserInteractionState.Type.DoubleTap, 
 					ImageUtill.loadImage(res.openRawResource(R.raw.koke), 1024, 1024) , 3);
 			//一つ導入画像がある
 			falling.setNumHeaderFrame(1);

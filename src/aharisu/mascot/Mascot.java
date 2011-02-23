@@ -22,13 +22,6 @@ import android.util.Log;
  *
  */
 public final class Mascot implements IMascot{
-	public enum ActionType {
-		LongPress,
-		SingleTap,
-		DoubleTap,
-		Scroll,
-		Fling,
-	};
 	
 	public enum Level {
 		High(2),
@@ -179,15 +172,15 @@ public final class Mascot implements IMascot{
 	}
 	
 	public void onLongPress() {
-		onUserInteraction(ActionType.LongPress);
+		onUserInteraction(UserInteractionState.Type.LongPress);
 	}
 	
 	public void onSingleTap() {
-		onUserInteraction(ActionType.SingleTap);
+		onUserInteraction(UserInteractionState.Type.SingleTap);
 	}
 	
 	public void onDoubleTap() {
-		onUserInteraction(ActionType.DoubleTap);
+		onUserInteraction(UserInteractionState.Type.DoubleTap);
 	}
 	
 	public void onScroll(float distanceX, float distanceY) {
@@ -214,7 +207,7 @@ public final class Mascot implements IMascot{
 		stateChange();
 	}
 	
-	private void onUserInteraction(ActionType action) {
+	private void onUserInteraction(UserInteractionState.Type action) {
 		synchronized (mSyncUpdateObj) {
 			if(!mCurState.isAllowInterrupt()) {
 				return;
@@ -234,7 +227,7 @@ public final class Mascot implements IMascot{
 		}
 	}
 	
-	private UserInteractionState getUserInteractionState(ActionType action) {
+	private UserInteractionState getUserInteractionState(UserInteractionState.Type action) {
 		int max = 0;
 		
 		int[] priority = new int[] {1, 3, 7};

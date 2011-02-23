@@ -10,12 +10,19 @@ import android.graphics.Bitmap;
  *
  */
 public abstract class UserInteractionState extends MascotState{
+	public static enum Type{
+		LongPress,
+		SingleTap,
+		DoubleTap,
+		Scroll,
+		Fling,
+	}
 	
-	private final Mascot.ActionType mActionType;
+	private final Type mActionType;
 	private final Bitmap[] mImages;
 	
 	
-	public UserInteractionState(IMascot mascot, Mascot.ActionType actionType, 
+	public UserInteractionState(IMascot mascot, Type actionType, 
 			Bitmap image, int numSplit) {
 		super(mascot);
 		
@@ -26,7 +33,7 @@ public abstract class UserInteractionState extends MascotState{
 		splitImage(image, mImages, numSplit);
 	}
 	
-	public Mascot.ActionType getActionType() {
+	public Type getActionType() {
 		return mActionType;
 	}
 	

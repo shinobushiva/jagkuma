@@ -3,7 +3,6 @@ package aharisu.mascot;
 import java.util.Random;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 
 /**
@@ -54,32 +53,7 @@ public class StateRandomWalk extends MascotState{
 		super(mascot);
 		
 		mImages = new Bitmap[3*4];
-		splitImage(image);
-	}
-	
-	private void splitImage(Bitmap image) {
-		int width = image.getWidth() / 3;
-		int height = image.getHeight() / 4;
-		
-		Rect srcRect = new Rect();
-		Rect destRect = new Rect(0, 0, width, height);
-		for(int y = 0;y < 4;++y) {
-			srcRect.top = y * height;
-			srcRect.bottom = srcRect.top + height;
-			
-			for(int x = 0;x < 3;++x) {
-			
-				Bitmap img = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
-				Canvas canvas = new Canvas(img);
-				
-				srcRect.left = x * width;
-				srcRect.right = srcRect.left + width;
-				
-				canvas.drawBitmap(image, srcRect, destRect, null);
-				
-				this.mImages[y*3+x] = img;
-			}
-		}
+		splitImage(image, mImages, 3, 4);
 	}
 	
 	@Override public void entry(Rect bounds) {

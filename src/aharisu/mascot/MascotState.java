@@ -75,4 +75,33 @@ public abstract class MascotState {
 		bounds.bottom = bounds.top + height;
 	}
 	
+	protected final void splitImage(Bitmap image, Bitmap[] outImages, int vCount, int hCount) {
+		int width = image.getWidth() / vCount;
+		int height = image.getHeight() / hCount;
+		
+		Rect srcRect = new Rect();
+		Rect destRect = new Rect(0, 0, width, height);
+		for(int y = 0;y < hCount;++y) {
+			srcRect.top = y * height;
+			srcRect.bottom = srcRect.top + height;
+			
+			for(int x = 0;x < vCount;++x) {
+			
+				Bitmap img = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
+				Canvas canvas = new Canvas(img);
+				
+				srcRect.left = x * width;
+				srcRect.right = srcRect.left + width;
+				
+				canvas.drawBitmap(image, srcRect, destRect, null);
+				
+				outImages[y*vCount+x] = img;
+			}
+		}
+	}
+	
+	protected final void splitImage(Bitmap image, Bitmap[] outImages, int numSplit) {
+		splitImage(image, outImages, numSplit, 1);
+	}
+	
 }

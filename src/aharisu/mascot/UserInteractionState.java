@@ -1,8 +1,6 @@
 package aharisu.mascot;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 
 /**
  * 
@@ -25,26 +23,7 @@ public abstract class UserInteractionState extends MascotState{
 		
 		mImages = new Bitmap[numSplit];
 		
-		splitSingleLineImage(image, numSplit);
-	}
-	
-	private void splitSingleLineImage(Bitmap image, int numSplit) {
-		int width = image.getWidth() / numSplit;
-		int height = image.getHeight();
-		
-		Rect srcRect = new Rect(0, 0, 0, height);
-		Rect destRect = new Rect(0, 0, width, height);
-		for(int i = 0;i < numSplit;++i) {
-			Bitmap img = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
-			Canvas canvas = new Canvas(img);
-			
-			srcRect.left = width * i;
-			srcRect.right = srcRect.left + width;
-			
-			canvas.drawBitmap(image, srcRect, destRect, null);
-			
-			this.mImages[i] = img;
-		}
+		splitImage(image, mImages, numSplit);
 	}
 	
 	public Mascot.ActionType getActionType() {

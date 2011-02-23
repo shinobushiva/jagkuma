@@ -273,5 +273,13 @@ public final class Mascot implements IMascot{
 			mUpdate.run();
 		}
 	}
+	
+	@Override public void showText(String text, Rect mascotBounds) {
+		mView.showText(text, mascotBounds);
+	}
+	
+	@Override public void hideText() {
+		mView.hideText();
+	}
 
 }

@@ -1,5 +1,7 @@
 package aharisu.mascot;
 
+import android.graphics.Rect;
+
 /**
  * 
  * ステートクラスからマスコットクラスのメソッドを呼ぶためのインタフェース
@@ -12,4 +14,6 @@ public interface IMascot {
 	public int getViewWidth();
 	public int getViewHeight();
 	public void stateChange();
+	public void showText(String text, Rect mascotBounds);
+	public void hideText();
 }

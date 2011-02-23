@@ -2,13 +2,16 @@ package aharisu.mascot;
 
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 
+import aharisu.mascot.MascotEvent.Type;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 
 
 /**
@@ -41,10 +44,13 @@ public final class Mascot implements IMascot{
 	
 	
 	private final Handler mHandler = new Handler();
-	private final View mView;
+	private final MascotView.ShowMascotView mView;
+	
+	private final Queue<MascotEvent> mEventQueue = new LinkedList<MascotEvent>();
 	
 	private final ArrayList<MascotState> mBasicStateList = new ArrayList<MascotState>();
 	private final ArrayList<UserInteractionState> mInteractionStateList = new ArrayList<UserInteractionState>();
+	private final StateSpeak mSpeakState = new StateSpeak(this);
 	
 	private MascotState mCurState;
 	
@@ -62,11 +68,23 @@ public final class Mascot implements IMascot{
 					return;
 				}
 				
-				if(mStateChange || isExist(mCurState)) {
-					//今の状態と次の状態が同じ場合もある
-					//その場合は何も起きない
+				if(mStateChange) {
+					mStateChange = false;
 					transition(getNextState());
+				} else if(mCurState.isAllowInterrupt()) {
+					MascotEvent event = mEventQueue.poll();
+					if(event != null) {
+						if(event.type == Type.Text && mSpeakState.isEnable()) {
+							mSpeakState.setText(event.text);
+							forceTransition(mSpeakState);
+						}
+					} else if(mStateChange || isExist(mCurState)) {
+						//今の状態と次の状態が同じ場合もある
+						//その場合は何も起きない
+						transition(getNextState());
+					}
 				}
+				
 				
 				if(mCurState.update()) {
 					mHandler.postDelayed(mUpdate, mCurState.getUpdateInterval());
@@ -108,8 +126,12 @@ public final class Mascot implements IMascot{
 	
 	private boolean mIsStarted = false;
 	
-	public Mascot(View view) {
+	public Mascot(MascotView.ShowMascotView view) {
 		this.mView = view;
+	}
+	
+	public void addEvent(MascotEvent event) {
+		mEventQueue.offer(event);
 	}
 	
 	public void addBasicState(MascotState state) {
@@ -118,6 +140,10 @@ public final class Mascot implements IMascot{
 	
 	public void addUserInteractionState(UserInteractionState state) {
 		mInteractionStateList.add(state);
+	}
+	
+	public void setSpeakStateImage(Bitmap image) {
+		mSpeakState.setImage(image);
 	}
 	
 	public void draw(Canvas canvas) {
@@ -236,21 +262,24 @@ public final class Mascot implements IMascot{
 	
 	private void transition(MascotState nextState) {
 		if(mCurState != nextState) {
-			Rect bounds = new Rect();
-			mCurState.getBounds(bounds);
-			
-			mCurState.exist();
-			
-			mCurState = nextState;
-			
-			Rect entryBounds =  new Rect(bounds);
-			mCurState.entry(entryBounds);
-			
-			//前の状態の領域を消去
-			mView.invalidate(bounds);
+			forceTransition(nextState);
 		}
 	}
 	
+	private void forceTransition(MascotState nextState) {
+		Rect bounds = new Rect();
+		mCurState.getBounds(bounds);
+		
+		mCurState.exist();
+		
+		mCurState = nextState;
+		
+		Rect entryBounds =  new Rect(bounds);
+		mCurState.entry(entryBounds);
+		
+		//前の状態の領域を消去
+		mView.redraw(bounds.left, bounds.top, bounds.right, bounds.bottom);
+	}
 	
 	@Override public int getViewHeight() {
 		return mView.getWidth();

@@ -260,8 +260,8 @@ public final class Mascot implements IMascot{
 		return mView.getHeight();
 	}
 	
-	@Override public void invalidate(int left, int top, int right, int bottom) {
-		mView.invalidate(left, top, right, bottom);
+	@Override public void redraw(int left, int top, int right, int bottom) {
+		mView.redraw(left, top, right, bottom);
 	}
 	
 	@Override public void stateChange() {

@@ -112,7 +112,7 @@ public class StateRepetition extends UserInteractionState{
 			//再描画
 			Bitmap img = getImageAt(mImageIndex);
 			
-			mMascot.invalidate(mCurX, mCurY, mCurX + img.getWidth(), mCurY + img.getHeight());
+			mMascot.redraw(mCurX, mCurY, mCurX + img.getWidth(), mCurY + img.getHeight());
 			
 			return true;
 		}

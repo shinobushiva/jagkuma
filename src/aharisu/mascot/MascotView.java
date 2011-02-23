@@ -161,6 +161,11 @@ public class MascotView extends FrameLayout {
 			MascotView.this.hideText();
 		}
 		
+		void redraw(int left, int top, int right, int bottom) {
+			this.invalidate(left, top, right, bottom);
+			MascotView.this.mLayout.invalidate();
+		}
+		
 		/*
 		 * MascotViewクラスから呼ばれるためのメソッド
 		 */

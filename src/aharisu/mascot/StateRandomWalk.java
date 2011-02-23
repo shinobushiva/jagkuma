@@ -146,10 +146,10 @@ public class StateRandomWalk extends MascotState{
 				
 				mCurImage = mImages[mDirection +  mState];
 				//再描画
-				mMascot.invalidate(left, top, right, bottom);
+				mMascot.redraw(left, top, right, bottom);
 			} else {
 				mCurImage = mImages[mDirection +  mState];
-				mMascot.invalidate(mCurX, mCurY, mCurX + imgWidth, mCurY + imgHeight);
+				mMascot.redraw(mCurX, mCurY, mCurX + imgWidth, mCurY + imgHeight);
 			}
 			
 		}

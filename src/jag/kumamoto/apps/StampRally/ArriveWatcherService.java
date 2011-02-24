@@ -247,7 +247,7 @@ public class ArriveWatcherService extends Service{
 				for(int j = 0;j < newerSize;++j) {
 					if(cur.get(i).equals(newer.get(j))) {
 						curFlag[i] = true;
-						newerFlag[i] = true;
+						newerFlag[j] = true;
 						break;
 					}
 				}

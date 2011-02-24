@@ -67,6 +67,28 @@ public class MascotView extends FrameLayout {
 			
 			//テキスト表示状態用の画像を設定
 			mMascot.setSpeakStateImage(ImageUtill.loadImage(res.openRawResource(R.raw.speak), 1024, 1024));
+			
+			//入浴中状態を設定	
+			StateTimeZoneRepetition bathing = new StateTimeZoneRepetition(mMascot, TimeZoneState.Type.Evening,
+					ImageUtill.loadImage(res.openRawResource(R.raw.ofuro), 1024, 1024), 2,
+					Mascot.Level.Middle, Mascot.Level.Low);
+			bathing.setNumRepetition(-1);
+			mMascot.addTimeZoneState(bathing);
+			//昼・夜は入浴状態に移る確率は低い
+			mMascot.addTimeZoneState(bathing.copySharedImages(TimeZoneState.Type.Daytime,
+					Mascot.Level.Low, Mascot.Level.Middle));
+			mMascot.addTimeZoneState(bathing.copySharedImages(TimeZoneState.Type.Night,
+					Mascot.Level.Low, Mascot.Level.Low));
+			
+			//睡眠状態を設定
+			StateTimeZoneRepetition sleeping = new StateTimeZoneRepetition(mMascot, TimeZoneState.Type.Night,
+					ImageUtill.loadImage(res.openRawResource(R.raw.sleeping), 1024, 1024), 3,
+					Mascot.Level.Middle, Mascot.Level.Low);
+			sleeping.setNumRepetition(-1);
+			mMascot.addTimeZoneState(sleeping);
+			//昼は睡眠状態に移る確率は低い
+			mMascot.addTimeZoneState(sleeping.copySharedImages(TimeZoneState.Type.Daytime,
+					Mascot.Level.Low, Mascot.Level.Middle));
 		}
 		
 		

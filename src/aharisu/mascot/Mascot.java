@@ -2,6 +2,7 @@ package aharisu.mascot;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
@@ -43,6 +44,7 @@ public final class Mascot implements IMascot{
 	
 	private final ArrayList<MascotState> mBasicStateList = new ArrayList<MascotState>();
 	private final ArrayList<UserInteractionState> mInteractionStateList = new ArrayList<UserInteractionState>();
+	private final ArrayList<TimeZoneState> mTimeZoneStateList = new ArrayList<TimeZoneState>();
 	private final StateSpeak mSpeakState = new StateSpeak(this);
 	
 	private MascotState mCurState;
@@ -94,12 +96,27 @@ public final class Mascot implements IMascot{
 				max += priority[state.getEntryPriority().number];
 			}
 			
+			TimeZoneState.Type timezone = getCurrentTimeZone();
+			for(TimeZoneState state : mTimeZoneStateList) {
+				if(timezone == state.getTimeZoneType()) {
+					max += priority[state.getEntryPriority().number];
+				}
+			}
+			
 			int number = mRand.nextInt(max - 1) + 1;
 			
 			for(MascotState state : mBasicStateList) {
 				number -= priority[state.getEntryPriority().number];
 				if(number <= 0)
 					return state;
+			}
+			
+			for(TimeZoneState state : mTimeZoneStateList) {
+				if(timezone == state.getTimeZoneType()) {
+					number -= priority[state.getEntryPriority().number];
+					if(number <= 0) 
+						return state;
+				}
 			}
 			
 			//ここは本来は実行されない
@@ -112,7 +129,7 @@ public final class Mascot implements IMascot{
 				return false;
 			
 			int prob = mCurState.getExistProbability().number;
-			return mRand.nextInt(99) < (new int[]{30, 10, 3})[prob];
+			return mRand.nextInt(99) < (new int[]{3, 10, 30})[prob];
 		}
 		
 	};
@@ -133,6 +150,10 @@ public final class Mascot implements IMascot{
 	
 	public void addUserInteractionState(UserInteractionState state) {
 		mInteractionStateList.add(state);
+	}
+	
+	public void addTimeZoneState(TimeZoneState state) {
+		mTimeZoneStateList.add(state);
 	}
 	
 	public void setSpeakStateImage(Bitmap image) {
@@ -251,6 +272,19 @@ public final class Mascot implements IMascot{
 		}
 		
 		throw new RuntimeException("get user insteraction failure");
+	}
+	
+	private TimeZoneState.Type getCurrentTimeZone() {
+		 int hours = new Date(System.currentTimeMillis()).getHours();
+		 if(5 <= hours && hours < 10) {
+			 return TimeZoneState.Type.Morning;
+		 } else if(10 <= hours && hours < 17) {
+			 return TimeZoneState.Type.Daytime;
+		 } else if(17 <= hours && hours < 22) {
+			 return TimeZoneState.Type.Evening;
+		 } else {
+			 return TimeZoneState.Type.Night;
+		 }
 	}
 	
 	private void transition(MascotState nextState) {

@@ -54,6 +54,10 @@ public class ImageRadioButton extends RadioButton{
 			@Override public Size getMaxImageSize() {
 				return new Size(MaxImageSize, MaxImageSize);
 			}
+			
+			@Override public void onFailure(Exception e) {
+				//TODO ダミーの画像を表示する？
+			}
 		});
 	}
 	

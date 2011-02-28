@@ -148,15 +148,21 @@ public class LocationInfoActivity extends Activity{
 			
 			@Override protected QuizData[] doInBackground(Void... params) {
 				
-				JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getQuizesQuery(pin));
-				
 				QuizData[] quizes = null;
-				if(obj != null) {
-					try {
+				try {
+					JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getQuizesQuery(pin));
+					if(StampRallyURL.isSuccess(obj)) {
 						quizes = QuizData.decodeJSONObject(obj);
-					} catch(JSONException e) {
-						e.printStackTrace();
+					} else {
+						//XXX サーバとの通信失敗(クエリの間違い?)
+						Log.e("get quizes", obj.toString());
 					}
+				} catch (IOException e) {
+					//XXX ネットワーク通信の失敗
+					e.printStackTrace();
+				} catch (JSONException e) {
+					//XXX JSONフォーマットエラー
+					e.printStackTrace();
 				}
 				
 				return quizes;
@@ -217,7 +223,23 @@ public class LocationInfoActivity extends Activity{
 				
 				new AsyncTask<Void, Void, Boolean>() {
 					@Override protected Boolean doInBackground(Void... params) {
-						return DataGetter.getJSONObject(query) != null;
+						try {
+							JSONObject obj = DataGetter.getJSONObject(query);
+							if(StampRallyURL.isSuccess(obj)) {
+								return true;
+							} else {
+								//XXX サーバとの通信失敗(クエリの間違い?)
+								Log.e("arrive data", obj.toString());
+							}
+						} catch (IOException e) {
+							//XXX ネットワーク通信の失敗
+							e.printStackTrace();
+						} catch (JSONException e) {
+							//XXX JSONフォーマットが不正
+							e.printStackTrace();
+						}
+						
+						return false;
 					}
 					
 					@Override protected void onPostExecute(Boolean result) {

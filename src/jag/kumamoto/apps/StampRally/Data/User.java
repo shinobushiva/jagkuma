@@ -26,10 +26,6 @@ public final class User implements Parcelable {
 		this.nickname = nickname;
 	}
 	
-	public static boolean isSuccess(JSONObject obj) throws JSONException{
-		return obj.getString("success").equals("true");
-	}
-	
 	public static User decodeJSONObject(String token, JSONObject obj) throws JSONException {
 		JSONObject objUser = obj.getJSONObject(JsonNameUser);
 		String nickname = objUser.getString(JsonNameNickName);

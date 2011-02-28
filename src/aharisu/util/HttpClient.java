@@ -98,7 +98,7 @@ public final class HttpClient {
 		_res = null;
 	}
 	
-	public static byte[] getByteArrayFromURL(String strUrl) {
+	public static byte[] getByteArrayFromURL(String strUrl) throws IOException{
 		byte[] result = null;
 		HttpURLConnection con = null;
 		InputStream in = null;
@@ -122,14 +122,15 @@ public final class HttpClient {
 				out.write(line, 0, size);
 			}
 			result = out.toByteArray();
-		}catch (IOException e) {
-			return new byte[0];
-		}finally {
+		} finally {
+			if(con != null)
+				con.disconnect();
+			
 			try {
-				if(con != null)
-					con.disconnect();
 				if(in != null)
 					in.close();
+			}catch (Exception e) { }
+			try {
 				if(out != null)
 					out.close();
 			}catch (Exception e) { }

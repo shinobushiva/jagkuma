@@ -1,9 +1,11 @@
 package aharisu.util;
 
+import java.io.IOException;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
 
@@ -18,11 +20,13 @@ public final class AsyncDataGetter {
 	
 	public static interface Callback<T> {
 		public void onGetData(T data);
+		public void onFailure(Exception e);
 	}	
 	
 	
 	private static final class AsyncByteArrayGetter extends AsyncTask<String, Void, byte[]> {
 		
+		private IOException _exception;
 		private final Callback<byte[]> _callback;
 		
 		private AsyncByteArrayGetter(Callback<byte[]> callback) {		
@@ -34,7 +38,13 @@ public final class AsyncDataGetter {
 				throw new RuntimeException();
 			}
 			
-			byte[] raw = HttpClient.getByteArrayFromURL(params[0]);
+			byte[] raw;
+			try {
+				raw = HttpClient.getByteArrayFromURL(params[0]);
+			} catch (IOException e) {
+				_exception = e;
+				raw = null;
+			}
 			
 			return raw;
 		}
@@ -43,11 +53,20 @@ public final class AsyncDataGetter {
 			super.onPostExecute(result);
 			
 			if(_callback != null) {
-				_callback.onGetData(result);
+				if(result != null) {
+					_callback.onGetData(result);
+				} else {
+					_callback.onFailure(_exception);
+				}
 			}
 		}
 	}
 	
+	/**
+	 * {@link Callback#onFailure(Exception)}には IOExceptionの可能性がある
+	 * @param url
+	 * @param callback
+	 */
 	public static void getByteArray(String url, Callback<byte[]> callback) {
 		AsyncByteArrayGetter getter = new AsyncByteArrayGetter(callback);
 		
@@ -59,6 +78,7 @@ public final class AsyncDataGetter {
 	
 	private static final class AsyncStringGetter extends AsyncTask<String, Void, String> {
 		
+		private IOException _exception;
 		private final Callback<String> _callback;
 		
 		private AsyncStringGetter(Callback<String> callback) {		
@@ -70,8 +90,14 @@ public final class AsyncDataGetter {
 				throw new RuntimeException();
 			}
 			
-			byte[] raw = HttpClient.getByteArrayFromURL(params[0]);
-			String data = new String(raw);
+			String data;
+			try {
+				byte[] raw = HttpClient.getByteArrayFromURL(params[0]);
+				data = new String(raw);
+			} catch (IOException e) {
+				_exception = e;
+				data = null;
+			}
 			
 			return data;
 		}
@@ -80,11 +106,20 @@ public final class AsyncDataGetter {
 			super.onPostExecute(result);
 			
 			if(_callback != null) {
-				_callback.onGetData(result);
+				if(result != null) {
+					_callback.onGetData(result);
+				} else {
+					_callback.onFailure(_exception);
+				}
 			}
 		}
 	}
 	
+	/**
+	 * {@link Callback#onFailure(Exception)}には IOExceptionの可能性がある
+	 * @param url
+	 * @param callback
+	 */
 	public static void getString(String url, Callback<String> callback) {
 		AsyncStringGetter getter = new AsyncStringGetter(callback);
 		
@@ -96,6 +131,7 @@ public final class AsyncDataGetter {
 	
 	private static final class AsyncJSONGetter extends AsyncTask<String, Void, JSONObject> {
 		
+		private Exception _exception;
 		private final Callback<JSONObject> _callback;
 		
 		private AsyncJSONGetter(Callback<JSONObject> callback) {
@@ -107,18 +143,36 @@ public final class AsyncDataGetter {
 				throw new RuntimeException();
 			}
 			
-			return DataGetter.getJSONObject(params[0]);
+			JSONObject obj = null;
+			try {
+				obj = DataGetter.getJSONObject(params[0]);
+			} catch (IOException e) {
+				_exception = e;
+			} catch (JSONException e) {
+				_exception = e;
+			}
+			
+			return obj;
 		}
 		
 		@Override protected void onPostExecute(JSONObject result) {
 			super.onPostExecute(result);
 			
 			if(_callback != null) {
-				_callback.onGetData(result);
+				if(result != null) {
+					_callback.onGetData(result);
+				} else {
+					_callback.onFailure(_exception);
+				}
 			}
 		}
 	}
 	
+	/**
+	 * {@link Callback#onFailure(Exception)}には IOExceptionとJSONExceptionの可能性がある
+	 * @param url
+	 * @param callback
+	 */
 	public static void getJSONObject(String url, Callback<JSONObject> callback) {
 		AsyncJSONGetter getter = new AsyncJSONGetter(callback);
 		
@@ -130,11 +184,13 @@ public final class AsyncDataGetter {
 	
 	public static interface BitmapCallback {
 		public void onGetData(Bitmap data);
+		public void onFailure(Exception e);
 		public Size getMaxImageSize();
 	}
 	
 	private static final class AsyncBitmapGetter extends AsyncTask<String, Void, Bitmap> {
 		
+		private Exception _exception;
 		private final BitmapCallback mCallback;
 		
 		public AsyncBitmapGetter(BitmapCallback callback) {
@@ -146,13 +202,23 @@ public final class AsyncDataGetter {
 				throw new RuntimeException();
 			}
 			
-			byte[] raw = HttpClient.getByteArrayFromURL(params[0]);
 			Size size = mCallback.getMaxImageSize();
-			Bitmap bitmap;
+			int maxWidth, maxHeight;
 			if(size != null) {
-				bitmap = ImageUtill.loadImage(raw, size.width, size.height);
+				maxWidth = size.width;
+				maxHeight = size.height;
 			} else {
-				bitmap = BitmapFactory.decodeByteArray(raw, 0, raw.length);
+				maxWidth = -1;
+				maxHeight = -1;
+			}
+			
+			Bitmap bitmap = null;
+			try {
+				bitmap = DataGetter.getBitmap(params[0], maxWidth, maxHeight);
+			} catch(IOException e) {
+				_exception = e;
+			} catch(DataGetter.BitmapDecodeException e) {
+				_exception = e;
 			}
 			
 			return bitmap;
@@ -161,11 +227,20 @@ public final class AsyncDataGetter {
 		@Override protected void onPostExecute(Bitmap result) {
 			super.onPostExecute(result);
 			
-			mCallback.onGetData(result);
+			if(result != null) {
+				mCallback.onGetData(result);
+			} else {
+				mCallback.onFailure(_exception);
+			}
 		}
 		
 	}
 	
+	/**
+	 * {@link Callback#onFailure(Exception)}には IOExceptionとBitmapDecodeExceptionの可能性がある
+	 * @param url
+	 * @param callback
+	 */
 	public static void getBitmap(String url, BitmapCallback callback) {
 		AsyncBitmapGetter getter = new AsyncBitmapGetter(callback);
 		

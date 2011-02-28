@@ -2,6 +2,9 @@ package jag.kumamoto.apps.StampRally.Data;
 
 import java.net.URLEncoder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * 
  * サーバへの問い合わせクエリを生成するクラス
@@ -130,6 +133,16 @@ public final class StampRallyURL {
 			.append("token=").append(user.token)
 			.append("&pinId=").append(pin.id)
 			.toString();
+	}
+	
+	/**
+	 * 通信が正常に成功したかを確認する
+	 * @param obj
+	 * @return
+	 * @throws JSONException
+	 */
+	public static boolean isSuccess(JSONObject obj) throws JSONException {
+		return obj.getString("status").equals("OK") && obj.getString("success").equals("true");
 	}
 		
 }

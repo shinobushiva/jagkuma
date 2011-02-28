@@ -1,7 +1,11 @@
 package jag.kumamoto.apps.StampRally;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import jag.kumamoto.apps.StampRally.Data.QuizChoices;
 import jag.kumamoto.apps.StampRally.Data.QuizData;
@@ -168,12 +172,28 @@ public class QuizActivity extends Activity{
 		new AsyncTask<Void, Void, Boolean>() {
 			
 			@Override protected Boolean doInBackground(Void... params) {
-				return DataGetter.getJSONObject(query) != null;
+				try {
+					JSONObject obj = DataGetter.getJSONObject(query);
+					if(StampRallyURL.isSuccess(obj)) {
+						return true;
+					} else {
+						//XXX サーバとの通信失敗(クエリの間違い?)
+						Log.e("send answer", obj.toString());
+					}
+				} catch (IOException e) {
+					//XXX ネットワーク通信の失敗
+					e.printStackTrace();
+				} catch (JSONException e) {
+					//XXX JSONフォーマットが不正
+					e.printStackTrace();
+				}
+				
+				return false;
 			}
 			
 			@Override protected void onPostExecute(Boolean result) {
 				if(!result) {
-					//TODO 送信失敗.どうしよう
+					//XXX 送信失敗.どうしよう
 				}
 			}
 			

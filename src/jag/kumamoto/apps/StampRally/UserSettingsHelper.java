@@ -1,5 +1,6 @@
 package jag.kumamoto.apps.StampRally;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.json.JSONException;
@@ -16,6 +17,7 @@ import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -203,15 +205,22 @@ final class UserSettingsHelper {
 		new AsyncTask<Void, Void, Boolean>() {
 
 			@Override protected Boolean doInBackground(Void... params) {
-				JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getRegistrationQuery(user));
-
-				if(obj != null) {
-					try {
-						return User.isSuccess(obj);
-					} catch(JSONException e) {
-						e.printStackTrace();
+				try {
+					JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getRegistrationQuery(user));
+					if(StampRallyURL.isSuccess(obj)) {
+						return true;
+					} else {
+						//XXX サーバとの通信失敗(クエリの間違い?)
+						Log.e("modify user", obj.toString());
 					}
+				} catch (IOException e) {
+					//XXX ネットワーク通信の失敗
+					e.printStackTrace();
+				} catch (JSONException e) {
+					//XXX JSONフォーマットが不正
+					e.printStackTrace();
 				}
+
 				return false;
 			}
 
@@ -281,14 +290,20 @@ final class UserSettingsHelper {
 		new AsyncTask<Void, Void, User>() {
 
 			@Override protected User doInBackground(Void... params) {
-				JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getUserInfoQuery(token));
-
-				if(obj != null) {
-					try {
+				try {
+					JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getUserInfoQuery(token));
+					if(StampRallyURL.isSuccess(obj)) {
 						return User.decodeJSONObject(token, obj);
-					} catch(JSONException e) {
-						e.printStackTrace();
+					} else {
+						//XXX サーバとの通信失敗(クエリの間違い?)
+						Log.e("login", obj.toString());
 					}
+				} catch (IOException e) {
+					//XXX ネットワーク通信の失敗
+					e.printStackTrace();
+				} catch (JSONException e) {
+					//XXX JSONフォーマットが不正
+					e.printStackTrace();
 				}
 				
 				return null;
@@ -396,15 +411,22 @@ final class UserSettingsHelper {
 		new AsyncTask<Void, Void, Boolean>() {
 
 			@Override protected Boolean doInBackground(Void... params) {
-				JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getRegistrationQuery(user));
-
-				if(obj != null) {
-					try {
-						return User.isSuccess(obj);
-					} catch(JSONException e) {
-						e.printStackTrace();
+				try {
+					JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getRegistrationQuery(user));
+					if(StampRallyURL.isSuccess(obj)) {
+						return true;
+					} else {
+						//XXX サーバとの通信失敗(クエリの間違い?)
+						Log.e("registration", obj.toString());
 					}
+				} catch (IOException e) {
+					//XXX ネットワーク通信の失敗
+					e.printStackTrace();
+				} catch (JSONException e) {
+					//XXX JSONフォーマットが不正
+					e.printStackTrace();
 				}
+
 				return false;
 			}
 

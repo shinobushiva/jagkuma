@@ -1,5 +1,6 @@
 package jag.kumamoto.apps.StampRally;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.Window;
 
 
@@ -116,14 +118,24 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		new AsyncTask<Void, Void, Pair<StampPin[], Pair<StampPin[], StampPin[]>>>() {
 			
 			@Override protected Pair<StampPin[], Pair<StampPin[], StampPin[]>>doInBackground(Void... params) {
-				JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getGetAllPinQuery());
-				
-				StampPin[] pins;
+				StampPin[] pins = null;
 				try {
-					pins = StampPin.decodeJSONObject(obj);
-				}catch(JSONException e) {
-					e.printStackTrace();
-					
+					JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getGetAllPinQuery());
+					if(StampRallyURL.isSuccess(obj)) {
+						pins = StampPin.decodeJSONObject(obj);
+					} else {
+						//XXX サーバとの通信失敗(クエリの間違い?)
+						Log.e("get pins", obj.toString());
+					}
+				} catch (IOException e1) {
+					//XXX ネットワーク通信の失敗
+					e1.printStackTrace();
+				} catch (JSONException e1) {
+					//XXX JSONフォーマットが不正
+					e1.printStackTrace();
+				}
+				
+				if(pins == null) {
 					pins = new StampPin[0];
 				}
 				

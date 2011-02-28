@@ -9,7 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.util.Log;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 
 /**
@@ -20,6 +21,7 @@ import android.util.Log;
  *
  */
 public final class DataGetter {
+	
 	
 	public static String getHTML(Context context, int resRawId) throws IOException{
 		InputStream in = context.getResources().openRawResource(resRawId);
@@ -35,24 +37,48 @@ public final class DataGetter {
 			return builder.toString();
 	}
 	
-	public static JSONObject getJSONObject(String url) {
+	public static JSONObject getJSONObject(String url) throws IOException, JSONException {
 		byte[] raw = HttpClient.getByteArrayFromURL(url);
 		String data = new String(raw);
 		raw = null;
 		
-		JSONObject obj = null;
-		try {
-			obj = new JSONObject(data);
-			if(!obj.getString("status").equals("OK")) {
-				Log.i("status failure", obj.toString());
-				obj = null;
-			}
-		} catch(JSONException e) {
-			e.printStackTrace();
-			obj = null;
-		}
+		return new JSONObject(data);
+	}
+	
+	public static class BitmapDecodeException extends Exception {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1358149185993621801L;
 		
-		return obj;
+	}
+	
+	/**
+	 * 
+	 * @param url
+	 * @param maxWidth
+	 * @param maxHeight
+	 * @return
+	 * @throws IOException
+	 * @throws BitmapDecodeException
+	 */
+	public static Bitmap getBitmap(String url, int maxWidth, int maxHeight) 
+		throws IOException, BitmapDecodeException {
+			Bitmap bitmap = null;
+			byte[] raw = HttpClient.getByteArrayFromURL(url);
+			
+			if(maxWidth < 0 || maxHeight < 0) {
+				bitmap = BitmapFactory.decodeByteArray(raw, 0, raw.length);
+			} else {
+				bitmap = ImageUtill.loadImage(raw, maxWidth, maxHeight);
+			}
+			
+			if(bitmap == null) {
+				throw new BitmapDecodeException();
+			}
+			
+			return bitmap;
 	}
 
 }

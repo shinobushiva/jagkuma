@@ -3,28 +3,14 @@ package jag.kumamoto.apps.StampRally;
 import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 
-import java.util.ArrayList;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
-import aharisu.util.DataGetter;
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.app.TabActivity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.EditText;
-import android.widget.RadioGroup;
-import android.widget.Toast;
+import android.widget.TabHost;
 
 
 
@@ -35,7 +21,7 @@ import android.widget.Toast;
  * @author aharisu
  *
  */
-public class SettingsActivity extends Activity{
+public class SettingsActivity extends TabActivity{
 	private User mUser;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
@@ -43,47 +29,52 @@ public class SettingsActivity extends Activity{
 
 		Bundle extras = getIntent().getExtras();
 		boolean isFirstStart = false;
+		boolean loginRequest = false;
 
 		if(extras != null) {
 			mUser = extras.getParcelable(ConstantValue.ExtrasUser);
 			isFirstStart = extras.getBoolean(ConstantValue.ExtrasFirstSettings, false);
+			loginRequest = extras.getBoolean(ConstantValue.ExtrasLoginRequest, false);
 		}
+		
+		//初回表示タイミングでキーボードを表示させないようにする
+		this.getWindow().setSoftInputMode(
+				android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.settings);
+		
+		initTabPages();
 
 		if(isFirstStart) {
 			showFirstSettingsDialog();
 		}
-
-
-		TextWatcher watcher = createEditTextWatcher();
-
-
-		//ニックネーム入力を設定
-		EditText nickname = (EditText)findViewById(R.id_settings.nickname);
-		nickname.addTextChangedListener(watcher);
-
-
-		//すでに入力済みのユーザデータがあれば初期値として設定
-		if(mUser != null) {
-			nickname.setText(mUser.nickname);
-			((RadioGroup)findViewById(R.id_settings.gender_frame)).check(
-					mUser.gender == User.Female ? R.id_settings.gender_female :
-					mUser.gender == User.Male ? R.id_settings.gender_male :
-					R.id_settings.gender_unknown);
-		}
-
-
-		//OKボタンの設定
-		View.OnClickListener okOnClickListener = createOKOnClickListener();
-		View aboveOk = findViewById(R.id_settings.above_ok);
-		aboveOk.setOnClickListener(okOnClickListener);
-		aboveOk.setEnabled(mUser != null);
-
-		View belowOk = findViewById(R.id_settings.below_ok);
-		belowOk.setOnClickListener(okOnClickListener);
-		belowOk.setEnabled(mUser != null);
+		
+		UserSettingsHelper.constractUserSettingsView((ViewGroup)findViewById(R.id_settings.tab_user), mUser, 
+				loginRequest ? new UserSettingsHelper.OnLoginListener() {
+					@Override public void onLogin(User user) {
+						Intent intent = new Intent();
+						intent.putExtra(ConstantValue.ExtrasUser, user);
+						setResult(Activity.RESULT_OK, intent);
+						finish();
+					}
+				} : null);
+	}
+	
+	private void initTabPages() {
+		TabHost tabHost = getTabHost();
+		
+		TabHost.TabSpec spec;
+		
+		spec = tabHost.newTabSpec("user_settings");
+		spec.setIndicator("ユーザ設定");
+		spec.setContent(R.id_settings.tab_user);
+		tabHost.addTab(spec);
+		
+		spec = tabHost.newTabSpec("other");
+		spec.setIndicator("その他");
+		spec.setContent(R.id_settings.tab_other);
+		tabHost.addTab(spec);
 	}
 
 	private void showFirstSettingsDialog() {
@@ -92,98 +83,6 @@ public class SettingsActivity extends Activity{
 			.setMessage("ユーザ登録が必要です\n以下いろいろと説明があればいいな")
 			.setPositiveButton("OK", null)
 			.show();
-	}
-
-	private TextWatcher createEditTextWatcher() {
-		return new TextWatcher() {
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-				EditText nickname = (EditText)findViewById(R.id_settings.nickname);
-
-				//入力欄が空白でなければOKボタンを有効にする
-				boolean enabled = nickname.getText().length() != 0;
-				findViewById(R.id_settings.above_ok).setEnabled(enabled);
-				findViewById(R.id_settings.below_ok).setEnabled(enabled);
-			}
-
-			@Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-
-			@Override public void afterTextChanged(Editable s) {
-			}
-		};
-	}
-
-	private View.OnClickListener createOKOnClickListener() {
-		return new View.OnClickListener() {
-			@Override public void onClick(View v) {
-				String token = "test";
-				String[] ret = getGoogleAccounts();
-				if(ret != null && ret[0] != null) token = ret[0];//ざっくり、初期activationしているアカウントを使用してみる。。
-				int checkedId = ((RadioGroup)findViewById(R.id_settings.gender_frame)).getCheckedRadioButtonId();
-				int gender = checkedId == R.id_settings.gender_female ? User.Female :
-					checkedId == R.id_settings.gender_male ? User.Male :
-					User.Unknown;
-				String nickname = ((EditText)findViewById(R.id_settings.nickname)).getText().toString();
-
-				AsyncCerticication(new User(token, gender, nickname));
-			}
-		};
-	}
-
-	private void AsyncCerticication(final User user) {
-		final ProgressDialog dialog = new ProgressDialog(this);
-		dialog.setMessage("認証中です");
-		dialog.setIndeterminate(false);
-		dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		dialog.setCancelable(false);
-		dialog.show();
-
-		new AsyncTask<Void, Void, Boolean>() {
-
-			@Override protected Boolean doInBackground(Void... params) {
-				JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getRegistrationQuery(user));
-
-				if(obj != null) {
-					try {
-						return User.isSuccess(obj);
-					} catch(JSONException e) {
-						e.printStackTrace();
-					}
-				}
-				return false;
-			}
-
-			@Override protected void onPostExecute(Boolean result) {
-				dialog.dismiss();
-
-				if(result) {
-					StampRallyPreferences.setUser(user);
-
-					Intent intent = new Intent();
-					intent.putExtra(ConstantValue.ExtrasUser, user);
-					setResult(Activity.RESULT_OK, intent);
-					finish();
-
-					Toast.makeText(getApplicationContext(), "認証しました", Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(getApplicationContext(), "認証に失敗しました", Toast.LENGTH_SHORT).show();
-				}
-			}
-
-		}.execute((Void)null);
-	}
-
-	private String[] getGoogleAccounts() {
-		ArrayList<String> accountNames = new ArrayList<String>();
-		Account[] accounts = AccountManager.get(this).getAccounts();
-		for (Account account : accounts) {
-			if(account.type.equals("com.google")) {
-				accountNames.add(account.name);
-			}
-		}
-		String[] result = new String[accountNames.size()];
-		accountNames.toArray(result);
-		return result;
 	}
 
 }

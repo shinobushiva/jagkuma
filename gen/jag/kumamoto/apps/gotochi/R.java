@@ -62,13 +62,20 @@ public final class R {
         public static final int webview=0x7f0e0001;
     }
     public static final class id_settings {
-        public static final int above_ok=0x7f0f0000;
-        public static final int below_ok=0x7f0f0006;
-        public static final int gender_female=0x7f0f0004;
-        public static final int gender_frame=0x7f0f0002;
-        public static final int gender_male=0x7f0f0005;
-        public static final int gender_unknown=0x7f0f0003;
-        public static final int nickname=0x7f0f0001;
+        public static final int change_view=0x7f0f000c;
+        public static final int gender_female=0x7f0f0009;
+        public static final int gender_frame=0x7f0f0007;
+        public static final int gender_male=0x7f0f000a;
+        public static final int gender_unknown=0x7f0f0008;
+        public static final int nickname=0x7f0f0006;
+        public static final int ok=0x7f0f000b;
+        public static final int registration_frame=0x7f0f0005;
+        public static final int select_token_frame=0x7f0f0002;
+        public static final int tab_other=0x7f0f000d;
+        public static final int tab_user=0x7f0f0000;
+        public static final int token_frame=0x7f0f0004;
+        public static final int token_label=0x7f0f0003;
+        public static final int user_setting_title=0x7f0f0001;
     }
     public static final class layout {
         public static final int collections=0x7f030000;
@@ -82,6 +89,7 @@ public final class R {
         public static final int quiz_muliple_choice=0x7f030008;
         public static final int quiz_single_choice=0x7f030009;
         public static final int settings=0x7f03000a;
+        public static final int settings_token_radiobutton=0x7f03000b;
     }
     public static final class raw {
         public static final int help=0x7f040000;

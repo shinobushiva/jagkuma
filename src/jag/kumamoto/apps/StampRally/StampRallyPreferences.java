@@ -76,6 +76,17 @@ public final class StampRallyPreferences {
 		editor.commit();
 	}
 	
+	public static void clearUser() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor = pref.edit();
+		editor.remove(PreferenceToken);
+		editor.remove(PreferenceGender);
+		editor.remove(PreferenceNickname);
+		editor.commit();
+	}
+	
 	private static final String PreferenceFirstStartStampRally = "first-start";
 	public static boolean isFirstStampRallyStart() {
 		SharedPreferences pref = mContext.getSharedPreferences(

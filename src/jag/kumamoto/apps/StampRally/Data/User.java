@@ -7,6 +7,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public final class User implements Parcelable {
+	private static final String JsonNameUser = "user";
+	private static final String JsonNameGender = "gender";
+	private static final String JsonNameNickName = "nickName";
+		
+	
 	public static final int Female = 0;
 	public static final int Male = 1;
 	public static final int Unknown = 2;
@@ -23,6 +28,14 @@ public final class User implements Parcelable {
 	
 	public static boolean isSuccess(JSONObject obj) throws JSONException{
 		return obj.getString("success").equals("true");
+	}
+	
+	public static User decodeJSONObject(String token, JSONObject obj) throws JSONException {
+		JSONObject objUser = obj.getJSONObject(JsonNameUser);
+		String nickname = objUser.getString(JsonNameNickName);
+		int gender = objUser.getInt(JsonNameGender);
+		
+		return new User(token, gender, nickname);
 	}
 	
 	

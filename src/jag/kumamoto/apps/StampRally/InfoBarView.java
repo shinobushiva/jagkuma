@@ -1,4 +1,5 @@
-package jag.kumamoto.apps.gotochi;
+package jag.kumamoto.apps.StampRally;
+
 
 import java.util.ArrayList;
 

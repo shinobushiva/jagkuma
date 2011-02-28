@@ -1,4 +1,4 @@
-package jag.kumamoto.apps.gotochi;
+package jag.kumamoto.apps.StampRally;
 
 import android.os.AsyncTask;
 

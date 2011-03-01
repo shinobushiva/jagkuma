@@ -14,82 +14,97 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int home_icon=0x7f020000;
-        public static final int icon=0x7f020001;
-        public static final int icon_status_bar=0x7f020002;
-        public static final int icon_status_bar_arrived=0x7f020003;
-        public static final int marker_none=0x7f020004;
-        public static final int marker_none_arrived=0x7f020005;
-        public static final int marker_quiz=0x7f020006;
-        public static final int marker_quiz_arrived=0x7f020007;
-        public static final int transparent_background=0x7f020008;
+        public static final int gallery_item_background=0x7f020000;
+        public static final int gallery_item_selected_rect=0x7f020001;
+        public static final int home_icon=0x7f020002;
+        public static final int icon=0x7f020003;
+        public static final int icon_status_bar=0x7f020004;
+        public static final int icon_status_bar_arrived=0x7f020005;
+        public static final int marker_none=0x7f020006;
+        public static final int marker_none_arrived=0x7f020007;
+        public static final int marker_quiz=0x7f020008;
+        public static final int marker_quiz_arrived=0x7f020009;
+        public static final int transparent_background=0x7f02000a;
+    }
+    public static final class id_collections {
+        public static final int ave_answer_time=0x7f080005;
+        public static final int correctness_rate=0x7f080004;
+        public static final int item_gallery=0x7f080007;
+        public static final int item_image=0x7f080008;
+        public static final int item_name=0x7f080009;
+        public static final int num_answerd=0x7f080003;
+        public static final int num_item=0x7f080006;
+        public static final int num_stamp=0x7f080002;
+        public static final int point=0x7f080001;
+        public static final int user_name=0x7f080000;
     }
     public static final class id_device_cap {
-        public static final int btnSettings=0x7f080001;
-        public static final int tvwMessage=0x7f080000;
+        public static final int btnSettings=0x7f090001;
+        public static final int tvwMessage=0x7f090000;
     }
     public static final class id_help {
-        public static final int webview=0x7f090000;
+        public static final int webview=0x7f0a0000;
     }
     public static final class id_home {
-        public static final int collections=0x7f0a0002;
-        public static final int help=0x7f0a0000;
-        public static final int map=0x7f0a0001;
-        public static final int settings=0x7f0a0003;
+        public static final int collections=0x7f0b0002;
+        public static final int help=0x7f0b0000;
+        public static final int map=0x7f0b0001;
+        public static final int settings=0x7f0b0003;
     }
     public static final class id_location_info {
-        public static final int arrive_report=0x7f0b0007;
-        public static final int below_frame=0x7f0b0003;
-        public static final int go_location=0x7f0b0006;
-        public static final int go_location_frame=0x7f0b0004;
-        public static final int go_quiz=0x7f0b0001;
-        public static final int go_quiz_frame=0x7f0b0000;
-        public static final int progress_frame=0x7f0b0002;
-        public static final int route_search_kind=0x7f0b0005;
-        public static final int webview=0x7f0b0008;
+        public static final int arrive_report=0x7f0c0007;
+        public static final int below_frame=0x7f0c0003;
+        public static final int go_location=0x7f0c0006;
+        public static final int go_location_frame=0x7f0c0004;
+        public static final int go_quiz=0x7f0c0001;
+        public static final int go_quiz_frame=0x7f0c0000;
+        public static final int progress_frame=0x7f0c0002;
+        public static final int route_search_kind=0x7f0c0005;
+        public static final int webview=0x7f0c0008;
     }
     public static final class id_main {
-        public static final int btnAmbition=0x7f0c0000;
+        public static final int btnAmbition=0x7f0d0000;
     }
     public static final class id_map {
-        public static final int mapview=0x7f0d0000;
+        public static final int mapview=0x7f0e0000;
     }
     public static final class id_quiz {
-        public static final int frame_choices=0x7f0e0003;
-        public static final int label_answer=0x7f0e0002;
-        public static final int name=0x7f0e0000;
-        public static final int ok=0x7f0e0004;
-        public static final int webview=0x7f0e0001;
+        public static final int frame_choices=0x7f0f0003;
+        public static final int label_answer=0x7f0f0002;
+        public static final int name=0x7f0f0000;
+        public static final int ok=0x7f0f0004;
+        public static final int webview=0x7f0f0001;
     }
     public static final class id_settings {
-        public static final int change_view=0x7f0f000c;
-        public static final int gender_female=0x7f0f0009;
-        public static final int gender_frame=0x7f0f0007;
-        public static final int gender_male=0x7f0f000a;
-        public static final int gender_unknown=0x7f0f0008;
-        public static final int nickname=0x7f0f0006;
-        public static final int ok=0x7f0f000b;
-        public static final int registration_frame=0x7f0f0005;
-        public static final int select_token_frame=0x7f0f0002;
-        public static final int tab_other=0x7f0f000d;
-        public static final int tab_user=0x7f0f0000;
-        public static final int token_frame=0x7f0f0004;
-        public static final int token_label=0x7f0f0003;
-        public static final int user_setting_title=0x7f0f0001;
+        public static final int change_view=0x7f10000c;
+        public static final int gender_female=0x7f100009;
+        public static final int gender_frame=0x7f100007;
+        public static final int gender_male=0x7f10000a;
+        public static final int gender_unknown=0x7f100008;
+        public static final int nickname=0x7f100006;
+        public static final int ok=0x7f10000b;
+        public static final int registration_frame=0x7f100005;
+        public static final int select_token_frame=0x7f100002;
+        public static final int tab_other=0x7f10000d;
+        public static final int tab_user=0x7f100000;
+        public static final int token_frame=0x7f100004;
+        public static final int token_label=0x7f100003;
+        public static final int user_setting_title=0x7f100001;
     }
     public static final class layout {
         public static final int collections=0x7f030000;
-        public static final int device_cap_dialog=0x7f030001;
-        public static final int help=0x7f030002;
-        public static final int home=0x7f030003;
-        public static final int location_infomation=0x7f030004;
-        public static final int main=0x7f030005;
-        public static final int map=0x7f030006;
-        public static final int quiz=0x7f030007;
-        public static final int quiz_muliple_choice=0x7f030008;
-        public static final int quiz_single_choice=0x7f030009;
-        public static final int settings=0x7f03000a;
-        public static final int settings_token_radiobutton=0x7f03000b;
+        public static final int collections_item=0x7f030001;
+        public static final int device_cap_dialog=0x7f030002;
+        public static final int help=0x7f030003;
+        public static final int home=0x7f030004;
+        public static final int location_infomation=0x7f030005;
+        public static final int main=0x7f030006;
+        public static final int map=0x7f030007;
+        public static final int quiz=0x7f030008;
+        public static final int quiz_muliple_choice=0x7f030009;
+        public static final int quiz_single_choice=0x7f03000a;
+        public static final int settings=0x7f03000b;
+        public static final int settings_token_radiobutton=0x7f03000c;
     }
     public static final class raw {
         public static final int help=0x7f040000;

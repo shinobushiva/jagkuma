@@ -1,6 +1,8 @@
 package jag.kumamoto.apps.StampRally;
 
 
+import jag.kumamoto.apps.StampRally.Data.Item;
+import jag.kumamoto.apps.StampRally.Data.Prize;
 import jag.kumamoto.apps.StampRally.Data.StampPin;
 import android.content.ContentValues;
 import android.content.Context;
@@ -37,6 +39,25 @@ public class StampRallyDB extends SQLiteOpenHelper{
 	private static final String StampLocationType = "type";
 	private static final String StampLocationURL = "url";
 
+	
+	/*
+	 * Prizeクラスの永続化のためのフィールド
+	 */
+	private static final String PrizeTable ="prize";
+	private static final String PrizeID = "id";
+	private static final String PrizeTime = "time";
+	private static final String PrizeTitle = "title";
+	private static final String PrizeMessage = "message";
+	private static final String PrizeItemId = "item_id";
+	
+	/*
+	 * Itemクラスの永続化のためのフィールド
+	 */
+	private static final String ItemTable = "item";
+	private static final String ItemID = "id";
+	private static final String ItemName = "name";
+	private static final String ItemImageURL = "image_url";
+	private static final String ItemDescription = "description";
 	
 	/*
 	 * Singletonインスタンス
@@ -80,6 +101,26 @@ public class StampRallyDB extends SQLiteOpenHelper{
 				.append(")")
 				.toString());
 			
+			//Prizeテーブル作成
+			db.execSQL(new StringBuilder()
+				.append("create table ").append(PrizeTable).append("(")
+				.append(PrizeID).append(" integer primary key")
+				.append(",").append(PrizeTime).append(" integer not null")
+				.append(",").append(PrizeTitle).append(" text not null")
+				.append(",").append(PrizeMessage).append(" text not null")
+				.append(",").append(PrizeItemId).append(" integer")
+				.append(")")
+				.toString());
+			
+			//Itemテーブル作成
+			db.execSQL(new StringBuilder()
+				.append("create table ").append(ItemTable).append("(")
+				.append(ItemID).append(" integer primary key")
+				.append(",").append(ItemName).append(" text not null")
+				.append(",").append(ItemImageURL).append(" text not null")
+				.append(",").append(ItemDescription).append(" text not null")
+				.append(")")
+				.toString());
 			
 			db.setTransactionSuccessful();
 		} finally {
@@ -264,5 +305,133 @@ public class StampRallyDB extends SQLiteOpenHelper{
 			}
 		}
 	}
+	
+	public static Prize[] getPrizes() {
+		SQLiteOpenHelper helper = getInstance();
+		synchronized (helper) {
+			
+			SQLiteDatabase db = helper.getReadableDatabase();
+			
+			Cursor cursor = null;
+			try {
+				cursor = db.query(PrizeTable, new String[] {
+						PrizeID,
+						PrizeTime,
+						PrizeTitle,
+						PrizeMessage,
+						PrizeItemId,
+				}, null, null, null, null, null);
+				
+				int count = cursor.getCount();
+				Prize[] prizes = new Prize[count];
+				if(count != 0) {
+					int idIndex = cursor.getColumnIndex(PrizeID);
+					int timeIndex = cursor.getColumnIndex(PrizeTime);
+					int titleIndex = cursor.getColumnIndex(PrizeTitle);
+					int messageIndex = cursor.getColumnIndex(PrizeMessage);
+					int itemIDIndex = cursor.getColumnIndex(PrizeItemId);
+					
+					cursor.moveToFirst();
+					for(int i = 0;i < count;++i) {
+						prizes[i] = new Prize(
+								cursor.getLong(idIndex),
+								cursor.getLong(timeIndex),
+								cursor.getString(titleIndex),
+								cursor.getString(messageIndex),
+								cursor.isNull(itemIDIndex) ? 
+										null :
+										getItem(db, cursor.getLong(itemIDIndex)));
+						
+						cursor.moveToNext();
+					}
+				}
+		
+				return prizes;
+			} finally {
+				if(cursor != null)
+					cursor.close();
+				
+				db.close();
+			}
+		}
+	}
+	
+	private static Item getItem(SQLiteDatabase db, long id) {
+		
+		Cursor cursor = null;
+		try {
+			cursor = db.query(ItemTable, new String[] {
+					ItemID,
+					ItemImageURL,
+					ItemName,
+					ItemDescription,
+			}, 
+			new StringBuilder(ItemID).append(" = ").append(id).toString(),
+			null, null, null, null);
+			
+			if(cursor.getCount() == 0) {
+				return null;
+			} else {
+				int idIndex = cursor.getColumnIndex(ItemID);
+				int imageURLIndex = cursor.getColumnIndex(ItemImageURL);
+				int nameIndex = cursor.getColumnIndex(ItemName);
+				int descriptionIndex = cursor.getColumnIndex(ItemDescription);
+				
+				cursor.moveToFirst();
+				return new Item(
+						cursor.getLong(idIndex),
+						cursor.getString(imageURLIndex),
+						cursor.getString(nameIndex),
+						cursor.getString(descriptionIndex));
+			}
+		} finally {
+			if(cursor != null)
+				cursor.close();
+		}
+	}
+	
+	public static void insertPrizes(Prize... prizes) {
+		if(prizes == null || prizes.length == 0)
+			return;
+		
+		SQLiteOpenHelper helper = getInstance();
+		synchronized (helper) {
+			
+			SQLiteDatabase db = helper.getWritableDatabase();
+			db.beginTransaction();
+			
+			try {
+				ContentValues values = new ContentValues();
+				for(Prize prize : prizes) {
+					values.clear();
+					values.put(PrizeID, prize.id);
+					values.put(PrizeTime, prize.getTimeMilliseconds());
+					values.put(PrizeTitle, prize.title);
+					values.put(PrizeMessage, prize.message);
+					if(prize.item != null) {
+						values.put(PrizeItemId, prize.item.id);
+					}
+					db.insert(PrizeTable, null, values);
+					
+					if(prize.item != null) {
+						values.clear();
+						values.put(ItemID, prize.item.id);
+						values.put(ItemName, prize.item.name);
+						values.put(ItemImageURL, prize.item.imageUrl);
+						values.put(ItemDescription, prize.item.description);
+						
+						db.insert(ItemTable, null, values);
+					}
+				}
+		
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+				db.close();
+			}
+		}
+	}
+	
+	
 	
 }

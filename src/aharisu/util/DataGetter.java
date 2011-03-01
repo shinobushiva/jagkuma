@@ -80,5 +80,54 @@ public final class DataGetter {
 			
 			return bitmap;
 	}
+	
+	private static final class CacheKey {
+		private final String url;
+		private final int width;
+		private final int height;
+		
+		public CacheKey(String url, int width, int height) {
+			this.url = url;
+			this.width = width;
+			this.height = height;
+		}
+		
+		@Override public boolean equals(Object o) {
+			if(o == this) {
+				return true;
+			} else if(o instanceof CacheKey) {
+				CacheKey key = (CacheKey)o;
+				
+				return key.url.equals(this.url) && key.width == this.width && key.height == this.height;
+			} else {
+				return false;
+			}
+		}
+		
+		@Override public int hashCode() {
+			int result = 17;
+			result = 37 * result + url.hashCode();
+			result = 37 * result + width;
+			result = 37 * result + height;
+			
+			return result;
+		}
+	}
+	
+	private static final LruCache<CacheKey, Bitmap> mCache = new LruCache<CacheKey, Bitmap>(5);
+	public static Bitmap getBitmapCache(String url, int maxWidth, int maxHeight) 
+		throws IOException, BitmapDecodeException{
+	
+		CacheKey key = new CacheKey(url, maxWidth, maxHeight);
+		
+		Bitmap result = mCache.get(key);
+		if(result == null) {
+			result = getBitmap(url, maxWidth, maxHeight);
+			
+			mCache.put(key, result);
+		}
+		
+		return result;
+	}
 
 }

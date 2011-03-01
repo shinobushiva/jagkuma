@@ -247,4 +247,66 @@ public final class AsyncDataGetter {
 		getter.execute(url);
 	}
 	
+	
+	
+	
+	private static final class AsyncBitmapCacheGetter extends AsyncTask<String, Void, Bitmap> {
+		
+		private Exception _exception;
+		private final BitmapCallback mCallback;
+		
+		public AsyncBitmapCacheGetter(BitmapCallback callback) {
+			mCallback = callback;
+		}
+		
+		@Override protected Bitmap doInBackground(String... params) {
+			if(params.length != 1) {
+				throw new RuntimeException();
+			}
+			
+			Size size = mCallback.getMaxImageSize();
+			int maxWidth, maxHeight;
+			if(size != null) {
+				maxWidth = size.width;
+				maxHeight = size.height;
+			} else {
+				maxWidth = -1;
+				maxHeight = -1;
+			}
+			
+			Bitmap bitmap = null;
+			try {
+				bitmap = DataGetter.getBitmapCache(params[0], maxWidth, maxHeight);
+			} catch(IOException e) {
+				_exception = e;
+			} catch(DataGetter.BitmapDecodeException e) {
+				_exception = e;
+			}
+			
+			return bitmap;
+		}
+		
+		@Override protected void onPostExecute(Bitmap result) {
+			super.onPostExecute(result);
+			
+			if(result != null) {
+				mCallback.onGetData(result);
+			} else {
+				mCallback.onFailure(_exception);
+			}
+		}
+		
+	}
+	
+	/**
+	 * {@link Callback#onFailure(Exception)}には IOExceptionとBitmapDecodeExceptionの可能性がある
+	 * @param url
+	 * @param callback
+	 */
+	public static void getBitmapCache(String url, BitmapCallback callback) {
+		AsyncBitmapCacheGetter getter = new AsyncBitmapCacheGetter(callback);
+		
+		getter.execute(url);
+	}
+	
 }

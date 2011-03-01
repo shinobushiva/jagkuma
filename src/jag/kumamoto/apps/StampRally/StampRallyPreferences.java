@@ -1,6 +1,7 @@
 package jag.kumamoto.apps.StampRally;
 
 import jag.kumamoto.apps.StampRally.Data.User;
+import jag.kumamoto.apps.StampRally.Data.UserRecord;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -84,6 +85,51 @@ public final class StampRallyPreferences {
 		editor.remove(PreferenceToken);
 		editor.remove(PreferenceGender);
 		editor.remove(PreferenceNickname);
+		editor.commit();
+	}
+	
+	private static final String PreferencePoint = "user-record-point";
+	private static final String PreferenceNumStamp = "user-record-num-stamp";
+	private static final String PreferenceNumTotalAnswerdQuize = "user-record-num-answerd-quize";
+	private static final String PreferenceNumCorrectnss = "user-record-num-correctness";
+	private static final String PreferenceTotalAnswerdTime = "user-record-total-answer-time";
+	
+	public static UserRecord getUserRecord() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		int point = pref.getInt(PreferencePoint, 0);
+		int numStamp = pref.getInt(PreferenceNumStamp, 0);
+		int numTotalAnswerdQuize = pref.getInt(PreferenceNumTotalAnswerdQuize, 0);
+		int numCorrectness = pref.getInt(PreferenceNumCorrectnss, 0);
+		long totalAnswerTime = pref.getLong(PreferenceTotalAnswerdTime, 0);
+		
+		return new UserRecord(point, numStamp, numTotalAnswerdQuize, numCorrectness, totalAnswerTime);
+	}
+	
+	public static void setUserRecord(UserRecord record) {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putInt(PreferencePoint, record.point);
+		editor.putInt(PreferenceNumStamp, record.numStamp);
+		editor.putInt(PreferenceNumTotalAnswerdQuize, record.numTotalAnswerdQuize);
+		editor.putInt(PreferenceNumCorrectnss, record.numCorrectness);
+		editor.putLong(PreferenceTotalAnswerdTime, record.totalAnswerTime);
+		editor.commit();
+	}
+	
+	public static void clearUserRecord() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor = pref.edit();
+		editor.remove(PreferencePoint);
+		editor.remove(PreferenceNumStamp);
+		editor.remove(PreferenceNumTotalAnswerdQuize);
+		editor.remove(PreferenceNumCorrectnss);
+		editor.remove(PreferenceTotalAnswerdTime);
 		editor.commit();
 	}
 	

@@ -130,7 +130,7 @@ public final class StampRallyURL {
 	public static String getArriveQuery(User user, StampPin pin) {
 		return new StringBuilder(StampRallyHostURL).append("/arrive?")
 			.append(AppTokenParamName).append("=").append(AppTokenKey)
-			.append("token=").append(user.token)
+			.append("&token=").append(user.token)
 			.append("&pinId=").append(pin.id)
 			.toString();
 	}

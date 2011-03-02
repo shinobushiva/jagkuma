@@ -19,8 +19,6 @@ public class HomeActivity extends Activity{
 	private static final int RequestFirstStartSettings = 1;
 
 
-	private User mUser;
-
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -29,8 +27,6 @@ public class HomeActivity extends Activity{
 
 		//プリファレンスクラスにコンテキストを設定する
 		StampRallyPreferences.setContext(getApplicationContext());
-
-		mUser = StampRallyPreferences.getUser();
 
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -42,8 +38,9 @@ public class HomeActivity extends Activity{
 		findViewById(R.id_home.help).setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				Intent intent = new Intent(HomeActivity.this, HelpActivity.class);
-				if(mUser != null) {
-					intent.putExtra(ConstantValue.ExtrasUser, mUser);
+				User user = StampRallyPreferences.getUser();
+				if(user != null) {
+					intent.putExtra(ConstantValue.ExtrasUser, user);
 				}
 				startActivity(intent);
 			}
@@ -57,8 +54,9 @@ public class HomeActivity extends Activity{
 					firstStartAction();
 				} else {
 					Intent intent = new Intent(HomeActivity.this, MapActivity.class);
-					if(mUser != null) {
-						intent.putExtra(ConstantValue.ExtrasUser, mUser);
+					User user = StampRallyPreferences.getUser();
+					if(user != null) {
+						intent.putExtra(ConstantValue.ExtrasUser, user);
 					}
 					startActivity(intent);
 				}
@@ -70,8 +68,9 @@ public class HomeActivity extends Activity{
 		findViewById(R.id_home.settings).setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
-				if(mUser != null) {
-					intent.putExtra(ConstantValue.ExtrasUser, mUser);
+				User user = StampRallyPreferences.getUser();
+				if(user != null) {
+					intent.putExtra(ConstantValue.ExtrasUser, user);
 				}
 				startActivity(intent);
 			}
@@ -82,8 +81,9 @@ public class HomeActivity extends Activity{
 		findViewById(R.id_home.collections).setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				Intent intent = new Intent(HomeActivity.this, CollectionsActivity.class);
-				if(mUser != null) {
-					intent.putExtra(ConstantValue.ExtrasUser, mUser);
+				User user = StampRallyPreferences.getUser();
+				if(user != null) {
+					intent.putExtra(ConstantValue.ExtrasUser, user);
 				}
 				startActivity(intent);
 			}
@@ -103,14 +103,15 @@ public class HomeActivity extends Activity{
 
 		switch(requestCode) {
 		case RequestFirstStartSettings:
+			User user = null;
 			if(resultCode == Activity.RESULT_OK) {
-				mUser = data.getExtras().getParcelable(ConstantValue.ExtrasUser);
+				user = data.getExtras().getParcelable(ConstantValue.ExtrasUser);
 			}
 
 			//Mapアクティビティを起動する
 			Intent intent = new Intent(HomeActivity.this, MapActivity.class);
-			if(mUser != null) {
-				intent.putExtra(ConstantValue.ExtrasUser, mUser);
+			if(user != null) {
+				intent.putExtra(ConstantValue.ExtrasUser, user);
 			}
 			startActivity(intent);
 			break;

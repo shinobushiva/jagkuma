@@ -17,14 +17,15 @@ public final class R {
         public static final int gallery_item_background=0x7f020000;
         public static final int gallery_item_selected_rect=0x7f020001;
         public static final int home_icon=0x7f020002;
-        public static final int icon=0x7f020003;
-        public static final int icon_status_bar=0x7f020004;
-        public static final int icon_status_bar_arrived=0x7f020005;
-        public static final int marker_none=0x7f020006;
-        public static final int marker_none_arrived=0x7f020007;
-        public static final int marker_quiz=0x7f020008;
-        public static final int marker_quiz_arrived=0x7f020009;
-        public static final int transparent_background=0x7f02000a;
+        public static final int ic_menu_forward=0x7f020003;
+        public static final int icon=0x7f020004;
+        public static final int icon_status_bar=0x7f020005;
+        public static final int icon_status_bar_arrived=0x7f020006;
+        public static final int marker_none=0x7f020007;
+        public static final int marker_none_arrived=0x7f020008;
+        public static final int marker_quiz=0x7f020009;
+        public static final int marker_quiz_arrived=0x7f02000a;
+        public static final int transparent_background=0x7f02000b;
     }
     public static final class id_collections {
         public static final int ave_answer_time=0x7f080005;
@@ -60,6 +61,7 @@ public final class R {
         public static final int go_quiz_frame=0x7f0c0000;
         public static final int progress_frame=0x7f0c0002;
         public static final int route_search_kind=0x7f0c0005;
+        public static final int webView_progress=0x7f0c0009;
         public static final int webview=0x7f0c0008;
     }
     public static final class id_main {

@@ -85,12 +85,28 @@
 			/>
 	</FrameLayout>
 		
-	<WebView
-		android:id="@+id_location_info/webview"
+	<FrameLayout
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:layout_below="@id_location_info/go_quiz_frame"
 		android:layout_above="@id_location_info/below_frame"
-		/>
+		>
+		<WebView
+			android:id="@+id_location_info/webview"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			/>
+		<ProgressBar android:id="@+id_location_info/webView_progress"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top|center_horizontal"
+			android:layout_marginTop="5dip"
+			android:layout_marginLeft="15dip"
+			android:layout_marginRight="15dip"
+			android:max="100"
+			style="?android:attr/progressBarStyleHorizontal"
+			
+			/>
+	</FrameLayout>
 	
 	</RelativeLayout>

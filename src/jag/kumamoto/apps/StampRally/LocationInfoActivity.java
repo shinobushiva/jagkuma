@@ -1,6 +1,7 @@
 package jag.kumamoto.apps.StampRally;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,11 +18,18 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,6 +42,7 @@ import android.widget.Toast;
  *
  */
 public class LocationInfoActivity extends Activity{
+	private static final int MenuItemGoForward = 1;
 	
 	private User mUser;
 	private StampPin mPin;
@@ -65,17 +74,40 @@ public class LocationInfoActivity extends Activity{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.location_infomation);
 		
-		try {
-			((WebView)findViewById(R.id_location_info.webview)) .loadData(
-					DataGetter.getHTML(this, R.raw.test_location_info),
-					"text/html",
-					"utf-8");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		//WebViewの設定
+		WebView webInfo = (WebView)findViewById(R.id_location_info.webview);
+		webInfo.setWebViewClient(new WebViewClient() {
+        	@Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        		if(url.startsWith("http")) {
+        			view.loadUrl(url);
+        			return true;
+        		} else {
+	        		return super.shouldOverrideUrlLoading(view, url);
+        		}
+        	}
+		});
+		webInfo.setWebChromeClient(new WebChromeClient() {
+			@Override public void onProgressChanged(WebView view, int newProgress) {
+				super.onProgressChanged(view, newProgress);
 				
+				ProgressBar progress = (ProgressBar)findViewById(R.id_location_info.webView_progress);
+				if(newProgress < 85) {
+					if(progress.getVisibility() == View.GONE) {
+						progress.setVisibility(View.VISIBLE);
+					}
+					
+					progress.setProgress(newProgress);
+				} else {
+					progress.setVisibility(View.GONE);
+				}
+			}
+		});
+		WebSettings settings = webInfo.getSettings();
+		settings.setJavaScriptEnabled(true);
+		webInfo.loadUrl(getWikipediaURL(mPin));
 		
+		
+		//クイズを表示できる状態ならボタンを表示
 		View goQuizFrame = findViewById(R.id_location_info.go_quiz_frame);
 		if(isShowGoQuiz) {
 			goQuizFrame.setVisibility(View.VISIBLE);
@@ -91,6 +123,9 @@ public class LocationInfoActivity extends Activity{
 			goQuizFrame.setVisibility(View.GONE);
 		}
 		
+		
+		//この場所に到着していれば到着報告を送信するボタンを表示
+		//また到着していなければ、この場所へ行くボタンを表示
 		View goLocation = findViewById(R.id_location_info.go_location_frame);
 		View btnArriveReport = findViewById(R.id_location_info.arrive_report);
 		if(isArrive) {
@@ -121,6 +156,12 @@ public class LocationInfoActivity extends Activity{
 			});
 		}
 		
+	}
+	
+	private String getWikipediaURL(StampPin pin) {
+		return new StringBuilder("http://ja.wikipedia.org/wiki/")
+			.append(URLEncoder.encode(pin.name))
+			.toString();
 	}
 	
 	private View.OnClickListener createGoQuizOnClickListener() {
@@ -259,4 +300,47 @@ public class LocationInfoActivity extends Activity{
 			}
 		};
 	}
+	
+	//WebViewを操作するメニュー
+	@Override public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, MenuItemGoForward, 0, "進む").setIcon(R.drawable.ic_menu_forward);
+		
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override public boolean onMenuOpened(int featureId, Menu menu) {
+		WebView webInfo = (WebView)findViewById(R.id_location_info.webview);
+		menu.findItem(MenuItemGoForward).setEnabled(webInfo.canGoForward());
+		
+		return super.onMenuOpened(featureId, menu);
+	}
+	
+	@Override public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		if(item.getItemId() == MenuItemGoForward) {
+			//進む履歴があれば次ページに進む
+			WebView webInfo = (WebView)findViewById(R.id_location_info.webview);
+			if(webInfo.canGoForward()) {
+				webInfo.goForward();
+			}
+			
+			return true;
+		}
+		
+		return super.onMenuItemSelected(featureId, item);
+	}
+
+	@Override public boolean onKeyDown(int keyCode, KeyEvent event) {
+		
+		if(event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+			//戻る履歴があれば前ページに戻る
+			WebView webInfo = (WebView)findViewById(R.id_location_info.webview);
+			if(webInfo.canGoBack()) {
+				webInfo.goBack();
+				return true;
+			}
+		}
+		
+		return super.onKeyDown(keyCode, event);
+	}
+	
 }

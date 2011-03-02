@@ -74,7 +74,7 @@ public final class StampRallyURL {
 	 * @return
 	 */
 	public static String getUserHistoryQuery(User user, boolean pinsOnly) {
-		return new StringBuilder(StampRallyHostURL).append("/user?")
+		return new StringBuilder(StampRallyHostURL).append("/userHistory?")
 			.append(AppTokenParamName).append("=").append(AppTokenKey)
 			.append("&token=").append(user.token)
 			.append("&pinsOnly=").append(pinsOnly ? "true" : "false")

@@ -1,8 +1,11 @@
 package jag.kumamoto.apps.StampRally;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +23,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -27,9 +31,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -42,11 +48,30 @@ import android.widget.TextView;
  *
  */
 public class QuizActivity extends Activity{
+	private static final int RequestLogin = 0;
+	
+	private static final class ResultData{
+		public final QuizData quizData;
+		public final boolean correctness;
+		public final long answeringTime;
+		public final boolean[] isCheckedAry;
+		
+		public ResultData(QuizData quizData, boolean correctness,
+				long answeringTime, boolean[] isCheckedAry) {
+			this.quizData = quizData;
+			this.correctness = correctness;
+			this.answeringTime = answeringTime;
+			this.isCheckedAry = isCheckedAry;
+		}
+	}
 	
 	private User mUser;
 	
 	private QuizData[] mQuizes;
 	private int mIndex = 0;
+	
+	private final Queue<String> mUntransmissionData = new LinkedList<String>();
+	private final ArrayList<ResultData> mResultDataAry = new ArrayList<ResultData>();
 	
 	
 	private long mStartTime; //ミリ秒
@@ -103,10 +128,17 @@ public class QuizActivity extends Activity{
 		((TextView)findViewById(R.id_quiz.name)).setText(mQuizes[mIndex].title);
 		
 		//問題文設定
-			((WebView)findViewById(R.id_quiz.webview)).loadData(
-					mQuizes[mIndex].descriptionHTML,
-					"text/html",
-					"utf-8");
+		WebView web = (WebView)findViewById(R.id_quiz.webview);
+		web.setWebChromeClient(new WebChromeClient() {
+			@Override public void onProgressChanged(WebView view, int newProgress) {
+				super.onProgressChanged(view, newProgress);
+				if(newProgress == 100) {
+					//ロードに時間がかかるときがあるのでスタートを時間を覚えなおす
+					mStartTime = System.currentTimeMillis();
+				}
+			}
+		});
+		web.loadData(mQuizes[mIndex].descriptionHTML,"text/html", "utf-8");
 			
 		//OKボタンの設定
 		final Button btnOK = (Button)findViewById(R.id_quiz.ok);
@@ -126,6 +158,9 @@ public class QuizActivity extends Activity{
 			@Override public void onClick(View v) {
 				//OKボタンを押すまでにかかった時間(ミリ秒）
 				long duration = System.currentTimeMillis() - mStartTime;
+				if(duration < 1) {
+					duration = 1;
+				}
 				
 				RadioGroup choicesFrame = (RadioGroup)findViewById(R.id_quiz.frame_choices);
 				boolean[] isCheckedAry = new boolean[choicesFrame.getChildCount()];
@@ -141,12 +176,15 @@ public class QuizActivity extends Activity{
 					String loggingQuery = StampRallyURL.getLoggingQuery(
 							mUser, mQuizes[mIndex],
 							correctness, duration, isCheckedAry);
-					Log.i("query", loggingQuery);
-					
+					synchronized (mUntransmissionData) {
+						mUntransmissionData.add(loggingQuery);
+					}
 					//非同期で送信
-					asyncSendAnswerLong(loggingQuery);
+					asyncSendAnswerLong();
+				} else {
+					mResultDataAry.add(new ResultData(mQuizes[mIndex],
+							correctness, duration, isCheckedAry));
 				}
-				
 				
 				showAnswerDialog(correctness);
 			}
@@ -168,41 +206,74 @@ public class QuizActivity extends Activity{
 		return correctness;
 	}
 	
-	private void asyncSendAnswerLong(final String query) {
-		new AsyncTask<Void, Void, Boolean>() {
+	private void asyncSendAnswerLong() {
+		int count;
+		synchronized(mUntransmissionData) {
+			count = mUntransmissionData.size();
+		}
+		
+		int c = 0;
+		while(c < count) {
+			++c;
 			
-			@Override protected Boolean doInBackground(Void... params) {
-				try {
-					JSONObject obj = DataGetter.getJSONObject(query);
-					if(StampRallyURL.isSuccess(obj)) {
-						return true;
-					} else {
-						//XXX サーバとの通信失敗(クエリの間違い?)
-						Log.e("send answer", obj.toString());
+			String query; 
+			synchronized(mUntransmissionData) {
+				query = mUntransmissionData.poll();
+			}
+			
+			if(query == null){ 
+				break;
+			}
+			
+			new AsyncTask<String, Void, Boolean>() {
+				private String mQuery;
+				
+				@Override protected Boolean doInBackground(String... params) {
+					mQuery = params[0];
+					try {
+						JSONObject obj = DataGetter.getJSONObject(params[0]);
+						if(StampRallyURL.isSuccess(obj)) {
+							return true;
+						} else {
+							//XXX サーバとの通信失敗(クエリの間違い?)
+							Log.e("send answer", obj.toString());
+						}
+					} catch (IOException e) {
+						//XXX ネットワーク通信の失敗
+						e.printStackTrace();
+					} catch (JSONException e) {
+						//XXX JSONフォーマットが不正
+						e.printStackTrace();
 					}
-				} catch (IOException e) {
-					//XXX ネットワーク通信の失敗
-					e.printStackTrace();
-				} catch (JSONException e) {
-					//XXX JSONフォーマットが不正
-					e.printStackTrace();
+					
+					return false;
 				}
 				
-				return false;
-			}
-			
-			@Override protected void onPostExecute(Boolean result) {
-				if(!result) {
-					//XXX 送信失敗.どうしよう
+				@Override protected void onPostExecute(Boolean result) {
+					if(!result) {
+						//XXX 送信失敗.どうしよう
+						Log.i("send", "failure");
+						synchronized (mUntransmissionData) {
+							mUntransmissionData.offer(mQuery);
+						}
+					} else {
+						Log.i("send", "success");
+					}
 				}
-			}
-			
-		}.execute((Void)null);
+				
+			}.execute(query);
+		}
+		
 	}
 	
  	private void showAnswerDialog(boolean correctness) {
+ 		View content = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+ 			.inflate(R.layout.quiz_result_dialog_content, null);
+ 		
+ 		
 		AlertDialog.Builder builder =  new AlertDialog.Builder(this)
-			.setMessage(correctness ? "正解!!" : "残念。不正解")
+			.setTitle("結果は?")
+			.setView(content)
 			.setPositiveButton("戻る", new DialogInterface.OnClickListener() {
 				@Override public void onClick(DialogInterface dialog, int which) {
 					finish();
@@ -215,14 +286,38 @@ public class QuizActivity extends Activity{
 				}
 			});
 		
-		if(correctness && (mIndex + 1) < mQuizes.length) {
-			builder.setNegativeButton("次の問題へ", new DialogInterface.OnClickListener() {
-				@Override public void onClick(DialogInterface dialog, int which) {
-					++mIndex;
-					constractQuizView();
-				}
-			});
+		if(correctness) {
+	 		((TextView)content.findViewById(R.id_quiz.result_message)).setText("正解!!");
+	 		((ImageView)content.findViewById(R.id_quiz.result_icon)).setImageResource(R.drawable.quiz_result_correctness);
+	 		
+			if(mUser == null) {
+				content.findViewById(R.id_quiz.result_warning).setVisibility(View.VISIBLE);
+				builder.setNeutralButton("ログインする", new DialogInterface.OnClickListener() {
+					@Override public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(QuizActivity.this, SettingsActivity.class);
+						intent.putExtra(ConstantValue.ExtrasLoginRequest, true);
+						
+						startActivityForResult(intent, RequestLogin);
+					}
+				});
+			} else {
+				content.findViewById(R.id_quiz.result_separator).setVisibility(View.GONE);
+			}
+			
+			if(mIndex + 1 < mQuizes.length) {
+				builder.setNegativeButton("次の問題へ", new DialogInterface.OnClickListener() {
+					@Override public void onClick(DialogInterface dialog, int which) {
+						++mIndex;
+						constractQuizView();
+					}
+				});
+			}
+		} else {
+	 		((TextView)content.findViewById(R.id_quiz.result_message)).setText("不正解；；");
+	 		((ImageView)content.findViewById(R.id_quiz.result_icon)).setImageResource(R.drawable.quiz_result_incorrectness);
+	 		content.findViewById(R.id_quiz.result_separator).setVisibility(View.GONE);
 		}
+		
 		
 		builder.show();
 	}
@@ -282,4 +377,32 @@ public class QuizActivity extends Activity{
 		}
 	}
 
+	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == RequestLogin) {
+			if(resultCode == Activity.RESULT_OK) {
+				User user = data.getExtras().getParcelable(ConstantValue.ExtrasUser);
+				if(user != null) {
+					mUser = user;
+					
+					synchronized (mUntransmissionData) {
+						for(ResultData result : mResultDataAry) {
+							mUntransmissionData.offer(StampRallyURL.getLoggingQuery(mUser, 
+									result.quizData, result.correctness, result.answeringTime, result.isCheckedAry));
+						}
+					}
+					
+					//ログインしたので未送信データを送信する
+					asyncSendAnswerLong();
+					
+					//もう一度ダイアログを表示する
+					showAnswerDialog(true);
+				}
+			}
+			
+			return;
+		}
+		
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+	
 }

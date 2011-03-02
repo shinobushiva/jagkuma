@@ -13,6 +13,8 @@ import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -43,6 +45,7 @@ import android.widget.Toast;
  */
 public class LocationInfoActivity extends Activity{
 	private static final int MenuItemGoForward = 1;
+	private static final int RequestLogin = 0;
 	
 	private User mUser;
 	private StampPin mPin;
@@ -129,14 +132,17 @@ public class LocationInfoActivity extends Activity{
 		View goLocation = findViewById(R.id_location_info.go_location_frame);
 		View btnArriveReport = findViewById(R.id_location_info.arrive_report);
 		if(isArrive) {
-			if(mUser == null) {
-				goLocation.setVisibility(View.GONE);
-				btnArriveReport.setVisibility(View.GONE);
-			} else {
-				goLocation.setVisibility(View.GONE);
-				btnArriveReport.setVisibility(View.VISIBLE);
-				btnArriveReport.setOnClickListener(createOnArriveReportClickListener());
-			}
+			goLocation.setVisibility(View.GONE);
+			btnArriveReport.setVisibility(View.VISIBLE);
+			btnArriveReport.setOnClickListener(new View.OnClickListener() {
+				@Override public void onClick(View v) {
+					if(mUser == null) {
+						showUrgeLoginDialog();
+					} else {
+						sendAsyncArrivedMessaeg();
+					}
+				}
+			});
 		} else {
 			goLocation.setVisibility(View.VISIBLE);
 			btnArriveReport.setVisibility(View.GONE);
@@ -256,49 +262,66 @@ public class LocationInfoActivity extends Activity{
 		};
 	}
 	
-	private View.OnClickListener createOnArriveReportClickListener() {
-		return new View.OnClickListener() {
-			
-			@Override public void onClick(View v) {
-				final String query = StampRallyURL.getArriveQuery(mUser, mPin);
-				
-				new AsyncTask<Void, Void, Boolean>() {
-					@Override protected Boolean doInBackground(Void... params) {
-						try {
-							JSONObject obj = DataGetter.getJSONObject(query);
-							if(StampRallyURL.isSuccess(obj)) {
-								return true;
-							} else {
-								//XXX サーバとの通信失敗(クエリの間違い?)
-								Log.e("arrive data", obj.toString());
-							}
-						} catch (IOException e) {
-							//XXX ネットワーク通信の失敗
-							e.printStackTrace();
-						} catch (JSONException e) {
-							//XXX JSONフォーマットが不正
-							e.printStackTrace();
-						}
-						
-						return false;
-					}
+	private void showUrgeLoginDialog() {
+		new AlertDialog.Builder(this)
+			.setTitle("ログインしていません")
+			.setMessage("ログインしていないと到着ポイントはもらえません。\n設定画面からログインしてください")
+			.setPositiveButton("ログインする", new DialogInterface.OnClickListener() {
+				@Override public void onClick(DialogInterface dialog, int which) {
+					Intent intent = new Intent(LocationInfoActivity.this, SettingsActivity.class);
+					intent.putExtra(ConstantValue.ExtrasLoginRequest, true);
 					
-					@Override protected void onPostExecute(Boolean result) {
-						if(!result) {
-							//TODO 到着データ送信に失敗
-							//さてどうしよう
-							Log.i("arrive data", "failure");
-						}
-						
-						Toast.makeText(LocationInfoActivity.this, result ?
-								"到着完了!" : "あれ？ネットワークの調子がおかしいぞ",
-								Toast.LENGTH_SHORT).show();
+					startActivityForResult(intent, RequestLogin);
+				}
+			})
+			.setNegativeButton("取り消し", null)
+			.show();
+	}
+	
+	private void sendAsyncArrivedMessaeg() {
+		Toast.makeText(LocationInfoActivity.this, "到着確認を送信します", Toast.LENGTH_SHORT).show();
+		
+		final String query = StampRallyURL.getArriveQuery(mUser, mPin);
+		
+		final View btnArriveReport = findViewById(R.id_location_info.arrive_report);
+		btnArriveReport.setEnabled(false);
+		new AsyncTask<Void, Void, Boolean>() {
+			@Override protected Boolean doInBackground(Void... params) {
+				try {
+					JSONObject obj = DataGetter.getJSONObject(query);
+					if(StampRallyURL.isSuccess(obj)) {
+						return true;
+					} else {
+						//XXX サーバとの通信失敗(クエリの間違い?)
+						Log.e("arrive data", obj.toString());
 					}
-					
-				}.execute((Void)null);
+				} catch (IOException e) {
+					//XXX ネットワーク通信の失敗
+					e.printStackTrace();
+				} catch (JSONException e) {
+					//XXX JSONフォーマットが不正
+					e.printStackTrace();
+				}
 				
+				return false;
 			}
-		};
+			
+			@Override protected void onPostExecute(Boolean result) {
+				if(result) {
+					btnArriveReport.setVisibility(View.GONE);
+				} else {
+					//TODO 到着データ送信に失敗
+					//さてどうしよう
+					Log.i("arrive data", "failure");
+					btnArriveReport.setEnabled(true);
+				}
+				
+				Toast.makeText(LocationInfoActivity.this, result ?
+						"到着完了!" : "あれ？ネットワークの調子がおかしいぞ",
+						Toast.LENGTH_SHORT).show();
+			}
+			
+		}.execute((Void)null);
 	}
 	
 	//WebViewを操作するメニュー
@@ -341,6 +364,21 @@ public class LocationInfoActivity extends Activity{
 		}
 		
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == RequestLogin) {
+			if(resultCode == Activity.RESULT_OK) {
+				User user = data.getExtras().getParcelable(ConstantValue.ExtrasUser);
+				if(user != null) {
+					mUser = user;
+					
+					sendAsyncArrivedMessaeg();
+				}
+			}
+		}
+		
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
 }

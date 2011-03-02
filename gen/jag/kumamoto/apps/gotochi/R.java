@@ -25,7 +25,9 @@ public final class R {
         public static final int marker_none_arrived=0x7f020008;
         public static final int marker_quiz=0x7f020009;
         public static final int marker_quiz_arrived=0x7f02000a;
-        public static final int transparent_background=0x7f02000b;
+        public static final int quiz_result_correctness=0x7f02000b;
+        public static final int quiz_result_incorrectness=0x7f02000c;
+        public static final int transparent_background=0x7f02000d;
     }
     public static final class id_collections {
         public static final int ave_answer_time=0x7f080005;
@@ -75,6 +77,10 @@ public final class R {
         public static final int label_answer=0x7f0f0002;
         public static final int name=0x7f0f0000;
         public static final int ok=0x7f0f0004;
+        public static final int result_icon=0x7f0f0006;
+        public static final int result_message=0x7f0f0005;
+        public static final int result_separator=0x7f0f0007;
+        public static final int result_warning=0x7f0f0008;
         public static final int webview=0x7f0f0001;
     }
     public static final class id_settings {
@@ -104,9 +110,10 @@ public final class R {
         public static final int map=0x7f030007;
         public static final int quiz=0x7f030008;
         public static final int quiz_muliple_choice=0x7f030009;
-        public static final int quiz_single_choice=0x7f03000a;
-        public static final int settings=0x7f03000b;
-        public static final int settings_token_radiobutton=0x7f03000c;
+        public static final int quiz_result_dialog_content=0x7f03000a;
+        public static final int quiz_single_choice=0x7f03000b;
+        public static final int settings=0x7f03000c;
+        public static final int settings_token_radiobutton=0x7f03000d;
     }
     public static final class raw {
         public static final int help=0x7f040000;

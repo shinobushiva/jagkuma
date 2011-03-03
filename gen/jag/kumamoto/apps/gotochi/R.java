@@ -89,10 +89,11 @@ public final class R {
         public static final int koke=0x7f040001;
         public static final int kumamon=0x7f040002;
         public static final int ofuro=0x7f040003;
-        public static final int sleeping=0x7f040004;
-        public static final int speak=0x7f040005;
-        public static final int test_location_info=0x7f040006;
-        public static final int test_quiz=0x7f040007;
+        public static final int scroll=0x7f040004;
+        public static final int sleeping=0x7f040005;
+        public static final int speak=0x7f040006;
+        public static final int test_location_info=0x7f040007;
+        public static final int test_quiz=0x7f040008;
     }
     public static final class string {
         public static final int RouteSearchKindPrompt=0x7f05000a;

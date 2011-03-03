@@ -46,6 +46,7 @@ public final class Mascot implements IMascot{
 	private final ArrayList<UserInteractionState> mInteractionStateList = new ArrayList<UserInteractionState>();
 	private final ArrayList<TimeZoneState> mTimeZoneStateList = new ArrayList<TimeZoneState>();
 	private final StateSpeak mSpeakState = new StateSpeak(this);
+	private final StateScroll mScrollState = new StateScroll(this);
 	
 	private MascotState mCurState;
 	
@@ -160,6 +161,10 @@ public final class Mascot implements IMascot{
 		mSpeakState.setImage(image);
 	}
 	
+	public void setScrollStateImage(Bitmap image) {
+		mScrollState.setImage(image);
+	}
+	
 	public void draw(Canvas canvas) {
 		if(mIsStarted) {
 			mCurState.draw(canvas);
@@ -210,18 +215,17 @@ public final class Mascot implements IMascot{
 				return;
 			}
 			
-			//XXX まだできていない
+			if(mScrollState.isEnable() && mCurState != mScrollState) {
+				forceTransition(mScrollState);
+			}
+			
+			//これ以降はmCurState == mScrollStateが保証されている
+			mScrollState.move(distanceX, distanceY);
 		}
 	}
 	
 	public void onFling(float velocityX, float velocityY) {
-		synchronized (mSyncUpdateObj) {
-			if(!mCurState.isAllowInterrupt()) {
-				return;
-			}
-			
-			//XXX まだできていない
-		}
+		onUserInteraction(UserInteractionState.Type.Fling);
 	}
 	
 	public void onScrollEnd() {

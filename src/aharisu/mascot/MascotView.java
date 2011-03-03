@@ -68,6 +68,9 @@ public class MascotView extends FrameLayout {
 			//テキスト表示状態用の画像を設定
 			mMascot.setSpeakStateImage(ImageUtill.loadImage(res.openRawResource(R.raw.speak), 1024, 1024));
 			
+			//スクロール中状態用の画像を設定
+			mMascot.setScrollStateImage(ImageUtill.loadImage(res.openRawResource(R.raw.scroll), 1024, 1024));
+			
 			//入浴中状態を設定	
 			StateTimeZoneRepetition bathing = new StateTimeZoneRepetition(mMascot, TimeZoneState.Type.Evening,
 					ImageUtill.loadImage(res.openRawResource(R.raw.ofuro), 1024, 1024), 2,
@@ -125,7 +128,11 @@ public class MascotView extends FrameLayout {
 		}
 		
 		@Override public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-			mIsScrolling = false;
+			if(mIsScrolling) {
+				mIsScrolling = false;
+				
+				mMascot.onScrollEnd();
+			}
 			
 			mMascot.onFling(velocityX, velocityY);
 			return true;

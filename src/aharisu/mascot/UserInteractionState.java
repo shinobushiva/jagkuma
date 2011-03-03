@@ -14,7 +14,6 @@ public abstract class UserInteractionState extends MascotState{
 		LongPress,
 		SingleTap,
 		DoubleTap,
-		Scroll,
 		Fling,
 	}
 	

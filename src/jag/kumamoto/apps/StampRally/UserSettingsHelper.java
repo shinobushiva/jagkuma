@@ -7,12 +7,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import aharisu.util.DataGetter;
+import aharisu.util.Pair;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
@@ -28,8 +32,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import jag.kumamoto.apps.StampRally.Data.StampPin;
 import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
+import jag.kumamoto.apps.StampRally.Data.UserHistory;
+import jag.kumamoto.apps.StampRally.Data.UserRecord;
 import jag.kumamoto.apps.gotochi.R;
 
 final class UserSettingsHelper {
@@ -78,7 +85,8 @@ final class UserSettingsHelper {
 		//ニックネーム設定
 		EditText edtNickname = (EditText)mLayout.findViewById(R.id_settings.nickname);
 		edtNickname.setText(mUser.nickname);
-		edtNickname.addTextChangedListener(new TextWatcher() {
+		edtNickname.setSelection(mUser.nickname.length());
+		TextWatcher tw = new TextWatcher() {
 			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
 				if(s.length() == 0) {
 					//長さ０は無条件で無効
@@ -93,7 +101,10 @@ final class UserSettingsHelper {
 			
 			@Override public void afterTextChanged(Editable s) {
 			}
-		});
+		};
+		edtNickname.addTextChangedListener(tw);
+		edtNickname.setTag(tw);
+		
 		
 		//性別設定
 		RadioGroup genderGroup =  (RadioGroup)mLayout.findViewById(R.id_settings.gender_frame);
@@ -179,19 +190,48 @@ final class UserSettingsHelper {
 		return new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				if(mUser != null) {
-					mUser = null;
-					//ユーザ情報を消去する
-					StampRallyPreferences.clearUser();
-					constractLoginView();
+					showLogoutAlertDialog();
 				} else {
 					if(mLayout.findViewById(R.id_settings.registration_frame).getVisibility() == View.GONE) {
 						constractRegistrationView();
 					} else {
+						EditText edt = (EditText)mLayout.findViewById(R.id_settings.nickname);
+						edt.removeTextChangedListener((TextWatcher)edt.getTag());
+						
 						constractLoginView();
 					}
 				}
 			}
 		};
+	}
+	
+	private void showLogoutAlertDialog() {
+		new AlertDialog.Builder(mLayout.getContext())
+			.setTitle("本当に？")
+			.setMessage("ログアウトします。\nよろしいですか?")
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override public void onClick(DialogInterface dialog, int which) {
+					logout();
+				}
+			})
+			.setNegativeButton("キャンセル", null)
+			.setCancelable(true)
+			.show();
+	}
+	
+	private void logout() {
+		((RadioGroup)mLayout.findViewById(R.id_settings.gender_frame))
+			.setOnCheckedChangeListener(null);
+		EditText edt = (EditText)mLayout.findViewById(R.id_settings.nickname);
+		edt.removeTextChangedListener((TextWatcher)edt.getTag());
+	
+		mUser = null;
+		//ユーザ情報を消去する
+		StampRallyPreferences.clearUser();
+		StampRallyDB.clearPinArrive();
+					
+		constractLoginView();
 	}
 	
 	private void modifyUser(final User user) {
@@ -282,18 +322,35 @@ final class UserSettingsHelper {
 	private void login(final String token) {
 		final ProgressDialog dialog = new ProgressDialog(mLayout.getContext());
 		dialog.setMessage("認証中です");
-		dialog.setIndeterminate(false);
-		dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		dialog.setMax(5);
+		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		dialog.setCancelable(false);
 		dialog.show();
 
+		final Handler handler = new Handler();
 		new AsyncTask<Void, Void, User>() {
 
 			@Override protected User doInBackground(Void... params) {
 				try {
 					JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getUserInfoQuery(token));
 					if(StampRallyURL.isSuccess(obj)) {
-						return User.decodeJSONObject(token, obj);
+						User user = User.decodeJSONObject(token, obj);
+						int point = UserHistory.decodeJSONGotochiData(obj);
+						switch(loginUpdate(dialog, handler, user, new UserRecord(point, 0, 0, 0, 0))) {
+						case 1:
+							//XXX サーバとの通信失敗(クエリの間違い?)
+							break;
+						case 2:
+							//XXX ネットワーク通信の失敗
+							break;
+						case 3:
+							//XXX JSONフォーマットが不正
+							break;
+						default:
+							return user;
+						}
+								
+						return null;
 					} else {
 						//XXX サーバとの通信失敗(クエリの間違い?)
 						Log.e("login", obj.toString());
@@ -315,7 +372,7 @@ final class UserSettingsHelper {
 				if(result != null) {
 					StampRallyPreferences.setUser(result);
 					mUser = result;
-
+					
 					if(mListener != null) {
 						mListener.onLogin(mUser);
 					}
@@ -351,9 +408,15 @@ final class UserSettingsHelper {
 		//ニックネームと性別設定欄を表示
 		mLayout.findViewById(R.id_settings.registration_frame).setVisibility(View.VISIBLE);
 		
+		//性別設定
+		((RadioGroup)mLayout.findViewById(R.id_settings.gender_frame)).check(genderToId(User.Unknown));
+		
 		//ニックネーム設定
 		EditText edtNickname = (EditText)mLayout.findViewById(R.id_settings.nickname);
-		edtNickname.addTextChangedListener(createEditTextWatcher());
+		edtNickname.setText(null);
+		TextWatcher tw = createEditTextWatcher();
+		edtNickname.addTextChangedListener(tw);
+		edtNickname.setTag(tw);
 		
 		//okボタンを設定
 		Button btnOK = (Button)mLayout.findViewById(R.id_settings.ok);
@@ -403,18 +466,33 @@ final class UserSettingsHelper {
 	private void registration(final User user) {
 		final ProgressDialog dialog = new ProgressDialog(mLayout.getContext());
 		dialog.setMessage("登録中です");
-		dialog.setIndeterminate(false);
-		dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		dialog.setMax(5);
+		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		dialog.setCancelable(false);
 		dialog.show();
 
+		final Handler handler = new Handler();
 		new AsyncTask<Void, Void, Boolean>() {
 
 			@Override protected Boolean doInBackground(Void... params) {
 				try {
 					JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getRegistrationQuery(user));
 					if(StampRallyURL.isSuccess(obj)) {
-						return true;
+						switch(loginUpdate(dialog, handler, user, new UserRecord(0, 0, 0, 0, 0))) {
+						case 1:
+							//XXX サーバとの通信失敗(クエリの間違い?)
+							break;
+						case 2:
+							//XXX ネットワーク通信の失敗
+							break;
+						case 3:
+							//XXX JSONフォーマットが不正
+							break;
+						default:
+							return true;
+						}
+						
+						return false;
 					} else {
 						//XXX サーバとの通信失敗(クエリの間違い?)
 						Log.e("registration", obj.toString());
@@ -437,7 +515,6 @@ final class UserSettingsHelper {
 					StampRallyPreferences.setUser(user);
 					mUser = user;
 
-					
 					if(mListener != null) {
 						mListener.onLogin(user);
 					}
@@ -502,6 +579,82 @@ final class UserSettingsHelper {
 		String[] result = new String[accountNames.size()];
 		accountNames.toArray(result);
 		return result;
+	}
+	
+	private int loginUpdate(final ProgressDialog dialog, final Handler handler,
+			User user, UserRecord record) {
+		class ProgressManipulator implements Runnable {
+			private final int progress;
+			
+			public ProgressManipulator(int progress) {
+				this.progress = progress;
+			}
+			
+			public void run() {
+				dialog.setProgress(progress);
+				
+				switch(progress) {
+				case 1:
+					dialog.setMessage("スタンプ情報取得中...");
+					break;
+				case 2:
+					dialog.setMessage("スタンプ情報更新中...");
+					break;
+				case 3:
+					dialog.setMessage("ユーザー履歴取得中...");
+					break;
+				case 4:
+					dialog.setMessage("ユーザー履歴更新中...");
+					break;
+				}
+			}
+		};
+		
+		try {
+			//サーバーからピンを取得
+			handler.post(new ProgressManipulator(1));
+			JSONObject obj = DataGetter.getJSONObject(StampRallyURL.getGetAllPinQuery());
+			if(StampRallyURL.isSuccess(obj)) {
+				handler.post(new ProgressManipulator(2));
+				StampPin[] serverPins = StampPin.decodeJSONObject(obj);
+				obj = null;
+				
+				//DBからピンを取得
+				StampPin[] dbPins = StampRallyDB.getStampPins();
+				
+				//Server<->DB間の更新情報を更新
+				Pair<StampPin[], StampPin[]> extract = StampPin.extractNewAndDeletePins(dbPins, serverPins);
+				StampRallyDB.deleteStampPins(extract.v2);
+				StampRallyDB.insertStampPins(extract.v1);
+				
+				handler.post(new ProgressManipulator(3));
+				//サーバから到着済みの場所を取得
+				obj = DataGetter.getJSONObject(StampRallyURL.getUserHistoryQuery(user, true));
+				handler.post(new ProgressManipulator(4));
+				long[] arrivedIds = UserHistory.decodeJSONGetArrivedIds(obj);
+				//ユーザ履歴からすでに到着しているスタンプにフラグを立てる
+				StampRallyDB.checkPinArrived(arrivedIds);
+				
+				//ユーザレコードをプリファレンスに保存する
+				record.numStamp = arrivedIds.length;
+				StampRallyPreferences.setUserRecord(record);
+				
+				return 0;
+			} else {
+				//XXX サーバとの通信失敗(クエリの間違い?)
+				Log.e("get pins", obj.toString());
+				return 1;
+			}
+			
+		} catch(IOException e) {
+			//XXX ネットワーク通信の失敗
+			e.printStackTrace();
+			return 2;
+		} catch(JSONException e) {
+			//XXX JSONフォーマットが不正
+			e.printStackTrace();
+			return 3;
+		}
 	}
 		
 }

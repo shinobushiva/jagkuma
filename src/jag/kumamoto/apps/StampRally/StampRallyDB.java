@@ -306,6 +306,107 @@ public class StampRallyDB extends SQLiteOpenHelper{
 		}
 	}
 	
+	public static boolean[] checkPinArrived(long... ids) {
+		if(ids == null || ids.length == 0)
+			return new boolean[0];
+		
+		boolean[] nonArrived = new boolean[ids.length];
+		SQLiteOpenHelper helper = getInstance();
+		synchronized (helper) {
+			
+			SQLiteDatabase db = helper.getWritableDatabase();
+			
+			Cursor cursor = null;
+			db.beginTransaction();
+			try {
+				//まだ到達していない場所のidを取得
+				StringBuilder builder = new StringBuilder()
+					.append("select ")
+					.append(StampLocationID)
+					.append(" from ")
+					.append(StampLocationTable)
+					.append(" where ")
+					.append(StampLocationIsArrived).append(" = 0")
+					.append(" and ")
+					.append(StampLocationID)
+					.append(" in (")
+					.append(ids[0]);
+				for(int i = 1;i< ids.length;++i) {
+					builder.append(", ").append(ids[i]);
+				}
+				builder.append(")");
+				
+				cursor = db.rawQuery(builder.toString(), null);
+				int count = cursor.getCount();
+				if(count != 0) {
+					long[] nonArriveIds = new long[count];
+					int idIndex = cursor.getColumnIndex(StampLocationID);
+					
+					cursor.moveToFirst();
+					for(int i = 0;i < count;++i) {
+						nonArriveIds[i] = cursor.getLong(idIndex);
+						
+						cursor.moveToNext();
+					}
+					
+					//引数のid配列に対応してまだ到達していない場所であればtrueをセット
+					for(int i = 0;i < ids.length;++i) {
+						for(int j = 0;j < nonArriveIds.length;++j) {
+							if(ids[i] == nonArriveIds[j]) {
+								nonArrived[i] = true;
+								break;
+							}
+						}
+					}
+					
+					//到達していない場所の到達フラグを立てる
+					builder.delete(0, builder.length());
+					builder.append(StampLocationID).append(" in (").append(nonArriveIds[0]);
+					for(int i = 1;i < nonArriveIds.length;++i) {
+						builder.append(",").append(nonArriveIds[i]);
+					}
+					builder.append(")");
+					
+					ContentValues values = new ContentValues();
+					values.put(StampLocationIsArrived, 1);
+					db.update(StampLocationTable, values, builder.toString(), null);
+				}
+				
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+				
+				if(cursor != null)
+					cursor.close();
+				
+				db.close();
+			}
+		}
+		
+		return nonArrived;
+	}
+	
+	public static void clearPinArrive() {
+		SQLiteOpenHelper helper = getInstance();
+		synchronized (helper) {
+			
+			SQLiteDatabase db = helper.getWritableDatabase();
+			
+			db.beginTransaction();
+			try {
+				ContentValues values = new ContentValues();
+				values.put(StampLocationIsArrived, 0);
+				
+				db.update(StampLocationTable, values, null, null);
+				
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+				db.close();
+			}
+		}
+	}
+	
 	public static Prize[] getPrizes() {
 		SQLiteOpenHelper helper = getInstance();
 		synchronized (helper) {

@@ -481,8 +481,8 @@ public class StampRallyDB extends SQLiteOpenHelper{
 				cursor.moveToFirst();
 				return new Item(
 						cursor.getLong(idIndex),
-						cursor.getString(imageURLIndex),
 						cursor.getString(nameIndex),
+						cursor.getString(imageURLIndex),
 						cursor.getString(descriptionIndex));
 			}
 		} finally {

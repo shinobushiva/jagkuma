@@ -14,6 +14,7 @@ import jag.kumamoto.apps.StampRally.Data.StampPin;
 import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
+import aharisu.mascot.MascotView;
 import aharisu.util.DataGetter;
 import aharisu.util.Pair;
 import android.content.ComponentName;
@@ -233,5 +234,17 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		unbindService(mConnection);
 		
 		stopService(intent);
+	}
+	
+	@Override protected void onResume() {
+		super.onResume();
+		
+		((MascotView)findViewById(R.id_map.mascot)).start();
+	}
+	
+	@Override protected void onPause() {
+		super.onPause();
+		
+		((MascotView)findViewById(R.id_map.mascot)).stop();
 	}
 }

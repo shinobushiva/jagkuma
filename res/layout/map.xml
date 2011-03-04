@@ -12,7 +12,7 @@
     	android:apiKey="input your android map key"
     	/>
     	
-    <aharisu.mascot.MascotView
+    <aharisu.mascot.MascotView android:id="@+id_map/mascot"
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
     	/>

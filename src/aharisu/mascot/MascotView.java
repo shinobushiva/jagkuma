@@ -276,10 +276,12 @@ public class MascotView extends FrameLayout {
 			ViewGroup.LayoutParams.FILL_PARENT);
 	}		
 	
-	@Override protected void onFinishInflate() {
-		super.onFinishInflate();
-		
+	public void start() {
 		mShowMascotView.start();
+	}
+	
+	public void stop() {
+		mShowMascotView.stop();
 	}
 	
 	/*

@@ -53,6 +53,7 @@ public final class R {
     }
     public static final class id_map {
         public static final int mapview=0x7f0d0000;
+        public static final int mascot=0x7f0d0001;
     }
     public static final class id_quiz {
         public static final int frame_choices=0x7f0e0003;

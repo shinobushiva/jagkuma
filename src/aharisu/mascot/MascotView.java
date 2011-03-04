@@ -1,10 +1,7 @@
 package aharisu.mascot;
 
 import jag.kumamoto.apps.gotochi.R;
-import aharisu.util.ImageUtill;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -32,31 +29,6 @@ public class MascotView extends FrameLayout {
 	
 	final class ShowMascotView extends View 
 			implements OnGestureListener, OnDoubleTapListener{
-		private final class RawResourceBitmapLoader implements BitmapLoader {
-			private final int mResId;
-			private final int mNumSplitVertical;
-			private final int mNumSplitHorizontal;
-			
-			public RawResourceBitmapLoader(int resId, int numSplitVertical, int numSplitHorizontal) {
-				this.mResId = resId;
-				this.mNumSplitVertical = numSplitVertical;
-				this.mNumSplitHorizontal = numSplitHorizontal;
-			}
-			
-			@Override public Bitmap getBitmap() {
-				return ImageUtill.loadImage(getContext().getResources().
-						openRawResource(mResId), 1024, 1024);
-			}
-			
-			@Override public int getNumSplitVertical() {
-				return mNumSplitVertical;
-			}
-			
-			@Override public int getNumSplitHorizontal() {
-				return mNumSplitHorizontal;
-			}
-		}
-
 		
 		private final Mascot mMascot;
 		
@@ -71,54 +43,6 @@ public class MascotView extends FrameLayout {
 			mGestureDetector = new GestureDetector(context, this);
 			mGestureDetector.setOnDoubleTapListener(this);
 			mMascot = new Mascot(this);
-			
-			initializeMascotState();
-		}
-		
-		
-		private void initializeMascotState() {
-			Resources res = getContext().getResources();
-			
-			//ランダム歩行の基本状態追加
-			mMascot.addBasicState(new StateRandomWalk(mMascot, 
-					ImageUtill.loadImage(res.openRawResource(R.raw.kumamon), 1024, 1024)));
-			
-			//ダブルタップのときのこけるアニメーション
-			StateRepetition falling = new StateRepetition(mMascot, UserInteractionState.Type.DoubleTap, 
-					new RawResourceBitmapLoader(R.raw.koke, 3, 1));
-			//一つ導入画像がある
-			falling.setNumHeaderFrame(1);
-			//導入画像を以外を3回リピートする
-			falling.setNumRepetition(3);
-			mMascot.addUserInteractionState(falling);
-			
-			//テキスト表示状態用の画像を設定
-			mMascot.setSpeakStateBitmapLoader(new RawResourceBitmapLoader(R.raw.speak, 5, 1));
-			
-			//スクロール中状態用の画像を設定
-			mMascot.setScrollStateBitmapLoader(new RawResourceBitmapLoader(R.raw.scroll, 2, 1));
-			
-			//入浴中状態を設定	
-			StateTimeZoneRepetition bathing = new StateTimeZoneRepetition(mMascot, TimeZoneState.Type.Evening,
-					new RawResourceBitmapLoader(R.raw.ofuro, 2, 1),
-					Mascot.Level.Middle, Mascot.Level.Low);
-			bathing.setNumRepetition(-1);
-			mMascot.addTimeZoneState(bathing);
-			//昼・夜は入浴状態に移る確率は低い
-			mMascot.addTimeZoneState(bathing.copy(TimeZoneState.Type.Daytime,
-					Mascot.Level.Low, Mascot.Level.Middle));
-			mMascot.addTimeZoneState(bathing.copy(TimeZoneState.Type.Night,
-					Mascot.Level.Low, Mascot.Level.Low));
-			
-			//睡眠状態を設定
-			StateTimeZoneRepetition sleeping = new StateTimeZoneRepetition(mMascot, TimeZoneState.Type.Night,
-					new RawResourceBitmapLoader(R.raw.sleeping, 3, 1),
-					Mascot.Level.Middle, Mascot.Level.Low);
-			sleeping.setNumRepetition(-1);
-			mMascot.addTimeZoneState(sleeping);
-			//昼は睡眠状態に移る確率は低い
-			mMascot.addTimeZoneState(sleeping.copy(TimeZoneState.Type.Daytime,
-					Mascot.Level.Low, Mascot.Level.Middle));
 		}
 		
 		
@@ -276,6 +200,9 @@ public class MascotView extends FrameLayout {
 			ViewGroup.LayoutParams.FILL_PARENT);
 	}		
 	
+	/**
+	 * @throws IllegalStateException BasicStateを一つも持っていないとき
+	 */
 	public void start() {
 		mShowMascotView.start();
 	}
@@ -283,6 +210,45 @@ public class MascotView extends FrameLayout {
 	public void stop() {
 		mShowMascotView.stop();
 	}
+	
+	public IMascot getMascot() {
+		return mShowMascotView.mMascot;
+	}
+	
+	public void addBasicState(MascotState state) {
+		mShowMascotView.mMascot.addBasicState(state);
+	}
+	
+	public void addUserInteractionState(UserInteractionState state) {
+		mShowMascotView.mMascot.addUserInteractionState(state);
+	}
+	
+	public void addTimeZoneState(TimeZoneState state) {
+		mShowMascotView.mMascot.addTimeZoneState(state);
+	}
+	
+	public void addMascotEvent(MascotEvent event) {
+		mShowMascotView.mMascot.addEvent(event);
+	}
+	
+	/**
+	 * 画像は横一列で５パーツなければならない
+	 * @param loader
+	 * @exception IllegalArgumentException 画像が既定のフォーマットを満たしていなければ例外
+	 */
+	public void setSpeakStateBitmapLoader(BitmapLoader loader) {
+		mShowMascotView.mMascot.setSpeakStateBitmapLoader(loader);
+	}
+	
+	/**
+	 * 画像は横一列でなければならない
+	 * @param loader
+	 * @exception IllegalArgumentException 画像が既定のフォーマットを満たしていなければ例外
+	 */
+	public void setScrollStateBitmapLoader(BitmapLoader loader) {
+		mShowMascotView.mMascot.setScrollStateBitmapLoader(loader);
+	}
+	
 	
 	/*
 	 * ShowMascotViewから呼ばれるメソッド

@@ -9,11 +9,11 @@ import android.graphics.Rect;
  * @author aharisu
  *
  */
-public interface IMascot {
-	public void redraw(int left, int top, int right, int bottom);
-	public int getViewWidth();
-	public int getViewHeight();
-	public void stateChange();
-	public void showText(String text, Rect mascotBounds);
-	public void hideText();
+public abstract class IMascot {
+	abstract void redraw(int left, int top, int right, int bottom);
+	abstract int getViewWidth();
+	abstract int getViewHeight();
+	abstract void stateChange();
+	abstract void showText(String text, Rect mascotBounds);
+	abstract void hideText();
 }

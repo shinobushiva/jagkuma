@@ -21,7 +21,7 @@ import android.util.Log;
  * @author aharisu
  *
  */
-public final class Mascot implements IMascot{
+public final class Mascot extends IMascot{
 	
 	public enum Level {
 		High(2),
@@ -319,19 +319,19 @@ public final class Mascot implements IMascot{
 		mView.redraw(bounds.left, bounds.top, bounds.right, bounds.bottom);
 	}
 	
-	@Override public int getViewHeight() {
+	@Override int getViewHeight() {
 		return mView.getHeight();
 	}
 	
-	@Override public int getViewWidth() {
+	@Override int getViewWidth() {
 		return mView.getWidth();
 	}
 	
-	@Override public void redraw(int left, int top, int right, int bottom) {
+	@Override void redraw(int left, int top, int right, int bottom) {
 		mView.redraw(left, top, right, bottom);
 	}
 	
-	@Override public void stateChange() {
+	@Override void stateChange() {
 		synchronized (mSyncUpdateObj) {
 			mHandler.removeCallbacks(mUpdate);
 			
@@ -341,11 +341,11 @@ public final class Mascot implements IMascot{
 		}
 	}
 	
-	@Override public void showText(String text, Rect mascotBounds) {
+	@Override void showText(String text, Rect mascotBounds) {
 		mView.showText(text, mascotBounds);
 	}
 	
-	@Override public void hideText() {
+	@Override void hideText() {
 		mView.hideText();
 	}
 

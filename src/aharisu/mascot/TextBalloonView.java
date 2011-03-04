@@ -23,10 +23,10 @@ import android.widget.TextView;
  *
  */
 public class TextBalloonView extends TextView{
-	private static final int PaddingTop = 3;//単位はdip
-	private static final int PaddingBottom = 13;//単位はdip
-	private static final int PaddingLeft = 5;//単位はdip
-	private static final int PaddingRight = 5;//単位はdip
+	private static final int PaddingTop = 1;//単位はdip
+	private static final int PaddingBottom = 14;//単位はdip
+	private static final int PaddingLeft = 6;//単位はdip
+	private static final int PaddingRight = 6;//単位はdip
 	
 	private final float mScaledDensity;
 	
@@ -111,10 +111,10 @@ public class TextBalloonView extends TextView{
 		float lineWidth = 2 * mScaledDensity;
 		
 		//背景塗りは線の太さを考慮して少し小さくする
-		rect.inset(lineWidth / 2, lineWidth / 2);
+		rect.inset(lineWidth / 2.5f, lineWidth / 2.5f);
 		
 		Path path = new Path();
-		path.addRoundRect(rect, 15, 15, Direction.CW);
+		path.addRoundRect(rect, 20, 20, Direction.CW);
 		path.moveTo(startArrowPosX, rect.bottom);
 		path.lineTo(arrowTipPosX, rect.bottom + paddingBottom);
 		path.lineTo(endArrowPosX, rect.bottom);
@@ -126,7 +126,7 @@ public class TextBalloonView extends TextView{
 		canvas.drawColor(0xffffffff);
 		
 		//矢印を接続する部分は縁取りを塗らない
-		rect.inset(-lineWidth / 2, -lineWidth / 2);
+		rect.inset(-lineWidth / 2.5f, -lineWidth / 2.5f);
 		path.reset();
 		path.moveTo(startArrowPosX, rect.bottom - lineWidth);
 		path.lineTo(arrowTipPosX, rect.bottom + paddingBottom);
@@ -148,7 +148,7 @@ public class TextBalloonView extends TextView{
 		paint.setStyle(Style.STROKE);
 		
 		//吹き出しのふち塗り
-		canvas.drawRoundRect(rect, 15, 15, paint);
+		canvas.drawRoundRect(rect, 20, 20, paint);
 		
 		//クリップをなしの状態に戻す
 		canvas.restore();

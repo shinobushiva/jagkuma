@@ -3,8 +3,12 @@ package jag.kumamoto.apps.StampRally;
 import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.gotochi.R;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.view.Window;
 
@@ -17,7 +21,15 @@ import android.view.Window;
  */
 public class HomeActivity extends Activity{
 	private static final int RequestFirstStartSettings = 1;
-
+	
+	private final ServiceConnection mConnection = new ServiceConnection() {
+		
+		@Override public void onServiceDisconnected(ComponentName name) {
+		}
+		
+		@Override public void onServiceConnected(ComponentName name, IBinder service) {
+		}
+	};
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -88,6 +100,25 @@ public class HomeActivity extends Activity{
 				startActivity(intent);
 			}
 		});
+	
+		//到着確認サービスを開始
+		startArriveWatcherservice();
+	}
+	
+	@Override protected void onDestroy() {
+		stopArriveWatcherService();
+		
+		super.onDestroy();
+	}
+	
+	private void startArriveWatcherservice() {
+		Intent intent = new Intent(this, ArriveWatcherService.class);
+		
+		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+	}
+	
+	private void stopArriveWatcherService() {
+		unbindService(mConnection);
 	}
 
 	private void firstStartAction() {

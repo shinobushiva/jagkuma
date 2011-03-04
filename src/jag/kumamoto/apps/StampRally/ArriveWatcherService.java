@@ -47,10 +47,11 @@ public class ArriveWatcherService extends Service{
 		
 		private final DataStore mDataStore = new DataStore();
 		
-		
+		/*
 		public LocationDistanceCalculator(int latitudeE6, int longitudeE6) {
 			this(latitudeE6 * 1e-6f, longitudeE6 * 1e-6f);
 		}
+		*/
 		
 		public LocationDistanceCalculator(float latitude, float longitude) {
 			calclation(latitude, longitude, mDataStore);
@@ -336,6 +337,7 @@ public class ArriveWatcherService extends Service{
 		//ロケーションインフォのアクティビティを起動するインテント
 		Intent intent = new Intent(this, LocationInfoActivity.class);
 		intent.putExtra(ConstantValue.ExtrasStampPin, pin);
+		intent.putExtra(ConstantValue.ExtrasIsArrive, true);
 		if(pin.type == StampPin.STAMP_TYPE_QUIZ) {
 			intent.putExtra(ConstantValue.ExtrasShowGoQuiz, true);
 		}

@@ -159,8 +159,8 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		//マスコットの状態を初期化する
 		initializeMascotState();
 		
-		//スタンプラリーのピンの到着を監視するサービスを起動する
-		startArriveWatcherservice();
+		//スタンプラリーのピンの到着を監視するサービスとバインドする
+		bindArriveWatcherservice();
 	}
 	
 	private void GetAsyncStampPinsFromDB() {
@@ -446,27 +446,19 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 
 	
 	@Override protected void onDestroy() {
-		
-		//スタンプラリーのピンの到着を監視するサービスを終了する
-		stopArriveWatcherService();
+		//スタンプラリーのピンの到着を監視するサービスをアンバインドする
+		unbindArriveWatcherService();
 		
 		super.onDestroy();
 	}
 	
-	private void startArriveWatcherservice() {
+	private void bindArriveWatcherservice() {
 		Intent intent = new Intent(this, ArriveWatcherService.class);
-		startService(intent);
-		
-		bindService(intent, mConnection, 0);
+		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 	}
 	
-	private void stopArriveWatcherService() {
-		Intent intent = new Intent(this, ArriveWatcherService.class);
-		
-		
+	private void unbindArriveWatcherService() {
 		unbindService(mConnection);
-		
-		stopService(intent);
 	}
 	
 	@Override protected void onResume() {

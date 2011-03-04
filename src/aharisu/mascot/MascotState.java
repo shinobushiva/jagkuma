@@ -1,5 +1,7 @@
 package aharisu.mascot;
 
+import java.lang.ref.WeakReference;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -16,6 +18,10 @@ public abstract class MascotState {
 	private static final int DefaultInterval = 675;
 	
 	private final Rect mBounds = new Rect();
+	
+	private BitmapLoader mLoader;
+	private WeakReference<Bitmap[]> mWeakRef;
+	private Bitmap[] mImages;
 	
 	protected final IMascot mMascot;
 	
@@ -46,9 +52,63 @@ public abstract class MascotState {
 		return Mascot.Level.Middle;
 	}
 	
-	public void entry(Rect bounds) {}
+	public void entry(Rect bounds) {
+		loadImage();
+	}
+	
 	public boolean update() {return true;}
-	public void exist() {}
+	
+	public void exist() {
+		mImages = null;
+	}
+	
+	protected final void setBitmapLoader(BitmapLoader loader) {
+		mLoader = loader;
+	}
+	
+	public final BitmapLoader getBitmapLoader() {
+		return mLoader;
+	}
+	
+	protected final Bitmap getImageAt(int index) {
+		if(mImages == null) {
+			loadImage();
+		}
+		
+		if(mImages == null) {
+			throw new RuntimeException("failure image load");
+		}
+		
+		return mImages[index];
+	}
+	
+	protected final int getImageCount() {
+		if(mImages == null) {
+			loadImage();
+		}
+		
+		if(mImages == null) {
+			throw new RuntimeException("failure image load");
+		}
+		
+		return mImages.length;
+	}
+	
+	private void loadImage() {
+		if(mImages == null && mWeakRef != null) {
+			mImages = mWeakRef.get();
+		}
+		
+		if(mImages == null && mLoader != null) {
+			Bitmap bimtap = mLoader.getBitmap();
+			int v = mLoader.getNumSplitVertical();
+			int h = mLoader.getNumSplitHorizontal();
+			mImages = new Bitmap[v * h];
+			splitImage(bimtap, mImages, v, h);
+			
+			mWeakRef = new WeakReference<Bitmap[]>(mImages);
+		}
+	}
 	
 	public void draw(Canvas canvas) {
 		Bitmap image = getImage();
@@ -66,7 +126,7 @@ public abstract class MascotState {
 		mBounds.inset(-HitTestMargin, -HitTestMargin);
 		return mBounds.contains(x, y);
 	}
-
+	
 	protected final void centering(Rect bounds, int width, int height) {
 		bounds.left = bounds.centerX() - width / 2;
 		bounds.right = bounds.left + width;

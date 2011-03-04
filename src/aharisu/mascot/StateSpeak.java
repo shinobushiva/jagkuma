@@ -16,12 +16,9 @@ public class StateSpeak extends MascotState {
 	
 	private static final float WalkStep = 2.5f;
 	
-	private boolean mEnable = false;
-	
 	private float mCurX;
 	private float mCurY;
 	
-	private final Bitmap[] mImages;
 	private int mIndex;
 	
 	private int mDirection = 0;
@@ -34,17 +31,25 @@ public class StateSpeak extends MascotState {
 	
 	public StateSpeak(IMascot mascot) {
 		super(mascot);
-		
-		mImages = new Bitmap[5];
 	}
 	
-	public void setImage(Bitmap image) {
-		splitImage(image, mImages, 5);
-		mEnable = true;
+	/**
+	 * @throws IllegalArgumentException 
+	 * @param loader
+	 */
+	public void setLoader(BitmapLoader loader) {
+		if(loader.getNumSplitVertical() != 5) {
+			throw new IllegalArgumentException("number of vertical split require 5");
+		}
+		if(loader.getNumSplitHorizontal() != 1) {
+			throw new IllegalArgumentException("number of horizontal split require 1");
+		}
+		
+		setBitmapLoader(loader);
 	}
 	
 	public boolean isEnable() {
-		return mEnable;
+		return getBitmapLoader() != null;
 	}
 	
 	public void setText(String text) {
@@ -60,12 +65,14 @@ public class StateSpeak extends MascotState {
 	}
 	
 	@Override public Bitmap getImage() {
-		return mImages[mIndex];
+		return getImageAt(mIndex);
 	}
 	
 	@Override public void getBounds(Rect outRect) {
+		Bitmap image = getImageAt(mIndex);
+		
 		outRect.set((int)mCurX, (int)mCurY, 
-				(int)mCurX + mImages[mIndex].getWidth(), (int)mCurY + mImages[mIndex].getHeight());
+				(int)mCurX + image.getWidth(), (int)mCurY + image.getHeight());
 	}
 	
 	@Override public int getUpdateInterval() {
@@ -77,11 +84,15 @@ public class StateSpeak extends MascotState {
 	}
 	
 	@Override public void entry(Rect bounds) {
+		super.entry(bounds);
+		
 		mIndex = 0;
 		mRunCount = 0;
 		
-		int imgWidth = mImages[mIndex].getWidth();
-		int imgHeight = mImages[mIndex].getHeight();
+		Bitmap image = getImageAt(mIndex);
+		
+		int imgWidth = image.getWidth();
+		int imgHeight = image.getHeight();
 		
 		int viewHeight = mMascot.getViewHeight();
 		
@@ -119,24 +130,27 @@ public class StateSpeak extends MascotState {
 			int direcOrigin = mDirection * 2 + 1;
 			mIndex = (((mIndex - direcOrigin) + 1) % 2) + direcOrigin;
 			
+			Bitmap image = getImageAt(mIndex);
+			
 			int left, top, right, bottom;
 			
-			right = (int)(mCurX + mImages[mIndex].getWidth());
+			right = (int)(mCurX + image.getWidth());
 			mCurX += mStepX;
 			left = (int)mCurX;
 			
 			top = (int)mCurY;
 			mCurY += mStepY;
-			bottom = (int)mCurY + mImages[mIndex].getHeight();
+			bottom = (int)mCurY + image.getHeight();
 			
 			mMascot.redraw(left, top, right, bottom);
 			
 			return true;
 		} else if(mRunCount == mTotalRunCount) {
+			Bitmap image = getImageAt(mIndex);
 			mMascot.showText(mText, 
 				new Rect((int)mCurX, (int)mCurY, 
-						(int)mCurX + mImages[mIndex].getWidth(),
-						(int)mCurY + mImages[mIndex].getHeight()));
+						(int)mCurX + image.getWidth(),
+						(int)mCurY + image.getHeight()));
 			
 			++mRunCount;
 			mIndex = 0;

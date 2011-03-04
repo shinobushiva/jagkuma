@@ -9,7 +9,6 @@ public class StateTimeZoneRepetition extends TimeZoneState{
 	private static final int RepetitionInterval = 800;
 	private static final int FotterInterval = 750;
 	
-	private final Bitmap[] mImages;
 	private int mIndex;
 	private int mRepeatCount = 0;
 	
@@ -25,12 +24,10 @@ public class StateTimeZoneRepetition extends TimeZoneState{
 	
 	public StateTimeZoneRepetition(IMascot mascot, 
 			TimeZoneState.Type timeZoneType,
-			Bitmap image, int numSplit) {
+			BitmapLoader loader) {
 		super(mascot, timeZoneType);
 		
-		this.mImages = new Bitmap[numSplit];
-		
-		splitImage(image, mImages, numSplit);
+		setBitmapLoader(loader);
 		
 		mEntryPriority = Level.Middle;
 		mExistProbability = Level.Middle;
@@ -38,25 +35,11 @@ public class StateTimeZoneRepetition extends TimeZoneState{
 	
 	public StateTimeZoneRepetition(IMascot mascot, 
 			TimeZoneState.Type timeZoneType,
-			Bitmap image, int numSplit,
+			BitmapLoader loader,
 			Level entryPriority, Level existProbability) {
 		super(mascot, timeZoneType);
 		
-		this.mImages = new Bitmap[numSplit];
-		
-		splitImage(image, mImages, numSplit);
-		
-		mEntryPriority = entryPriority;
-		mExistProbability = existProbability;
-	}
-	
-	private StateTimeZoneRepetition(IMascot mascot, 
-			TimeZoneState.Type timeZoneType,
-			Bitmap[] images,
-			Level entryPriority, Level existProbability) {
-		super(mascot, timeZoneType);
-		
-		this.mImages = images;
+		setBitmapLoader(loader);
 		
 		mEntryPriority = entryPriority;
 		mExistProbability = existProbability;
@@ -74,14 +57,14 @@ public class StateTimeZoneRepetition extends TimeZoneState{
 		mNumRepetition = num;
 	}
 	
-	public StateTimeZoneRepetition copySharedImages(TimeZoneState.Type timeZoneType) {
-		return copySharedImages(timeZoneType, mEntryPriority, mExistProbability);
+	public StateTimeZoneRepetition copy(TimeZoneState.Type timeZoneType) {
+		return copy(timeZoneType, mEntryPriority, mExistProbability);
 	}
 	
-	public StateTimeZoneRepetition copySharedImages(TimeZoneState.Type timeZoneType, 
+	public StateTimeZoneRepetition copy(TimeZoneState.Type timeZoneType, 
 			Level entryPriority, Level existProbability) {
 		StateTimeZoneRepetition state = new StateTimeZoneRepetition(
-				mMascot, timeZoneType, mImages, entryPriority, existProbability);
+				mMascot, timeZoneType, getBitmapLoader(), entryPriority, existProbability);
 		
 		state.mNumHeaderFrame = this.mNumHeaderFrame;
 		state.mNumFotterFrame = this.mNumFotterFrame;
@@ -100,19 +83,21 @@ public class StateTimeZoneRepetition extends TimeZoneState{
 	}
 	
 	@Override public void getBounds(Rect outRect) {
+		Bitmap image = getImageAt(mIndex);
+		
 		outRect.set(mCurX, mCurY, 
-				mCurX + mImages[mIndex].getWidth(), mCurY + mImages[mIndex].getHeight());
+				mCurX + image.getWidth(), mCurY + image.getHeight());
 	}
 	
 	@Override public Bitmap getImage() {
-		return mImages[mIndex];
+		return getImageAt(mIndex);
 	}
 	
 	@Override public int getUpdateInterval() {
 		if(mIndex < mNumHeaderFrame) {
 			//始まり部分
 			return HeaderInterval;
-		} else if(mIndex >= mImages.length - mNumFotterFrame) {
+		} else if(mIndex >= getImageCount() - mNumFotterFrame) {
 			//終わり部分
 			return FotterInterval;
 		} else {
@@ -122,11 +107,13 @@ public class StateTimeZoneRepetition extends TimeZoneState{
 	}
 	
 	@Override public void entry(Rect bounds) {
+		super.entry(bounds);
+		
 		mIndex = -1;
 		mRepeatCount = 0;
 		
 		
-		Bitmap img=  mImages[0];
+		Bitmap img=  getImageAt(0);
 		centering(bounds, img.getWidth(), img.getHeight());
 		
 		mCurX = bounds.left;
@@ -134,18 +121,19 @@ public class StateTimeZoneRepetition extends TimeZoneState{
 	}
 	
 	@Override public boolean update() {
+		int length = getImageCount();
 		
 		if(mIndex < mNumHeaderFrame) {
 			//始まり部分
 			++mIndex;
-		} else if(mIndex >= mImages.length - mNumFotterFrame) {
+		} else if(mIndex >= length - mNumFotterFrame) {
 			//終わり部分
 			++mIndex;
 		} else {
 			//リピート部分
 			
 			++mIndex;
-			if(mIndex >= mImages.length - mNumFotterFrame) {
+			if(mIndex >= length - mNumFotterFrame) {
 				++mRepeatCount;
 				
 				if(mNumRepetition < 0 || mRepeatCount < mNumRepetition) {
@@ -155,16 +143,16 @@ public class StateTimeZoneRepetition extends TimeZoneState{
 			}
 		}
 		
-		if(mImages.length <= mIndex) {
+		if(length <= mIndex) {
 			//アニメーション終了
-			mIndex = mImages.length - 1;
+			mIndex = length - 1;
 			//一連の動作が終わったので状態変更
 			mMascot.stateChange();
 			
 			return false;
 		} else {
 			//再描画
-			Bitmap img = mImages[mIndex];
+			Bitmap img = getImageAt(mIndex);
 			
 			mMascot.redraw(mCurX, mCurY, mCurX + img.getWidth(), mCurY + img.getHeight());
 			

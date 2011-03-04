@@ -15,13 +15,10 @@ public class StateScroll extends MascotState{
 	private float mCurX;
 	private float mCurY;
 	
-	private final Bitmap[] mImages;
 	private int mIndex;
 	
 	public StateScroll(IMascot mascot) {
 		super(mascot);
-		
-		mImages = new Bitmap[2];
 	}
 	
 	public void move(float dx, float dy) {
@@ -31,16 +28,20 @@ public class StateScroll extends MascotState{
 		int x = (int)mCurX;
 		int y = (int)mCurY;
 		
-		mMascot.redraw(x, y, 
-				x + mImages[mIndex].getWidth(), y + mImages[mIndex].getHeight());
+		Bitmap image = getImageAt(mIndex);
+		mMascot.redraw(x, y, x + image.getWidth(), y + image.getHeight());
 	}
 	
-	public void setImage(Bitmap image) {
-		splitImage(image, mImages, 2);
+	public void setLoader(BitmapLoader loader) {
+		if(loader.getNumSplitHorizontal() != 1) {
+			throw new IllegalArgumentException("number of horizontal split require 1");
+		}
+		
+		setBitmapLoader(loader);
 	}
 	
 	public boolean isEnable() {
-		return mImages[0] != null && mImages[1] != null;
+		return getBitmapLoader() != null;
 	}
 	
 	@Override public int getUpdateInterval() {
@@ -52,22 +53,25 @@ public class StateScroll extends MascotState{
 	}
 	
 	@Override public void entry(Rect bounds) {
+		super.entry(bounds);
+		
 		mIndex = 0;
 		
-		centering(bounds, mImages[mIndex].getWidth(), mImages[mIndex].getHeight());
+		Bitmap image = getImageAt(mIndex);
+		centering(bounds, image.getWidth(), image.getHeight());
 		
 		mCurX = bounds.left;
 		mCurY = bounds.top;
 	}
 	
 	@Override public boolean update() {
-		mIndex = (mIndex + 1) % mImages.length;
+		mIndex = (mIndex + 1) % getImageCount();
 		
 		int x = (int)mCurX;
 		int y = (int)mCurY;
 		
-		mMascot.redraw(x, y, 
-				x + mImages[mIndex].getWidth(), y + mImages[mIndex].getHeight());
+		Bitmap image = getImageAt(mIndex);
+		mMascot.redraw(x, y, x + image.getWidth(), y + image.getHeight());
 		
 		return true;
 	}
@@ -76,12 +80,12 @@ public class StateScroll extends MascotState{
 		int x = (int)mCurX;
 		int y = (int)mCurY;
 		
-		outRect.set(x, y, 
-				x + mImages[mIndex].getWidth(), y + mImages[mIndex].getHeight());
+		Bitmap image = getImageAt(mIndex);
+		outRect.set(x, y, x + image.getWidth(), y + image.getHeight());
 	}
 	
 	@Override public Bitmap getImage() {
-		return mImages[mIndex];
+		return getImageAt(mIndex);
 	}
 	
 

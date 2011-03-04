@@ -28,8 +28,10 @@ public class StateRepetition extends UserInteractionState{
 	private int mCurY = 0;
 	
 	public StateRepetition(IMascot mascot, UserInteractionState.Type actionType,
-			Bitmap image, int numSplit) {
-		super(mascot, actionType, image, numSplit);
+			BitmapLoader loader) {
+		super(mascot, actionType);
+		
+		setBitmapLoader(loader);
 	}
 	
 	public void setNumHeaderFrame(int num) {
@@ -67,6 +69,8 @@ public class StateRepetition extends UserInteractionState{
 	}
 	
 	@Override public void entry(Rect bounds) {
+		super.entry(bounds);
+		
 		mImageIndex = -1;
 		mRepeatCount = 0;
 		

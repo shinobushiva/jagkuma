@@ -8,7 +8,6 @@ import java.util.Queue;
 import java.util.Random;
 
 import aharisu.mascot.MascotEvent.Type;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -157,12 +156,20 @@ public final class Mascot implements IMascot{
 		mTimeZoneStateList.add(state);
 	}
 	
-	public void setSpeakStateImage(Bitmap image) {
-		mSpeakState.setImage(image);
+	/**
+	 * @exception IllegalArgumentException
+	 * @param loader
+	 */
+	public void setSpeakStateBitmapLoader(BitmapLoader loader) {
+		mSpeakState.setLoader(loader);
 	}
 	
-	public void setScrollStateImage(Bitmap image) {
-		mScrollState.setImage(image);
+	/**
+	 * @exception IllegalArgumentException
+	 * @param loader
+	 */
+	public void setScrollStateBitmapLoader(BitmapLoader loader) {
+		mScrollState.setLoader(loader);
 	}
 	
 	public void draw(Canvas canvas) {

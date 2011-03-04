@@ -216,7 +216,6 @@ public class QuizActivity extends Activity{
 		int point = 0;
 		if(!StampRallyDB.checkQuizCorrectness(id)) {
 			StampRallyDB.setQuizResult(id);
-			Log.i("TEST", "TEST");
 			
 			point = mQuizes[mIndex].point;
 		}

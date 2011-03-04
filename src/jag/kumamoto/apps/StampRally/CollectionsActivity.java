@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import jag.kumamoto.apps.StampRally.Data.Item;
 import jag.kumamoto.apps.StampRally.Data.Prize;
 import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
@@ -92,7 +91,7 @@ public class CollectionsActivity extends Activity{
 			//正答率の設定
 			float rate = mUserRecord.numCorrectness == 0 ? 
 					0 :
-					mUserRecord.numTotalAnswerdQuize / (float)mUserRecord.numCorrectness;
+					 mUserRecord.numCorrectness / (float)mUserRecord.numTotalAnswerdQuize;
 			rate *= 100;
 			((TextView)findViewById(R.id_collections.correctness_rate)).setText(String.format("%.1f%%", rate));
 			
@@ -100,7 +99,7 @@ public class CollectionsActivity extends Activity{
 			double time = mUserRecord.numTotalAnswerdQuize == 0 ?
 					0 :
 					mUserRecord.totalAnswerTime / (double)mUserRecord.numTotalAnswerdQuize;
-			time *= 1000;
+			time *= 0.001;
 			((TextView)findViewById(R.id_collections.ave_answer_time)).setText(String.format("%.3f秒", time));
 			
 			//獲得アイテム数を設定

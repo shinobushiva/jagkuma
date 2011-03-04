@@ -202,6 +202,9 @@ public class CollectionsActivity extends Activity{
 					
 					StampRallyDB.insertPrizes(result.v2);
 					
+					//獲得アイテム数を設定
+					((TextView)findViewById(R.id_collections.num_item)).setText(Integer.toString(mPrizes.length));
+					
 					((BaseAdapter)((Gallery)findViewById(R.id_collections.item_gallery))
 							.getAdapter()).notifyDataSetChanged();
 				}

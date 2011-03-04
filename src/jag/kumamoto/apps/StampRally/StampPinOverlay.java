@@ -103,6 +103,17 @@ public class StampPinOverlay extends ItemizedOverlay<StampPinOverlay.StampRallyM
 		applyFilter();
 	}
 	
+	public void setStampPins(StampPin... pins) {
+		mShowStampPin.clear();
+		
+		if(pins == null || pins.length == 0)
+			return;
+		
+		mStampPinList.addAll(Arrays.asList(pins));
+		
+		applyFilter();
+	}
+	
 	public void setInfoOverlay(PinInfoOverlay overlay) {
 		mInfoOverlay = overlay;
 	}

@@ -58,6 +58,7 @@ import android.widget.ZoomControls;
  *
  */
 public class MapActivity extends com.google.android.maps.MapActivity{
+	private static final int RequestShowInfoId = 1;
 	
 	private StampPinOverlay mPinOverlay;
 	private StampPin[] mStampPins;
@@ -373,7 +374,7 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 					intent.putExtra(ConstantValue.ExtrasUser, mUser);
 				}
 				
-				startActivity(intent);
+				startActivityForResult(intent, RequestShowInfoId);
 			}
 		};
 	}
@@ -481,6 +482,17 @@ public class MapActivity extends com.google.android.maps.MapActivity{
     	}
     	
     	return super.onKeyDown(keyCode, event);
+    }
+    
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if(requestCode == RequestShowInfoId) {
+    		
+	    	mPinOverlay.setStampPins(StampRallyDB.getStampPins());	
+    		
+    		return;
+    	}
+    	
+    	super.onActivityResult(requestCode, resultCode, data);
     }
 	
 }

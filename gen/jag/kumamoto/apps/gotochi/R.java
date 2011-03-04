@@ -14,6 +14,24 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
+        public static final int home_icon=0x7f020000;
+        public static final int icon=0x7f020001;
+        public static final int icon_status_bar=0x7f020002;
+        public static final int icon_status_bar_arrived=0x7f020003;
+        public static final int marker_none=0x7f020004;
+        public static final int marker_none_arrived=0x7f020005;
+        public static final int marker_quiz=0x7f020006;
+        public static final int marker_quiz_arrived=0x7f020007;
+        public static final int transparent_background=0x7f020008;
+        public static final int home_icon=0x7f020000;
+        public static final int icon=0x7f020001;
+        public static final int icon_status_bar=0x7f020002;
+        public static final int icon_status_bar_arrived=0x7f020003;
+        public static final int marker_none=0x7f020004;
+        public static final int marker_none_arrived=0x7f020005;
+        public static final int marker_quiz=0x7f020006;
+        public static final int marker_quiz_arrived=0x7f020007;
+        public static final int transparent_background=0x7f020008;
         public static final int gallery_item_background=0x7f020000;
         public static final int gallery_item_selected_rect=0x7f020001;
         public static final int home_icon=0x7f020002;
@@ -132,6 +150,17 @@ public final class R {
         public static final int quiz_single_choice=0x7f03000b;
         public static final int settings=0x7f03000c;
         public static final int settings_token_radiobutton=0x7f03000d;
+        public static final int device_cap_dialog=0x7f030001;
+        public static final int help=0x7f030002;
+        public static final int home=0x7f030003;
+        public static final int location_infomation=0x7f030004;
+        public static final int main=0x7f030005;
+        public static final int map=0x7f030006;
+        public static final int mascot_text_balloon=0x7f030007;
+        public static final int quiz=0x7f030008;
+        public static final int quiz_muliple_choice=0x7f030009;
+        public static final int quiz_single_choice=0x7f03000a;
+        public static final int settings=0x7f03000b;
     }
     public static final class raw {
         public static final int help=0x7f040000;

@@ -14,6 +14,7 @@ import jag.kumamoto.apps.StampRally.Data.QuizChoices;
 import jag.kumamoto.apps.StampRally.Data.QuizData;
 import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
+import jag.kumamoto.apps.StampRally.Data.UserRecord;
 import jag.kumamoto.apps.gotochi.R;
 import jag.kumamoto.apps.gotochi.R.layout;
 import aharisu.util.DataGetter;
@@ -172,15 +173,19 @@ public class QuizActivity extends Activity{
 				boolean correctness = isCorrectness(isCheckedAry);
 				
 				//ユーザ設定が行われていればロギングデータを送信する
+				//& ユーザ履歴を更新する
 				if(mUser != null) {
 					String loggingQuery = StampRallyURL.getLoggingQuery(
 							mUser, mQuizes[mIndex],
 							correctness, duration, isCheckedAry);
+					
 					synchronized (mUntransmissionData) {
 						mUntransmissionData.add(loggingQuery);
 					}
 					//非同期で送信
 					asyncSendAnswerLong();
+					
+					addUserRecord(correctness, duration);
 				} else {
 					mResultDataAry.add(new ResultData(mQuizes[mIndex],
 							correctness, duration, isCheckedAry));
@@ -204,6 +209,24 @@ public class QuizActivity extends Activity{
 		}
 		
 		return correctness;
+	}
+	
+	private void addUserRecord(boolean correctness, long duration) {
+		long id = mQuizes[mIndex].id;
+		int point = 0;
+		if(!StampRallyDB.checkQuizCorrectness(id)) {
+			StampRallyDB.setQuizResult(id);
+			Log.i("TEST", "TEST");
+			
+			point = mQuizes[mIndex].point;
+		}
+		
+		UserRecord record = StampRallyPreferences.getUserRecord();
+		record.point += point;
+		record.numCorrectness += correctness ? 1 : 0;
+		record.numTotalAnswerdQuize += 1;
+		record.totalAnswerTime += duration;
+		StampRallyPreferences.setUserRecord(record);
 	}
 	
 	private void asyncSendAnswerLong() {
@@ -383,6 +406,10 @@ public class QuizActivity extends Activity{
 				User user = data.getExtras().getParcelable(ConstantValue.ExtrasUser);
 				if(user != null) {
 					mUser = user;
+					
+					for(ResultData result : mResultDataAry) {
+						addUserRecord(result.correctness, result.answeringTime);
+					}
 					
 					synchronized (mUntransmissionData) {
 						for(ResultData result : mResultDataAry) {

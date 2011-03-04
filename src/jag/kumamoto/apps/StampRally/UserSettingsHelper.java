@@ -230,6 +230,8 @@ final class UserSettingsHelper {
 		//ユーザ情報を消去する
 		StampRallyPreferences.clearUser();
 		StampRallyDB.clearPinArrive();
+		StampRallyDB.clearPrizes();
+		StampRallyDB.clearQuizResult();
 					
 		constractLoginView();
 	}
@@ -633,7 +635,7 @@ final class UserSettingsHelper {
 				handler.post(new ProgressManipulator(4));
 				long[] arrivedIds = UserHistory.decodeJSONGetArrivedIds(obj);
 				//ユーザ履歴からすでに到着しているスタンプにフラグを立てる
-				StampRallyDB.checkPinArrived(arrivedIds);
+				StampRallyDB.checkPinNonArrive(arrivedIds);
 				
 				//ユーザレコードをプリファレンスに保存する
 				record.numStamp = arrivedIds.length;

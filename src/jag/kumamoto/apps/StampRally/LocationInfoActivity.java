@@ -10,6 +10,7 @@ import jag.kumamoto.apps.StampRally.Data.QuizData;
 import jag.kumamoto.apps.StampRally.Data.StampPin;
 import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
+import jag.kumamoto.apps.StampRally.Data.UserRecord;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
 import android.app.Activity;
@@ -139,6 +140,7 @@ public class LocationInfoActivity extends Activity{
 					if(mUser == null) {
 						showUrgeLoginDialog();
 					} else {
+						addUserRecord();
 						sendAsyncArrivedMessaeg();
 					}
 				}
@@ -278,6 +280,16 @@ public class LocationInfoActivity extends Activity{
 			.show();
 	}
 	
+	private void addUserRecord() {
+		boolean[] arrived = StampRallyDB.checkPinNonArrive(mPin.id);
+		if(arrived[0]) {
+			UserRecord record = StampRallyPreferences.getUserRecord();
+			record.point += mPin.point;
+			record.numStamp += 1;
+			StampRallyPreferences.setUserRecord(record);
+		}
+	}
+	
 	private void sendAsyncArrivedMessaeg() {
 		Toast.makeText(LocationInfoActivity.this, "到着確認を送信します", Toast.LENGTH_SHORT).show();
 		
@@ -373,6 +385,7 @@ public class LocationInfoActivity extends Activity{
 				if(user != null) {
 					mUser = user;
 					
+					addUserRecord();
 					sendAsyncArrivedMessaeg();
 				}
 			}

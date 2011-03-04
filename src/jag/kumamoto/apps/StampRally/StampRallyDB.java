@@ -59,6 +59,13 @@ public class StampRallyDB extends SQLiteOpenHelper{
 	private static final String ItemImageURL = "image_url";
 	private static final String ItemDescription = "description";
 	
+	
+	/*
+	 * QuizResultデータ永続化のためのフィールド
+	 */
+	private static final String QuizResultTable = "quiz_result";
+	private static final String QuizResultID = "id";
+	
 	/*
 	 * Singletonインスタンス
 	 */
@@ -119,6 +126,13 @@ public class StampRallyDB extends SQLiteOpenHelper{
 				.append(",").append(ItemName).append(" text not null")
 				.append(",").append(ItemImageURL).append(" text not null")
 				.append(",").append(ItemDescription).append(" text not null")
+				.append(")")
+				.toString());
+			
+			//QuizResultテーブル作成
+			db.execSQL(new StringBuilder()
+				.append("create table ").append(QuizResultTable).append("(")
+				.append(QuizResultID).append(" integer primary key")
 				.append(")")
 				.toString());
 			
@@ -306,7 +320,7 @@ public class StampRallyDB extends SQLiteOpenHelper{
 		}
 	}
 	
-	public static boolean[] checkPinArrived(long... ids) {
+	public static boolean[] checkPinNonArrive(long... ids) {
 		if(ids == null || ids.length == 0)
 			return new boolean[0];
 		
@@ -398,6 +412,96 @@ public class StampRallyDB extends SQLiteOpenHelper{
 				values.put(StampLocationIsArrived, 0);
 				
 				db.update(StampLocationTable, values, null, null);
+				
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+				db.close();
+			}
+		}
+	}
+	
+	public static boolean checkQuizCorrectness(long id) {
+		SQLiteOpenHelper helper = getInstance();
+		synchronized (helper) {
+			
+			SQLiteDatabase db = helper.getReadableDatabase();
+			
+			Cursor cursor = null;
+			try {
+				cursor = db.rawQuery(new StringBuilder()
+						.append("select ").append(QuizResultID)
+						.append(" from ").append(QuizResultTable)
+						.append(" where ").append(QuizResultID).append(" = ").append(id)
+						.append(" limit 1")
+						.toString(),
+					null);
+					
+				return cursor.getCount() > 0;
+			} finally {
+				if(cursor != null)
+					cursor.close();
+				
+				db.close();
+			}
+		}
+	}
+	
+	public static void setQuizResult(long... ids) {
+		if(ids == null || ids.length == 0) {
+			return;
+		}
+		
+		SQLiteOpenHelper helper = getInstance();
+		synchronized (helper) {
+			
+			SQLiteDatabase db = helper.getWritableDatabase();
+			
+			db.beginTransaction();
+			try {
+				ContentValues values = new ContentValues();
+				for(long id : ids) {
+					values.put(QuizResultID, id);
+					db.insert(QuizResultTable, null, values);
+					
+					values.clear();
+				}
+				
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+				db.close();
+			}
+		}
+	}
+	
+	public static void clearQuizResult() {
+		SQLiteOpenHelper helper = getInstance();
+		synchronized (helper) {
+			
+			SQLiteDatabase db = helper.getWritableDatabase();
+			
+			db.beginTransaction();
+			try {
+				db.delete(QuizResultTable, null, null);
+				
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+				db.close();
+			}
+		}
+	}
+	
+	public static void clearPrizes() {
+		SQLiteOpenHelper helper = getInstance();
+		synchronized (helper) {
+			
+			SQLiteDatabase db = helper.getWritableDatabase();
+			
+			db.beginTransaction();
+			try {
+				db.delete(PrizeTable, null, null);
 				
 				db.setTransactionSuccessful();
 			} finally {

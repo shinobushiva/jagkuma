@@ -14,24 +14,6 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int home_icon=0x7f020000;
-        public static final int icon=0x7f020001;
-        public static final int icon_status_bar=0x7f020002;
-        public static final int icon_status_bar_arrived=0x7f020003;
-        public static final int marker_none=0x7f020004;
-        public static final int marker_none_arrived=0x7f020005;
-        public static final int marker_quiz=0x7f020006;
-        public static final int marker_quiz_arrived=0x7f020007;
-        public static final int transparent_background=0x7f020008;
-        public static final int home_icon=0x7f020000;
-        public static final int icon=0x7f020001;
-        public static final int icon_status_bar=0x7f020002;
-        public static final int icon_status_bar_arrived=0x7f020003;
-        public static final int marker_none=0x7f020004;
-        public static final int marker_none_arrived=0x7f020005;
-        public static final int marker_quiz=0x7f020006;
-        public static final int marker_quiz_arrived=0x7f020007;
-        public static final int transparent_background=0x7f020008;
         public static final int gallery_item_background=0x7f020000;
         public static final int gallery_item_selected_rect=0x7f020001;
         public static final int home_icon=0x7f020002;
@@ -97,16 +79,17 @@ public final class R {
         public static final int btnAmbition=0x7f0d0000;
     }
     public static final class id_map {
-        public static final int alt_type_check=0x7f0e0007;
-        public static final int alt_visite_check=0x7f0e0003;
+        public static final int alt_type_check=0x7f0e0008;
+        public static final int alt_visite_check=0x7f0e0004;
         public static final int mapview=0x7f0e0000;
-        public static final int radio_alt_type_quiz=0x7f0e0009;
-        public static final int radio_alt_type_stamp=0x7f0e0008;
-        public static final int radio_alt_visit_no_visite=0x7f0e0005;
-        public static final int radio_alt_visit_visited=0x7f0e0004;
-        public static final int show_marker_alt_type=0x7f0e0006;
-        public static final int show_marker_alt_visit=0x7f0e0002;
-        public static final int slidingdrawer=0x7f0e0001;
+        public static final int mascot=0x7f0e0001;
+        public static final int radio_alt_type_quiz=0x7f0e000a;
+        public static final int radio_alt_type_stamp=0x7f0e0009;
+        public static final int radio_alt_visit_no_visite=0x7f0e0006;
+        public static final int radio_alt_visit_visited=0x7f0e0005;
+        public static final int show_marker_alt_type=0x7f0e0007;
+        public static final int show_marker_alt_visit=0x7f0e0003;
+        public static final int slidingdrawer=0x7f0e0002;
     }
     public static final class id_quiz {
         public static final int frame_choices=0x7f100003;
@@ -144,29 +127,24 @@ public final class R {
         public static final int location_infomation=0x7f030005;
         public static final int main=0x7f030006;
         public static final int map=0x7f030007;
-        public static final int quiz=0x7f030008;
-        public static final int quiz_muliple_choice=0x7f030009;
-        public static final int quiz_result_dialog_content=0x7f03000a;
-        public static final int quiz_single_choice=0x7f03000b;
-        public static final int settings=0x7f03000c;
-        public static final int settings_token_radiobutton=0x7f03000d;
-        public static final int device_cap_dialog=0x7f030001;
-        public static final int help=0x7f030002;
-        public static final int home=0x7f030003;
-        public static final int location_infomation=0x7f030004;
-        public static final int main=0x7f030005;
-        public static final int map=0x7f030006;
-        public static final int mascot_text_balloon=0x7f030007;
-        public static final int quiz=0x7f030008;
-        public static final int quiz_muliple_choice=0x7f030009;
-        public static final int quiz_single_choice=0x7f03000a;
-        public static final int settings=0x7f03000b;
+        public static final int mascot_text_balloon=0x7f030008;
+        public static final int quiz=0x7f030009;
+        public static final int quiz_muliple_choice=0x7f03000a;
+        public static final int quiz_result_dialog_content=0x7f03000b;
+        public static final int quiz_single_choice=0x7f03000c;
+        public static final int settings=0x7f03000d;
+        public static final int settings_token_radiobutton=0x7f03000e;
     }
     public static final class raw {
         public static final int help=0x7f040000;
-        public static final int kumamon=0x7f040001;
-        public static final int test_location_info=0x7f040002;
-        public static final int test_quiz=0x7f040003;
+        public static final int koke=0x7f040001;
+        public static final int kumamon=0x7f040002;
+        public static final int ofuro=0x7f040003;
+        public static final int scroll=0x7f040004;
+        public static final int sleeping=0x7f040005;
+        public static final int speak=0x7f040006;
+        public static final int test_location_info=0x7f040007;
+        public static final int test_quiz=0x7f040008;
     }
     public static final class string {
         public static final int RouteSearchKindPrompt=0x7f05000a;

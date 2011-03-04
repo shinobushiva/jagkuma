@@ -16,5 +16,109 @@
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
     	/>
+    	
+    <SlidingDrawer android:id="@+id_map/slidingdrawer"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:handle="@+id/handle"
+    	android:content="@+id/content"
+    	android:orientation="vertical"
+    	>
+    	
+    	<FrameLayout
+    		android:id="@id/handle"
+    		android:layout_width="68dip"
+    		android:layout_height="34dip"
+    		android:background="@drawable/sliding_drawer_handle"
+    		/>
+    		
+    	<ScrollView
+    		android:id="@id/content"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent"
+    		android:background="@drawable/sliding_drawer_content_background"
+    		>
+	    	<LinearLayout
+	    		android:layout_width="fill_parent"
+	    		android:layout_height="wrap_content"
+	    		android:paddingTop="6dip"
+	    		android:paddingLeft="12dip"
+	    		android:paddingRight="12dip"
+	    		android:clickable="true"
+	    		android:orientation="vertical"
+	    		>
+	    		
+	    		<TextView
+	    			android:layout_width="fill_parent"
+	    			android:layout_height="wrap_content"
+	    			android:gravity="center"
+	    			android:textSize="20sp"
+	    			android:text="表示するスタンプを限定する"
+	    			android:textColor="#ffeeeeee"
+	    			/>
+	    		
+	    		<RadioGroup android:id="@+id_map/show_marker_alt_visit"
+	    			android:layout_width="fill_parent"
+	    			android:layout_height="wrap_content"
+	    			android:layout_marginTop="15dip"
+	    			android:orientation="vertical"
+	    			android:background="@drawable/sliding_drawer_content_group"
+	    			android:padding="10dip"
+	    			>
+	    			<CheckBox android:id="@+id_map/alt_visite_check"
+	    				android:layout_width="wrap_content"
+	    				android:layout_height="wrap_content"
+		    			android:textSize="19sp"
+	    				android:text="訪れたことが?"
+	    				/>
+	    				
+	    			<RadioButton android:id="@+id_map/radio_alt_visit_visited"
+	    				android:layout_width="wrap_content"
+	    				android:layout_height="wrap_content"
+	    				android:layout_marginLeft="30dip"
+	    				android:text="ある!!"
+	    				/>
+	    			<RadioButton android:id="@+id_map/radio_alt_visit_no_visite"
+	    				android:layout_width="wrap_content"
+	    				android:layout_height="wrap_content"
+	    				android:layout_marginLeft="30dip"
+	    				android:text="ないです..."
+	    				/>
+	    			
+	    		</RadioGroup>
+	    		
+	    		<RadioGroup android:id="@+id_map/show_marker_alt_type"
+	    			android:layout_width="fill_parent"
+	    			android:layout_height="wrap_content"
+	    			android:layout_marginTop="15dip"
+	    			android:orientation="vertical"
+	    			android:background="@drawable/sliding_drawer_content_group"
+	    			android:padding="10dip"
+	    			>
+	    			
+	    			<CheckBox android:id="@+id_map/alt_type_check"
+	    				android:layout_width="wrap_content"
+	    				android:layout_height="wrap_content"
+		    			android:textSize="19sp"
+	    				android:text="スタンプのタイプ?"
+	    				/>
+	    				
+	    			<RadioButton android:id="@+id_map/radio_alt_type_stamp"
+	    				android:layout_width="wrap_content"
+	    				android:layout_height="wrap_content"
+	    				android:layout_marginLeft="30dip"
+	    				android:text="スタンプ"
+	    				/>
+	    			<RadioButton android:id="@+id_map/radio_alt_type_quiz"
+	    				android:layout_width="wrap_content"
+	    				android:layout_height="wrap_content"
+	    				android:layout_marginLeft="30dip"
+	    				android:text="クイズ"
+	    				/>
+	    		</RadioGroup>
+	    		
+	    	</LinearLayout>
+	    	</ScrollView>
+    </SlidingDrawer>
 
 </FrameLayout>

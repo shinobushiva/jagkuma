@@ -18,14 +18,26 @@ import jag.kumamoto.apps.gotochi.R;
 import aharisu.util.DataGetter;
 import aharisu.util.Pair;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.SlidingDrawer;
+import android.widget.ZoomControls;
 
 
 /**
@@ -40,6 +52,8 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 	private StampPinOverlay mPinOverlay;
 	private StampPin[] mStampPins;
 	private User mUser;
+	
+	private boolean mIsOpenSlidingDrawer = false;
 	
 	private IArriveWatcherService mArriveWatcher;
 	private final ServiceConnection mConnection = new ServiceConnection() {
@@ -65,15 +79,28 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		setContentView(R.layout.map);
 		
 		
-		
 		final MapView map = (MapView)findViewById(R.id_map.mapview);
+		
+		//ズームボタンの表示と大きさ調整
+		DisplayMetrics metrics = new DisplayMetrics();
+		((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
 		map.setBuiltInZoomControls(true);
+		ZoomControls zoomCtrl = (ZoomControls)map.getZoomButtonsController().getZoomControls();
+		ViewGroup.LayoutParams params = zoomCtrl.getLayoutParams();
+		params.width = ViewGroup.LayoutParams.FILL_PARENT;
+		for(int i = 0;i < zoomCtrl.getChildCount();++i) {
+			zoomCtrl.getChildAt(i).getLayoutParams().width = (int)(62 * metrics.scaledDensity);
+		}
+		zoomCtrl.setGravity(Gravity.BOTTOM|Gravity.RIGHT);
+		zoomCtrl.setPadding((int)(2 * metrics.scaledDensity), 0, 0, 0);
+		 
+		
 		List<Overlay> overlayList = map.getOverlays();
 		
 		//スタンプラリーの場所を示すピンのレイヤを追加
 		mPinOverlay = new StampPinOverlay(this,
 				getResources().getDrawable(R.drawable.marker_none),
-				map.getController(), 0);
+				map);
 		overlayList.add(mPinOverlay);
 		
 		
@@ -86,6 +113,38 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		
 		//DBからスタンプがある場所のピンデータを取得する
 		GetAsyncStampPinsFromDB();
+		
+		
+		//スライディングドローワの設定
+		SlidingDrawer drawer = (SlidingDrawer)findViewById(R.id_map.slidingdrawer);
+		drawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
+			@Override public void onDrawerOpened() {
+				mIsOpenSlidingDrawer = true;
+				
+				//設定ビューが開いている間はマップを動かせないようにする
+				map.setClickable(false);
+			}
+		});
+		drawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener() {
+			
+			@Override public void onScrollStarted() {
+				//開き始めるとズームボタンを消す
+				map.getZoomButtonsController().setVisible(false);
+			}
+			
+			@Override public void onScrollEnded() {
+			}
+		});
+		drawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
+			@Override public void onDrawerClosed() {
+				mIsOpenSlidingDrawer = false;
+				
+				//設定ビューが閉じるとマップを動かせるようにする
+				map.setClickable(true);
+			}
+		});
+		
+		constractOptionView();
 		
 		//スタンプラリーのピンの到着を監視するサービスを起動する
 		startArriveWatcherservice();
@@ -164,6 +223,109 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 			
 		}.execute((Void)null);
 	}
+	
+	private void constractOptionView() {
+		final class Data {
+			public final int radioGroupId;
+			public final int checkBoxId;
+			public final int[] radioButtonIds;
+			public final StampPinOverlay.Filter[] filters;
+			
+			public Data(int radioGroupId, int checkBoxId, int[] radioButtonIds, StampPinOverlay.Filter[] filters) {
+				this.radioGroupId = radioGroupId;
+				this.checkBoxId = checkBoxId;
+				this.radioButtonIds = radioButtonIds;
+				this.filters = filters;
+			}
+		}
+		
+		Data[] datas = new Data[] {
+				//訪れたか否か
+				new Data(R.id_map.show_marker_alt_visit, R.id_map.alt_visite_check, 
+						new int[] {R.id_map.radio_alt_visit_no_visite, R.id_map.radio_alt_visit_visited},
+						new StampPinOverlay.Filter[] {
+							//訪れたことがないピンを表示
+							new StampPinOverlay.Filter() {
+								
+								@Override public boolean filter(StampPin pin) {
+									return !pin.isArrive;
+								}
+							},
+							//訪れたことがあるピンを表示
+							new StampPinOverlay.Filter() {
+								
+								@Override public boolean filter(StampPin pin) {
+									return pin.isArrive;
+								}
+							},
+				}),
+				
+				//スタンプのタイプ
+				new Data(R.id_map.show_marker_alt_type, R.id_map.alt_type_check, 
+						new int[] {R.id_map.radio_alt_type_stamp, R.id_map.radio_alt_type_quiz},
+						new StampPinOverlay.Filter[] {
+							//スタンプだけのピンを表示
+							new StampPinOverlay.Filter() {
+								
+								@Override public boolean filter(StampPin pin) {
+									return pin.type == StampPin.STAMP_TYPE_NONE;
+								}
+							},
+							//クイズのあるピンを表示
+							new StampPinOverlay.Filter() {
+								
+								@Override public boolean filter(StampPin pin) {
+									return pin.type == StampPin.STAMP_TYPE_QUIZ;
+								}
+							},
+				}),
+		};
+		
+		for(final Data data : datas) {
+			RadioGroup altGroup = (RadioGroup)findViewById(data.radioGroupId);
+			altGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+				@Override public void onCheckedChanged(RadioGroup group, int checkedId) {
+					boolean show = false;
+					int count = data.radioButtonIds.length - 1;
+					int i;
+					for(i = 0;i < count;++i) {
+						if(checkedId == data.radioButtonIds[i] && 
+								((RadioButton)group.findViewById(checkedId)).isChecked()) {
+							show = true;
+							mPinOverlay.addShowPinFilter(data.filters[i], false);
+						} else {
+							mPinOverlay.removeShowPinFilter(data.filters[i], false);
+						}
+					}
+					
+					if(checkedId == data.radioButtonIds[i] &&
+								((RadioButton)group.findViewById(checkedId)).isChecked()) {
+						show = true;
+						mPinOverlay.addShowPinFilter(data.filters[i], true);
+					} else {
+						mPinOverlay.removeShowPinFilter(data.filters[i], true);
+					}
+					
+					if(show) {
+						((CheckBox)group.findViewById(data.checkBoxId)).setChecked(true);
+					}
+				}
+			});
+			
+			CheckBox chkEnable = (CheckBox)altGroup.findViewById(data.checkBoxId);
+			chkEnable.setTag(altGroup);
+			chkEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				
+				@Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if(!isChecked) {
+						((RadioGroup)buttonView.getTag()).clearCheck();
+					}
+				}
+			});
+			
+		}
+	}
+		
 	
 	
 	/**
@@ -246,4 +408,15 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		
 		stopService(intent);
 	}
+	
+    @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	if(mIsOpenSlidingDrawer && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+    		((SlidingDrawer)findViewById(R.id_map.slidingdrawer)).animateClose();
+    		
+    		return true;
+    	}
+    	
+    	return super.onKeyDown(keyCode, event);
+    }
+	
 }

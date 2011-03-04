@@ -11,7 +11,7 @@ import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
-import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
 /**
@@ -22,6 +22,10 @@ import com.google.android.maps.OverlayItem;
  *
  */
 public class StampPinOverlay extends ItemizedOverlay<StampPinOverlay.StampRallyMarker>{
+	
+	public static interface Filter {
+		public boolean filter(StampPin pin);
+	}
 	
 	public static class StampRallyMarker extends OverlayItem {
 		public final StampPin stampPin;
@@ -57,33 +61,20 @@ public class StampPinOverlay extends ItemizedOverlay<StampPinOverlay.StampRallyM
 	
 	private PinInfoOverlay mInfoOverlay;
 	private final ArrayList<StampPin> mStampPinList = new ArrayList<StampPin>();
-	private final MapController mMapController;
+	private final MapView mMapView;
 	
-	/*
-	private int mCurShowType = -1;
-	private final ArrayList<StampLocation> mShowStampLocation;
-	int mSize;
-	*/
+	private final ArrayList<Filter> mFilterList = new ArrayList<Filter>();
+	
+	private final ArrayList<StampPin> mShowStampPin = new ArrayList<StampPin>();
 	
 	
-	public StampPinOverlay(Context context, Drawable defaultMarker, 
-			MapController mapController, int showType) {
+	public StampPinOverlay(Context context, Drawable defaultMarker,  MapView map) {
 		super(boundCenterBottom(defaultMarker));
 		
 		this.mContext = context;
+		this.mMapView = map;
 		
-		this.mMapController = mapController;
-		
-		populate();
-		
-		/*
-		this.mStampLocations = stampLocations;
-		this.mShowStampLocation = new ArrayList<StampLocation>(mStampLocations.length);
-		for(int i = 0;i < mStampLocations.length;++i)
-			mShowStampLocation.add(null);
-		
-		setShowType(showType);
-		*/
+		applyFilter();
 	}
 	
 	public void addStampPins(StampPin... pins) {
@@ -92,7 +83,7 @@ public class StampPinOverlay extends ItemizedOverlay<StampPinOverlay.StampRallyM
 		
 		mStampPinList.addAll(Arrays.asList(pins));
 		
-		populate();
+		applyFilter();
 	}
 	
 	public void removeStampPins(StampPin... pins) {
@@ -109,56 +100,66 @@ public class StampPinOverlay extends ItemizedOverlay<StampPinOverlay.StampRallyM
 			}
 		}
 		
-		populate();
+		applyFilter();
 	}
 	
 	public void setInfoOverlay(PinInfoOverlay overlay) {
 		mInfoOverlay = overlay;
 	}
 	
-	/*
-	public void setShowType(int showType) {
-		if(mCurShowType != showType) {
-			
-			if(showType == ShowTypeAllMarker) {
-				for(int i = 0;i < mStampLocations.length;++i) {
-					mShowStampLocation.set(i, mStampLocations[i]);
-				}
-				mSize = mStampLocations.length;
-				
-			} else {
-				boolean showArrived = showType == ShowTypeArrivedMarker;
-				mSize = 0;
-				
-				for(int i = 0;i < mStampLocations.length;++i) {
-					if(mStampLocations[i].getIsArrived() == showArrived) {
-						mShowStampLocation.set(mSize, mStampLocations[i]);
-						++mSize;
-					}
-				}
-			}
-			
-			mCurShowType = showType;
-			this.populate();
+	public void addShowPinFilter(Filter filter, boolean update) {
+		mFilterList.add(filter);
+		
+		if(update) {
+			applyFilter();
 		}
 	}
-	*/
 	
+	public void removeShowPinFilter(Filter filter, boolean update) {
+		mFilterList.remove(filter);
+		
+		if(update) {
+			applyFilter();
+		}
+	}
+	
+	private void applyFilter() {
+		mShowStampPin.clear();
+		
+		if(mFilterList.size() == 0) {
+			mShowStampPin.addAll(mStampPinList);
+		} else {
+			for(StampPin pin : mStampPinList) {
+				boolean show = true;
+				for(Filter filter : mFilterList) {
+					if(!filter.filter(pin)) {
+						show = false;
+						break;
+					}
+				}
+				
+				if(show) {
+					mShowStampPin.add(pin);
+				}
+			}
+		}
+		
+		this.populate();
+		mMapView.invalidate();
+	}
 	
 	@Override protected StampRallyMarker createItem(int i) {
-		return new StampRallyMarker(mStampPinList.get(i), mContext);
-		//return new StampRallyMarker(mShowStampLocation.get(i), mContext);
+		return new StampRallyMarker(mShowStampPin.get(i), mContext);
 	}
 	
 	@Override public int size() {
-		return mStampPinList.size();
-		//return mSize;
+		return mShowStampPin.size();
 	}
 	
 	@Override protected boolean onTap(int index) {
 		StampRallyMarker marker = getItem(index);
 		
-		mMapController.animateTo(marker.getPoint());
+		mMapView.getController().animateTo(marker.getPoint());
 		if(mInfoOverlay != null) {
 			mInfoOverlay.setMarkerInfo(marker);
 		}

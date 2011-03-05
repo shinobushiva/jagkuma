@@ -21,18 +21,20 @@ public final class R {
         public static final int icon=0x7f020004;
         public static final int icon_status_bar=0x7f020005;
         public static final int icon_status_bar_arrived=0x7f020006;
-        public static final int marker_none=0x7f020007;
-        public static final int marker_none_arrived=0x7f020008;
-        public static final int marker_quiz=0x7f020009;
-        public static final int marker_quiz_arrived=0x7f02000a;
-        public static final int quiz_result_correctness=0x7f02000b;
-        public static final int quiz_result_incorrectness=0x7f02000c;
-        public static final int sliding_drawer_content_background=0x7f02000d;
-        public static final int sliding_drawer_content_group=0x7f02000e;
-        public static final int sliding_drawer_handle=0x7f02000f;
-        public static final int sliding_drawer_handle_normal=0x7f020010;
-        public static final int sliding_drawer_handle_pressed=0x7f020011;
-        public static final int transparent_background=0x7f020012;
+        public static final int infobar_background=0x7f020007;
+        public static final int marker_none=0x7f020008;
+        public static final int marker_none_arrived=0x7f020009;
+        public static final int marker_quiz=0x7f02000a;
+        public static final int marker_quiz_arrived=0x7f02000b;
+        public static final int quiz_result_correctness=0x7f02000c;
+        public static final int quiz_result_incorrectness=0x7f02000d;
+        public static final int settings_group=0x7f02000e;
+        public static final int sliding_drawer_content_background=0x7f02000f;
+        public static final int sliding_drawer_content_group=0x7f020010;
+        public static final int sliding_drawer_handle=0x7f020011;
+        public static final int sliding_drawer_handle_normal=0x7f020012;
+        public static final int sliding_drawer_handle_pressed=0x7f020013;
+        public static final int transparent_background=0x7f020014;
     }
     public static final class id {
         public static final int content=0x7f0f0001;
@@ -79,17 +81,18 @@ public final class R {
         public static final int btnAmbition=0x7f0d0000;
     }
     public static final class id_map {
-        public static final int alt_type_check=0x7f0e0008;
-        public static final int alt_visite_check=0x7f0e0004;
-        public static final int mapview=0x7f0e0000;
-        public static final int mascot=0x7f0e0001;
-        public static final int radio_alt_type_quiz=0x7f0e000a;
-        public static final int radio_alt_type_stamp=0x7f0e0009;
-        public static final int radio_alt_visit_no_visite=0x7f0e0006;
-        public static final int radio_alt_visit_visited=0x7f0e0005;
-        public static final int show_marker_alt_type=0x7f0e0007;
-        public static final int show_marker_alt_visit=0x7f0e0003;
-        public static final int slidingdrawer=0x7f0e0002;
+        public static final int alt_type_check=0x7f0e0009;
+        public static final int alt_visite_check=0x7f0e0005;
+        public static final int infobar=0x7f0e0000;
+        public static final int mapview=0x7f0e0001;
+        public static final int mascot=0x7f0e0002;
+        public static final int radio_alt_type_quiz=0x7f0e000b;
+        public static final int radio_alt_type_stamp=0x7f0e000a;
+        public static final int radio_alt_visit_no_visite=0x7f0e0007;
+        public static final int radio_alt_visit_visited=0x7f0e0006;
+        public static final int show_marker_alt_type=0x7f0e0008;
+        public static final int show_marker_alt_visit=0x7f0e0004;
+        public static final int slidingdrawer=0x7f0e0003;
     }
     public static final class id_quiz {
         public static final int frame_choices=0x7f100003;

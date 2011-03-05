@@ -1,22 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res/jag.kumamoto.apps.gotochi"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+    <LinearLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    >
+	    <jag.kumamoto.apps.StampRally.FlowingTextView
+	    	android:id="@+id_map/infobar"
+	    	android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content"
+	    	android:textSize="16sp"
+	    	android:gravity="center"
+	    	android:textColor="#eeeeee"
+	    	android:paddingLeft="5dip"
+		    android:background="@drawable/infobar_background"
+	    	/>
+	    
+		<FrameLayout 
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    >
+		    <com.google.android.maps.MapView
+		    	android:id="@+id_map/mapview"
+		    	android:layout_width="fill_parent"
+		    	android:layout_height="fill_parent"
+		    	android:clickable="true"
+		    	android:apiKey="input your android map key"
+		    	/>
+		    <aharisu.mascot.MascotView android:id="@+id_map/mascot"
+		    	android:layout_width="fill_parent"
+		    	android:layout_height="fill_parent"
+		    	/>
+	    </FrameLayout>
+    </LinearLayout>
     
-    <com.google.android.maps.MapView
-    	android:id="@+id_map/mapview"
-    	android:layout_width="fill_parent"
-    	android:layout_height="fill_parent"
-    	android:clickable="true"
-    	android:apiKey="input your android map key"
-    	/>
-    	
-    <aharisu.mascot.MascotView android:id="@+id_map/mascot"
-    	android:layout_width="fill_parent"
-    	android:layout_height="fill_parent"
-    	/>
-    	
     <SlidingDrawer android:id="@+id_map/slidingdrawer"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
@@ -28,7 +50,7 @@
     	<FrameLayout
     		android:id="@id/handle"
     		android:layout_width="68dip"
-    		android:layout_height="34dip"
+    		android:layout_height="32dip"
     		android:background="@drawable/sliding_drawer_handle"
     		/>
     		
@@ -120,5 +142,5 @@
 	    	</LinearLayout>
 	    	</ScrollView>
     </SlidingDrawer>
-
+    
 </FrameLayout>

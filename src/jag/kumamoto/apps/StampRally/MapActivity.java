@@ -14,6 +14,7 @@ import com.google.android.maps.Overlay;
 import jag.kumamoto.apps.StampRally.Data.StampPin;
 import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
+import jag.kumamoto.apps.StampRally.Data.UserRecord;
 import jag.kumamoto.apps.gotochi.R;
 import aharisu.mascot.BitmapLoader;
 import aharisu.mascot.IMascot;
@@ -100,10 +101,10 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		ViewGroup.LayoutParams params = zoomCtrl.getLayoutParams();
 		params.width = ViewGroup.LayoutParams.FILL_PARENT;
 		for(int i = 0;i < zoomCtrl.getChildCount();++i) {
-			zoomCtrl.getChildAt(i).getLayoutParams().width = (int)(62 * metrics.scaledDensity);
+			zoomCtrl.getChildAt(i).getLayoutParams().width = (int)(64 * metrics.scaledDensity);
 		}
 		zoomCtrl.setGravity(Gravity.BOTTOM|Gravity.RIGHT);
-		zoomCtrl.setPadding((int)(2 * metrics.scaledDensity), 0, 0, 0);
+		zoomCtrl.setPadding((int)(2 * metrics.scaledDensity), 0, 0, (int)(12 * metrics.scaledDensity));
 		 
 		
 		List<Overlay> overlayList = map.getOverlays();
@@ -125,12 +126,17 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		//DBからスタンプがある場所のピンデータを取得する
 		GetAsyncStampPinsFromDB();
 		
+		//情報バーのテキスト設定
+		((FlowingTextView)findViewById(R.id_map.infobar))
+			.setText(constractInfoBarText(StampRallyPreferences.getUserRecord()));
 		
 		//スライディングドローワの設定
 		SlidingDrawer drawer = (SlidingDrawer)findViewById(R.id_map.slidingdrawer);
 		drawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
 			@Override public void onDrawerOpened() {
 				mIsOpenSlidingDrawer = true;
+				
+				((FlowingTextView)findViewById(R.id_map.infobar)).addFlowMessage("開いたよ");
 				
 				//設定ビューが開いている間はマップを動かせないようにする
 				map.setClickable(false);
@@ -149,6 +155,8 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		drawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
 			@Override public void onDrawerClosed() {
 				mIsOpenSlidingDrawer = false;
+				
+				((FlowingTextView)findViewById(R.id_map.infobar)).addFlowMessage("閉じたよ");
 				
 				//設定ビューが閉じるとマップを動かせるようにする
 				map.setClickable(true);
@@ -487,12 +495,22 @@ public class MapActivity extends com.google.android.maps.MapActivity{
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	if(requestCode == RequestShowInfoId) {
     		
+			((FlowingTextView)findViewById(R.id_map.infobar))
+				.setText(constractInfoBarText(StampRallyPreferences.getUserRecord()));
+			
 	    	mPinOverlay.setStampPins(StampRallyDB.getStampPins());	
     		
     		return;
     	}
     	
     	super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    private String constractInfoBarText(UserRecord record) {
+    	return new StringBuilder()
+    		.append("獲得ポイント:").append(record.point)
+    		.append("　スタンプ数：").append(record.numStamp)
+    		.toString();
     }
 	
 }

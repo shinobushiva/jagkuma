@@ -229,6 +229,7 @@ final class UserSettingsHelper {
 		mUser = null;
 		//ユーザ情報を消去する
 		StampRallyPreferences.clearUser();
+		StampRallyPreferences.clearUserRecord();
 		StampRallyDB.clearPinArrive();
 		StampRallyDB.clearPrizes();
 		StampRallyDB.clearQuizResult();

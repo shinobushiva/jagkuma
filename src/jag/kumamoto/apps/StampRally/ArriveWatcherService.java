@@ -1,7 +1,6 @@
 package jag.kumamoto.apps.StampRally;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -113,10 +112,16 @@ public class ArriveWatcherService extends Service{
 	//TODO この数値を外部から設定可能に
 	//private static final int LOCATION_UPDATE_MIN_TIME = 2 * 60 * 1000; //1分より短い間隔では通知されない
 	//private static final int LOCATION_UPDATE_MIN_DISTANCE = 30; //30mより小さい変化は通知されない
-	private static final int LOCATION_UPDATE_MIN_TIME = 0;
-	private static final int LOCATION_UPDATE_MIN_DISTANCE = 0;
+	private static final int LocationUpdateMinTimeShort = 0;
+	private static final int LocationUpdateMinDistanceShort = 0;
+	private static final int LocationUpdateMinTimeNormal = 0;
+	private static final int LocationUpdateMinDistanceNormal = 0;
+	private static final int LocationUpdateMinTimeLong = 0;
+	private static final int LocationUpdateMinDistanceLong= 0;
 	
-	private static final int AllowErrroRange = 200; //200mの誤差ならOK
+	private static final int AllowErrroRange = 250; //250mの誤差ならOK
+	
+	private String mLocationProvier;
 	
 	private ArrayList<Long> mCurArriveLocation = new ArrayList<Long>();
 	
@@ -128,13 +133,11 @@ public class ArriveWatcherService extends Service{
 	
 	private final IArriveWatcherService.Stub mStub = new IArriveWatcherService.Stub() {
 		
-		@Override public void showArriveNotification(StampPin pin)
-				throws RemoteException {
+		@Override public void showArriveNotification(StampPin pin) throws RemoteException {
 			ArriveWatcherService.this.showArriveNotification(pin);
 		}
 		
-		@Override public void removeArriveNotification(long pinId)
-				throws RemoteException {
+		@Override public void removeArriveNotification(long pinId) throws RemoteException {
 			ArriveWatcherService.this.removeArriveNotification(pinId);
 		}
 
@@ -147,6 +150,10 @@ public class ArriveWatcherService extends Service{
 			}
 			
 			return ids;
+		}
+		
+		@Override public void changeArriveCheckInterval(int type) throws RemoteException {
+			requestLocationUpdates(type);
 		}
 	};
 	
@@ -281,11 +288,47 @@ public class ArriveWatcherService extends Service{
 		criteria.setAltitudeRequired(false);	//高度情報は不要
 		criteria.setBearingRequired(false);	//方位情報は不要
 		
-		String provider = lm.getBestProvider(criteria, true);
+		mLocationProvier = lm.getBestProvider(criteria, true);
+		
+		requestLocationUpdates(StampRallyPreferences.getArrivePollingIntervalType(this));
+	}
+	
+	private void requestLocationUpdates(int type) {
+		if(mLocationProvier == null) {
+			LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+			Criteria criteria = new Criteria();
+			criteria.setAccuracy(Criteria.ACCURACY_FINE);
+			criteria.setSpeedRequired(false);		//速度情報は不要
+			criteria.setAltitudeRequired(false);	//高度情報は不要
+			criteria.setBearingRequired(false);	//方位情報は不要
+			
+			mLocationProvier = lm.getBestProvider(criteria, true);
+		} 
+		
+		int minTime;
+		float minDistance;
+		switch(type) {
+		case 0:
+			minTime = LocationUpdateMinTimeShort;
+			minDistance = LocationUpdateMinDistanceShort;
+			break;
+		case 1:
+			minTime = LocationUpdateMinTimeNormal;
+			minDistance = LocationUpdateMinDistanceNormal;
+			break;
+		case 2:
+			minTime = LocationUpdateMinTimeLong;
+			minDistance = LocationUpdateMinDistanceLong;
+			break;
+		default:
+			return;
+		}
+		
+		LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		lm.requestLocationUpdates(
-				provider,
-				LOCATION_UPDATE_MIN_TIME,//TODO 外部から設定できるように
-				LOCATION_UPDATE_MIN_DISTANCE,//TODO 外部から設定できるように
+				mLocationProvier,
+				minTime,
+				minDistance,
 				mLocationListener);
 	}
 	
@@ -368,11 +411,8 @@ public class ArriveWatcherService extends Service{
 	
 	private void removeAllArriveNotification() {
 		NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-		
-		Collection<Integer> ids = mPinIdToNotificationIdMap.values();
-		for(int id : ids) {
-			nm.cancel(id);
-		}
+		nm.cancelAll();
+		mPinIdToNotificationIdMap.clear();
 	}
 
 }

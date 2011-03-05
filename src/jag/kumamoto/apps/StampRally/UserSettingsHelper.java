@@ -40,15 +40,16 @@ import jag.kumamoto.apps.StampRally.Data.UserRecord;
 import jag.kumamoto.apps.gotochi.R;
 
 final class UserSettingsHelper {
-	public static interface OnLoginListener {
+	public static interface OnLoginLogoutListener {
 		public void onLogin(User user);
+		public void onLogout();
 	}
 	
 	private final ViewGroup mLayout;
-	private final OnLoginListener mListener;
+	private final OnLoginLogoutListener mListener;
 	private User mUser;
 	
-	private UserSettingsHelper(ViewGroup layout, User user, OnLoginListener listner) {
+	private UserSettingsHelper(ViewGroup layout, User user, OnLoginLogoutListener listner) {
 		mLayout = layout;
 		mUser = user;
 		mListener = listner;
@@ -60,7 +61,8 @@ final class UserSettingsHelper {
 		}
 	}
 	
-	public static void constractUserSettingsView(ViewGroup layout, User user, OnLoginListener listener) {
+	public static void constractUserSettingsView(ViewGroup layout, 
+			User user, OnLoginLogoutListener listener) {
 		//この中で自動的に構築される
 		new UserSettingsHelper(layout, user, listener);
 	}
@@ -233,6 +235,10 @@ final class UserSettingsHelper {
 		StampRallyDB.clearPinArrive();
 		StampRallyDB.clearPrizes();
 		StampRallyDB.clearQuizResult();
+		
+		if(mListener != null) {
+			mListener.onLogout();
+		}
 					
 		constractLoginView();
 	}

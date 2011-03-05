@@ -106,6 +106,7 @@
 								android:layout_height="wrap_content"
 								android:orientation="vertical"
 								android:checkedButton="@+id_settings/gender_unknown"
+								android:paddingLeft="15dip"
 								>
 								<RadioButton
 									android:id="@+id_settings/gender_female"
@@ -161,11 +162,100 @@
 			
 			
 			<!-- とりあえずその他 -->
-			<Button android:id="@+id_settings/tab_other"
+			<LinearLayout android:id="@+id_settings/tab_every_kind"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:text="ボタン"
-				/>
+				android:orientation="vertical"
+				>
+				
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_marginTop="5dip"
+					android:layout_marginBottom="5dip"
+					android:textSize="18sp"
+					android:text="各種設定"
+					/>
+					
+				<ScrollView
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					>
+					<LinearLayout
+						android:layout_width="fill_parent"
+						android:layout_height="fill_parent"
+						android:orientation="vertical"
+						android:paddingLeft="10dip"
+						>
+						
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="fill_parent"
+							android:orientation="vertical"
+							android:paddingLeft="15dip"
+							android:paddingTop="3dip"
+							android:paddingBottom="3dip"
+							android:background="@drawable/settings_group"
+							>
+							
+							<TextView android:id="@+id_settings/token_label"
+								android:layout_width="fill_parent"
+								android:layout_height="wrap_content"
+								android:layout_marginTop="15dip"
+								android:text="・到着確認する時間間隔"
+								android:textSize="15sp"
+								/>
+								
+							<RadioGroup android:id="@+id_settings/arrive_polling_group"
+								android:layout_width="fill_parent"
+								android:layout_height="wrap_content"
+								android:orientation="vertical"
+								android:paddingLeft="30dip"
+								>
+								<RadioButton android:id="@+id_settings/polling_short"
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:textSize="18sp"
+									android:text="短め"
+									/>
+								<RadioButton android:id="@+id_settings/polling_normal"
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:textSize="18sp"
+									android:text="普通"
+									/>
+								<RadioButton android:id="@+id_settings/polling_long"
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:textSize="18sp"
+									android:text="長め"
+									/>
+							</RadioGroup>
+						</LinearLayout>
+						
+						
+						<FrameLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_marginTop="15dip"
+							android:paddingLeft="15dip"
+							android:paddingTop="3dip"
+							android:paddingBottom="3dip"
+							android:background="@drawable/settings_group"
+							>
+							<CheckBox android:id="@+id_settings/show_urge"
+								android:layout_width="fill_parent"
+								android:layout_height="wrap_content"
+								android:text="ログイン確認を毎回出す"
+								android:textSize="15sp"
+								/>
+						</FrameLayout>
+							
+					</LinearLayout>
+				</ScrollView>
+			</LinearLayout>
+				
 			
 		</FrameLayout>
 		

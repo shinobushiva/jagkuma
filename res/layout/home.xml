@@ -33,10 +33,17 @@
     	layout_ratioX="0.2"
     	layout_ratioY="0.6"
     	layout_ratioWidth="0.6"
-    	layout_ratioHeight="0.2"
     	android:id="@+id_home/map"
     	android:text="Map"
-    	/>
+    	layout_ratioHeight="0.1"/>
+    	
+    <Button
+    	layout_ratioX="0.2"
+    	layout_ratioY="0.7"
+    	layout_ratioWidth="0.6"
+    	android:id="@+id_home/thanks"
+    	android:text="Thanks"
+    	layout_ratioHeight="0.1"/>
     	
     <Button
     	layout_ratioX="0.05"

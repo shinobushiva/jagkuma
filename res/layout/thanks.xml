@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<aharisu.widget.RatioLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+		<TextView android:text="@+id/TextView01"
+			layout_ratioX="0.1"
+    	layout_ratioY="0.3"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id_thanks/row1"></TextView>
+			<TextView android:text="@+id/TextView01"
+			layout_ratioX="0.1"
+    	layout_ratioY="0.3"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id_thanks/row1b"></TextView>
+		
+		<TextView android:text="@+id/TextView01"
+			layout_ratioX="0.1"
+    	layout_ratioY="0.5"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id_thanks/row2"></TextView>
+		<TextView android:text="@+id/TextView01"
+			layout_ratioX="0.1"
+    	layout_ratioY="0.5"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id_thanks/row2b"></TextView>
+			
+		<TextView android:text="@+id/TextView01"
+			layout_ratioX="0.1"
+    	layout_ratioY="0.7"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id_thanks/row3"></TextView>
+		<TextView android:text="@+id/TextView01"
+			layout_ratioX="0.1"
+    	layout_ratioY="0.7"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id_thanks/row3b"></TextView>
+	
+</aharisu.widget.RatioLayout>

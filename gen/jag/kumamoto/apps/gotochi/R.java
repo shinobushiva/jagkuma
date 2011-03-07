@@ -60,10 +60,11 @@ public final class R {
         public static final int webview=0x7f0a0000;
     }
     public static final class id_home {
-        public static final int collections=0x7f0b0002;
+        public static final int collections=0x7f0b0003;
         public static final int help=0x7f0b0000;
         public static final int map=0x7f0b0001;
-        public static final int settings=0x7f0b0003;
+        public static final int settings=0x7f0b0004;
+        public static final int thanks=0x7f0b0002;
     }
     public static final class id_location_info {
         public static final int arrive_report=0x7f0c0007;
@@ -126,6 +127,14 @@ public final class R {
         public static final int token_label=0x7f110003;
         public static final int user_setting_title=0x7f110001;
     }
+    public static final class id_thanks {
+        public static final int row1=0x7f120000;
+        public static final int row1b=0x7f120001;
+        public static final int row2=0x7f120002;
+        public static final int row2b=0x7f120003;
+        public static final int row3=0x7f120004;
+        public static final int row3b=0x7f120005;
+    }
     public static final class layout {
         public static final int collections=0x7f030000;
         public static final int collections_item=0x7f030001;
@@ -142,6 +151,7 @@ public final class R {
         public static final int quiz_single_choice=0x7f03000c;
         public static final int settings=0x7f03000d;
         public static final int settings_token_radiobutton=0x7f03000e;
+        public static final int thanks=0x7f03000f;
     }
     public static final class raw {
         public static final int help=0x7f040000;
@@ -153,6 +163,7 @@ public final class R {
         public static final int speak=0x7f040006;
         public static final int test_location_info=0x7f040007;
         public static final int test_quiz=0x7f040008;
+        public static final int thanks=0x7f040009;
     }
     public static final class string {
         public static final int RouteSearchKindPrompt=0x7f05000a;

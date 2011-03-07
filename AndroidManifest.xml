@@ -1,66 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="jag.kumamoto.apps.gotochi"
-      android:versionCode="1"
-      android:versionName="1.0">
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
+	package="jag.kumamoto.apps.gotochi" android:versionCode="1"
+	android:versionName="1.0">
+	<application android:icon="@drawable/icon" android:label="@string/app_name"
+		android:debuggable="true">
 		<activity android:name="EntranceActivity">
 			<!--
-		    <intent-filter>
-			    <action android:name="android.intent.action.MAIN" />
-			    <category android:name="android.intent.category.LAUNCHER" />
-		    </intent-filter>
-		    -->
-	        <meta-data android:name="GotochiApp" android:value="true" />
+				<intent-filter> <action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+				</intent-filter>
+			-->
+			<meta-data android:name="GotochiApp" android:value="true" />
 		</activity>
-	
-        <activity android:name=".MainActivity"
-                  android:label="@string/app_name">
-            <intent-filter>
-	        	<category android:name="android.intent.category.DEFAULT" />
-        		<action android:name="android.intent.action.MAIN" />
-        		<category android:name="jag.gotochi.category.ACTIVITY" />
-	            <data android:scheme="gotochi" android:host="kumamoto" />
-	        </intent-filter>
-	        <meta-data android:name="GotochiApp" android:value="true" />
-        </activity>
-        
-        <service android:name="GotochiService" android:exported="true"></service>
 
-<activity android:name="ServiceShowWarningActivity" android:theme="@style/ServiceShowWarning"></activity>
-<receiver android:name="RootBroadcastReceiver"><intent-filter><action android:name="jag.kumamoto.apps.gotochi.LOCATION_CHANGE"></action>
-</intent-filter>
-</receiver>
+		<activity android:name=".MainActivity" android:label="@string/app_name">
+			<intent-filter>
+				<category android:name="android.intent.category.DEFAULT" />
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="jag.gotochi.category.ACTIVITY" />
+				<data android:scheme="gotochi" android:host="kumamoto" />
+			</intent-filter>
+			<meta-data android:name="GotochiApp" android:value="true" />
+		</activity>
+
+		<service android:name="GotochiService" android:exported="true"></service>
+
+		<activity android:name="ServiceShowWarningActivity"
+			android:theme="@style/ServiceShowWarning"></activity>
+		<receiver android:name="RootBroadcastReceiver">
+			<intent-filter>
+				<action android:name="jag.kumamoto.apps.gotochi.LOCATION_CHANGE"></action>
+			</intent-filter>
+		</receiver>
 
 
 
 		<activity android:name="jag.kumamoto.apps.StampRally.HomeActivity">
-		    <intent-filter>
-			    <action android:name="android.intent.action.MAIN" />
-			    <category android:name="android.intent.category.LAUNCHER" />
-		    </intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
 		</activity>
 		<activity android:name="jag.kumamoto.apps.StampRally.HelpActivity"></activity>
+		<activity android:name="jag.kumamoto.apps.StampRally.ThanksActivity"></activity>
 		<activity android:name="jag.kumamoto.apps.StampRally.SettingsActivity"></activity>
 		<activity android:name="jag.kumamoto.apps.StampRally.CollectionsActivity"></activity>
-		<activity android:name="jag.kumamoto.apps.StampRally.MapActivity" android:launchMode="singleTop"></activity>
-		<activity android:name="jag.kumamoto.apps.StampRally.LocationInfoActivity" android:launchMode="singleTop"></activity>
+		<activity android:name="jag.kumamoto.apps.StampRally.MapActivity"
+			android:launchMode="singleTop"></activity>
+		<activity android:name="jag.kumamoto.apps.StampRally.LocationInfoActivity"
+			android:launchMode="singleTop"></activity>
 		<activity android:name="jag.kumamoto.apps.StampRally.QuizActivity"></activity>
 		<service android:name="jag.kumamoto.apps.StampRally.ArriveWatcherService"></service>
-		<uses-library android:name="com.google.android.maps"/>
-		
-		
-		
+		<uses-library android:name="com.google.android.maps" />
 
-</application>
 
-    <uses-sdk android:minSdkVersion="5"/>
 
-<uses-permission android:name="android.permission.GET_TASKS"></uses-permission>
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-<uses-permission android:name="android.permission.INTERNET"/>
 
-<uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
+	</application>
+
+	<uses-sdk android:minSdkVersion="5" />
+
+	<uses-permission android:name="android.permission.GET_TASKS"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+	<uses-permission android:name="android.permission.INTERNET" />
+
+	<uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
 </manifest> 

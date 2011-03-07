@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<aharisu.widget.RatioLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	>
+	<TextView 
+    	android:id="@+id_thanks/row1"
+		layout_ratioX="0.1"
+    	layout_ratioY="0.3"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+    	/>
+    <TextView android:id="@+id_thanks/row1b"
+		layout_ratioX="0.1"
+    	layout_ratioY="0.3"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+    	/>
+		
+	<TextView android:id="@+id_thanks/row2"
+		layout_ratioX="0.1"
+    	layout_ratioY="0.5"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+		/>
+	<TextView android:id="@+id_thanks/row2b" 
+		layout_ratioX="0.1"
+    	layout_ratioY="0.5"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+		/>
+			
+	<TextView android:id="@+id_thanks/row3"
+		layout_ratioX="0.1"
+    	layout_ratioY="0.7"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+		/>
+	<TextView android:id="@+id_thanks/row3b" 
+		layout_ratioX="0.1"
+    	layout_ratioY="0.7"
+    	layout_ratioWidth="0.8"
+    	layout_ratioHeight="0.1"
+		/>
+	
+</aharisu.widget.RatioLayout>

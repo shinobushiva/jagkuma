@@ -16,17 +16,10 @@ import jag.kumamoto.apps.StampRally.Data.StampRallyURL;
 import jag.kumamoto.apps.StampRally.Data.User;
 import jag.kumamoto.apps.StampRally.Data.UserRecord;
 import jag.kumamoto.apps.gotochi.R;
-import aharisu.mascot.BitmapLoader;
-import aharisu.mascot.IMascot;
-import aharisu.mascot.Mascot;
+import aharisu.mascot.MascotEvent;
 import aharisu.mascot.MascotView;
-import aharisu.mascot.StateRandomWalk;
-import aharisu.mascot.StateRepetition;
-import aharisu.mascot.StateTimeZoneRepetition;
-import aharisu.mascot.TimeZoneState;
-import aharisu.mascot.UserInteractionState;
+import aharisu.mascot.MascotEvent.Type;
 import aharisu.util.DataGetter;
-import aharisu.util.ImageUtill;
 import aharisu.util.Pair;
 import android.content.ComponentName;
 import android.content.Context;
@@ -64,6 +57,8 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 	private StampPinOverlay mPinOverlay;
 	private StampPin[] mStampPins;
 	private User mUser;
+	
+	private MapActivityMascotViewHelper mMascotHelper;
 	
 	private boolean mIsOpenSlidingDrawer = false;
 	
@@ -137,6 +132,7 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 				mIsOpenSlidingDrawer = true;
 				
 				((FlowingTextView)findViewById(R.id_map.infobar)).addFlowMessage("開いたよ");
+		((MascotView)findViewById(R.id_map.mascot)).addMascotEvent(new MascotEvent(Type.Text, "開いたよ。\nhahaha"));
 				
 				//設定ビューが開いている間はマップを動かせないようにする
 				map.setClickable(false);
@@ -165,8 +161,8 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		
 		constractOptionView();
 		
-		//マスコットの状態を初期化する
-		initializeMascotState();
+		//マスコットを初期化する
+		mMascotHelper = new MapActivityMascotViewHelper((MascotView)findViewById(R.id_map.mascot));
 		
 		//スタンプラリーのピンの到着を監視するサービスとバインドする
 		bindArriveWatcherservice();
@@ -349,7 +345,6 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 	}
 		
 	
-	
 	/**
 	 * 前回アップデート確認をしたときから日付が変わっているかを確認する
 	 * @return アップデートが必要であればtrue.不必要ならfalse.
@@ -402,52 +397,6 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 		return false;
 	}
 	
-	private void initializeMascotState() {
-		MascotView view = (MascotView)findViewById(R.id_map.mascot);
-		IMascot mascot = view.getMascot();
-		
-		//ランダム歩行の基本状態追加
-		view.addBasicState(new StateRandomWalk(mascot, 
-					ImageUtill.loadImage(getResources().openRawResource(R.raw.kumamon), 1024, 1024)));
-		
-		//ダブルタップのときのこけるアニメーション
-		StateRepetition falling = new StateRepetition(mascot, UserInteractionState.Type.DoubleTap, 
-				new BitmapLoader.RawResourceBitmapLoader(this, R.raw.koke, 3, 1));
-		//一つ導入画像がある
-		falling.setNumHeaderFrame(1);
-		//導入画像を以外を3回リピートする
-		falling.setNumRepetition(3);
-		view.addUserInteractionState(falling);
-		
-		//テキスト表示状態用の画像を設定
-		view.setSpeakStateBitmapLoader(new BitmapLoader.RawResourceBitmapLoader(this, R.raw.speak, 5, 1));
-		
-		//スクロール中状態用の画像を設定
-		view.setScrollStateBitmapLoader(new BitmapLoader.RawResourceBitmapLoader(this, R.raw.scroll, 2, 1));
-		
-		//入浴中状態を設定	
-		StateTimeZoneRepetition bathing = new StateTimeZoneRepetition(mascot, TimeZoneState.Type.Evening,
-				new BitmapLoader.RawResourceBitmapLoader(this, R.raw.ofuro, 2, 1),
-				Mascot.Level.Middle, Mascot.Level.Low);
-		bathing.setNumRepetition(-1);
-		view.addTimeZoneState(bathing);
-		//昼・夜は入浴状態に移る確率は低い
-		view.addTimeZoneState(bathing.copy(TimeZoneState.Type.Daytime,
-				Mascot.Level.Low, Mascot.Level.Middle));
-		view.addTimeZoneState(bathing.copy(TimeZoneState.Type.Night,
-				Mascot.Level.Low, Mascot.Level.Low));
-		
-		//睡眠状態を設定
-		StateTimeZoneRepetition sleeping = new StateTimeZoneRepetition(mascot, TimeZoneState.Type.Night,
-				new BitmapLoader.RawResourceBitmapLoader(this, R.raw.sleeping, 3, 1),
-				Mascot.Level.Middle, Mascot.Level.Low);
-		sleeping.setNumRepetition(-1);
-		view.addTimeZoneState(sleeping);
-		//昼は睡眠状態に移る確率は低い
-		view.addTimeZoneState(sleeping.copy(TimeZoneState.Type.Daytime,
-				Mascot.Level.Low, Mascot.Level.Middle));
-	}
-	
 	
 	@Override protected boolean isRouteDisplayed() {
 		return false;
@@ -457,6 +406,8 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 	@Override protected void onDestroy() {
 		//スタンプラリーのピンの到着を監視するサービスをアンバインドする
 		unbindArriveWatcherService();
+		
+		mMascotHelper.onDestroy();
 		
 		super.onDestroy();
 	}
@@ -473,13 +424,13 @@ public class MapActivity extends com.google.android.maps.MapActivity{
 	@Override protected void onResume() {
 		super.onResume();
 		
-		((MascotView)findViewById(R.id_map.mascot)).start();
+		mMascotHelper.onResume();
 	}
 	
 	@Override protected void onPause() {
 		super.onPause();
 		
-		((MascotView)findViewById(R.id_map.mascot)).stop();
+		mMascotHelper.onPause();
 	}
 	
     @Override public boolean onKeyDown(int keyCode, KeyEvent event) {

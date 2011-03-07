@@ -69,7 +69,10 @@ public final class Mascot extends IMascot{
 				} else if(mCurState.isAllowInterrupt()) {
 					MascotEvent event = mEventQueue.poll();
 					if(event != null) {
-						if(event.type == Type.Text && mSpeakState.isEnable()) {
+						if((event.type == Type.Text  || event.type == Type.Tweet)
+								&& mSpeakState.isEnable()) {
+							
+							mSpeakState.setEventType(event.type);
 							mSpeakState.setText(event.text);
 							forceTransition(mSpeakState);
 						}

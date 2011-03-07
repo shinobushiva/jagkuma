@@ -10,6 +10,7 @@ package aharisu.mascot;
 public class MascotEvent {
 	public enum Type {
 		Text,
+		Tweet,
 	};
 	
 	public final Type type;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <aharisu.mascot.TextBalloonView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:textSize="14sp"
+	android:textSize="15sp"
 	android:textColor="#000"
 	android:minWidth="80dip"
-	android:minHeight="40dip"
+	android:minHeight="38dip"
 />

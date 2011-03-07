@@ -1,5 +1,6 @@
 package aharisu.mascot;
 
+import aharisu.mascot.MascotEvent.Type;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
@@ -27,6 +28,7 @@ public class StateSpeak extends MascotState {
 	private float mStepX;
 	private float mStepY;
 	
+	private Type mType;
 	private String mText;
 	
 	public StateSpeak(IMascot mascot) {
@@ -50,6 +52,10 @@ public class StateSpeak extends MascotState {
 	
 	public boolean isEnable() {
 		return getBitmapLoader() != null;
+	}
+	
+	public void setEventType(Type type) {
+		mType = type;
 	}
 	
 	public void setText(String text) {
@@ -79,7 +85,9 @@ public class StateSpeak extends MascotState {
 		if(mRunCount <= mTotalRunCount) {
 			return 150;
 		} else {
-			return 8000;
+			return mType == Type.Text ? 10000 :
+				mType == Type.Tweet ? 15000 :
+				10000;
 		}
 	}
 	

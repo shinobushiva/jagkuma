@@ -24,7 +24,7 @@ import android.widget.TextView;
  */
 public class TextBalloonView extends TextView{
 	private static final int PaddingTop = 1;//単位はdip
-	private static final int PaddingBottom = 14;//単位はdip
+	private static final int PaddingBottom = 15;//単位はdip
 	private static final int PaddingLeft = 6;//単位はdip
 	private static final int PaddingRight = 6;//単位はdip
 	

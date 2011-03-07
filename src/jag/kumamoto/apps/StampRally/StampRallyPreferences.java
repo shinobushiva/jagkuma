@@ -224,4 +224,22 @@ public final class StampRallyPreferences {
 		editor.commit();
 	}
 	
+	private static final String PreferenceKumamonTweetMaxId = "kumamon-tweet-max-id";
+	
+	public static long getKumamonTweetMaxId() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		return pref.getLong(PreferenceKumamonTweetMaxId, 0);
+	}
+	
+	public static void setKumamonTweetMaxId(long id){ 
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor= pref.edit();
+		editor.putLong(PreferenceKumamonTweetMaxId, id);
+		editor.commit();
+	}
+	
 }

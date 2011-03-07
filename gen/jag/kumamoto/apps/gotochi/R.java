@@ -106,6 +106,7 @@ public final class R {
         public static final int webview=0x7f100001;
     }
     public static final class id_settings {
+        public static final int arrive_polling_group=0x7f11000e;
         public static final int change_view=0x7f11000c;
         public static final int gender_female=0x7f110009;
         public static final int gender_frame=0x7f110007;
@@ -113,9 +114,13 @@ public final class R {
         public static final int gender_unknown=0x7f110008;
         public static final int nickname=0x7f110006;
         public static final int ok=0x7f11000b;
+        public static final int polling_long=0x7f110011;
+        public static final int polling_normal=0x7f110010;
+        public static final int polling_short=0x7f11000f;
         public static final int registration_frame=0x7f110005;
         public static final int select_token_frame=0x7f110002;
-        public static final int tab_other=0x7f11000d;
+        public static final int show_urge=0x7f110012;
+        public static final int tab_every_kind=0x7f11000d;
         public static final int tab_user=0x7f110000;
         public static final int token_frame=0x7f110004;
         public static final int token_label=0x7f110003;

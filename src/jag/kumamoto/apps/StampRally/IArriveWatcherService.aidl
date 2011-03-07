@@ -6,4 +6,5 @@ interface IArriveWatcherService {
 	void showArriveNotification(in StampPin pin);
 	void removeArriveNotification(long pinId);
 	long[] getArrivedStampPins();
+	void changeArriveCheckInterval(int type);
 }

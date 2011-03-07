@@ -169,4 +169,59 @@ public final class StampRallyPreferences {
 	}
 	
 	
+	private static final String PreferenceArrivePollingInterval = "arrive-polling-interval";
+	public static int getArrivePollingIntervalType() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		int value = pref.getInt(PreferenceArrivePollingInterval, 1);
+		if(value < 0) {
+			value = 1;
+		} else if(value > 2) {
+			value = 1;
+		}
+		
+		return value;
+	}
+	
+	public static int getArrivePollingIntervalType(Context context) {
+		SharedPreferences pref = context.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		int value = pref.getInt(PreferenceArrivePollingInterval, 1);
+		if(value < 0) {
+			value = 1;
+		} else if(value > 2) {
+			value = 1;
+		}
+		
+		return value;
+	}
+	
+	public static void setArrivePollingIntervalType(int type) {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor= pref.edit();
+		editor.putInt(PreferenceArrivePollingInterval, type);
+		editor.commit();
+	}
+	
+	private static final String PreferenceShowUrgeDialog = "show-urge-dialog";
+	public static boolean getShowUrgeDialog() {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		return pref.getBoolean(PreferenceShowUrgeDialog, true);
+	}
+	
+	public static void setShowUrgeDialog(boolean bool) {
+		SharedPreferences pref = mContext.getSharedPreferences(
+				PreferenceName, Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor= pref.edit();
+		editor.putBoolean(PreferenceShowUrgeDialog, bool);
+		editor.commit();
+	}
+	
 }

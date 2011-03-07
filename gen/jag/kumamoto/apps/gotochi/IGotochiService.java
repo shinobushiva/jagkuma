@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: E:\\android\\work\\jagkuma-aharisu\\jagkuma\\src\\jag\\kumamoto\\apps\\gotochi\\IGotochiService.aidl
+ * Original file: /Users/shiva/Documentations/workspace/jagkuma/aharisu/jagkuma/src/jag/kumamoto/apps/gotochi/IGotochiService.aidl
  */
 package jag.kumamoto.apps.gotochi;
 public interface IGotochiService extends android.os.IInterface

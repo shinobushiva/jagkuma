@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: E:\\android\\work\\jagkuma-aharisu\\jagkuma\\src\\jag\\kumamoto\\apps\\StampRally\\IArriveWatcherService.aidl
+ * Original file: /Users/shiva/Documentations/workspace/jagkuma/aharisu/jagkuma/src/jag/kumamoto/apps/StampRally/IArriveWatcherService.aidl
  */
 package jag.kumamoto.apps.StampRally;
 public interface IArriveWatcherService extends android.os.IInterface
